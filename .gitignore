@@ -1,4 +1,5 @@
 secrets.json
 /node_modules
-firebase-service-key.json
+
 .env
+*.log
