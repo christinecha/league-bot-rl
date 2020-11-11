@@ -64,4 +64,4 @@ client.on('message', async message => {
   }
 })
 
-client.login('Nzc1MTI5NjQwMzIyMjAzNjU4.X6h1uw.2NUeVVRaF2DWdWJDPbBRag9sYCM')
+client.login(process.env.BOT_TOKEN)
