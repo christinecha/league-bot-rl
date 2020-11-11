@@ -43,3 +43,6 @@ INFO: Detected HTTP/2 connection.
 [debug] [2020-11-11T03:42:20.165Z] Nov 10, 2020 10:42:20 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
 INFO: Detected HTTP/2 connection.
 
+[debug] [2020-11-11T04:12:38.254Z] Nov 10, 2020 11:12:38 PM io.gapi.emulators.netty.HttpVersionRoutingHandler channelRead
+INFO: Detected HTTP/2 connection.
+
