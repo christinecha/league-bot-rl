@@ -1,44 +1,62 @@
-const { match2s } = require('../test/match')
 const ERRORS = require('./constants/ERRORS')
 const matches = require('./data/matches')
-const { report, getWinner } = require('./report')
+const { onReportWin } = require('./report')
+
+const user1 = 'flips'
+const user2 = 'quantum'
+
+const match1 = {
+  id: '12345',
+  teamSize: 2,
+  players: {
+    [user2]: { team: 1 },
+    user3: { team: 2 },
+    user4: { team: 1 },
+    user5: { team: 2 },
+  }
+}
 
 beforeEach(async (done) => {
-  await matches.create(match2s)
+  await matches.create(match1)
   done()
 })
 
 afterEach(async (done) => {
-  await matches.delete(match2s.id)
+  await matches.delete(match1.id)
   done()
 });
 
 test('report 2s match win', async (done) => {
-  const playerId = Object.keys(match2s.players)[0]
+  const send = jest.fn()
+
+  await onReportWin(match1.id, {
+    author: { id: user1 },
+    guild: { id: 'hooo-crew' },
+    channel: { send }
+  })
 
   // Match cannot be reported by a non-participating player
-  expect(report(match2s.id, 'rando-player', true)).rejects.toEqual(ERRORS.MATCH_NO_SUCH_USER)
+  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_NO_SUCH_USER)
 
-  const match = await report(match2s.id, playerId, true)
+  await onReportWin(match1.id, {
+    author: { id: user2 },
+    guild: { id: 'hooo-crew' },
+    channel: { send }
+  })
+
+  const match = await matches.get(match1.id)
 
   // Match is reported correctly
-  expect(match.winner).toBe(match2s.players[playerId].team)
+  expect(match.winner).toBe(match1.players[user2].team)
+
+  await onReportWin(match1.id, {
+    author: { id: user2 },
+    guild: { id: 'hooo-crew' },
+    channel: { send }
+  })
 
   // Match cannot be reported twice
-  expect(report(match2s.id, playerId, true)).rejects.toEqual(ERRORS.MATCH_DUPLICATE_REPORT)
+  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_DUPLICATE_REPORT)
+
   done()
-})
-
-test('get correct winner', () => {
-  const mockMatch = {
-    players: {
-      'hoody': { team: 1 },
-      'woody': { team: 2 },
-      'doody': { team: 1 },
-      'goody': { team: 2 },
-    }
-  }
-
-  expect(getWinner(mockMatch, 'hoody', true)).toBe(1)
-  expect(getWinner(mockMatch, 'hoody', false)).toBe(2)
 })

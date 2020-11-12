@@ -1,38 +1,95 @@
-const { league2s } = require('../test/league');
-const { user1 } = require('../test/user');
 const leagues = require('./data/leagues')
-const { updateQueue } = require('./queue');
-const { admin } = require('./data/util/firebase')
-const FieldValue = admin.firestore.FieldValue
+const { onQueue, onUnqueue } = require('./queue');
+const ERRORS = require('./constants/ERRORS')
+
+const league1 = {
+  id: 'hooo-crew-2',
+  teamSize: 2,
+}
+const user1 = 'pickle'
 
 beforeEach(async (done) => {
-  await leagues.create({ ...league2s, queue: {} })
+  await leagues.create(league1)
   done()
 })
 
 afterEach(async (done) => {
-  await leagues.delete(league2s.id)
+  await leagues.delete(league1.id)
   done()
 });
 
 test('queue & unqueue in the 2s league', async (done) => {
+  const send = jest.fn()
+  const message = {
+    author: { id: user1 },
+    guild: { id: 'hooo-crew' },
+    channel: { send }
+  }
+
   const before = Date.now()
-  await updateQueue(league2s.id, user1.id, true)
+  await onQueue('2s', message)
   const after = Date.now()
 
   let league
-  league = await leagues.get(league2s.id)
+  league = await leagues.get(league1.id)
 
   // Only one user is queued
   expect(Object.keys(league.queue).length).toBe(1)
 
-  // The correct user is queued, at an accurate time
-  expect(league.queue[user1.id]).toBeLessThanOrEqual(after)
-  expect(league.queue[user1.id]).toBeGreaterThanOrEqual(before)
+  await onQueue('2s', message)
 
-  league = await updateQueue(league2s.id, user1.id, false)
+  // User cannot queue again
+  expect(send).toHaveBeenCalledWith(ERRORS.QUEUE_DUPLICATE_USER)
+
+  // The correct user is queued, at an accurate time
+  expect(league.queue[user1]).toBeLessThanOrEqual(after)
+  expect(league.queue[user1]).toBeGreaterThanOrEqual(before)
+
+  await onUnqueue('2s', message)
+  league = await leagues.get(league1.id)
 
   // No one should be in the queue now
-  expect(league.queue[user1.id]).toBe(FieldValue.delete())
+  expect(league.queue[user1]).toBe(undefined)
+
+  await onUnqueue('2s', message)
+
+  // User cannot unqueue again
+  expect(send).toHaveBeenCalledWith(ERRORS.QUEUE_NO_SUCH_USER)
+
+  done()
+})
+
+test('queue & trigger match in 2s league', async (done) => {
+  const send = jest.fn()
+  const message = {
+    author: { id: user1 },
+    guild: { id: 'hooo-crew' },
+    channel: { send }
+  }
+
+  await onQueue('2s', { ...message, author: { id: 'space' } })
+  await onQueue('2s', { ...message, author: { id: 'dewb' } })
+  await onQueue('2s', { ...message, author: { id: 'cha' } })
+  await onQueue('2s', { ...message, author: { id: 'mark' } })
+
+  // Match created & sent to channel
+  expect(send).toHaveBeenNthCalledWith(5,
+    expect.objectContaining({
+      title: '2 Match!!!',
+      fields: [
+        {
+          inline: false,
+          name: 'Team 1',
+          value: expect.stringMatching(/<@!(.*)> <@!(.*)>/),
+        },
+        {
+          inline: false,
+          name: 'Team 2',
+          value: expect.stringMatching(/<@!(.*)> <@!(.*)>/),
+        },
+      ]
+    })
+  )
+
   done()
 })

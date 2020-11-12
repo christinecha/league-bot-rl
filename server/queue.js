@@ -36,28 +36,25 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
   let leagueId, league
 
   try {
-    leagueId = `${context.guild.id}-${getTeamSize(leagueName)}`
+    const teamSize = getTeamSize(leagueName)
+    leagueId = `${context.guild.id}-${teamSize}`
     league = await updateQueue(leagueId, context.author.id, shouldQueue)
-  } catch (err) {
-    console.log('err', err)
-    context.channel.send(err)
-    return
-  }
 
-  context.channel.send(
-    shouldQueue
-      ? `You have been added to the queue.`
-      : `You have been removed from the queue.`
-  )
+    if (!shouldQueue) {
+      context.channel.send(`You have been removed from the queue.`)
+      return
+    }
 
-  if (!shouldQueue) return
+    context.channel.send(`You have been added to the queue.`)
 
-  const queueLength = Object.keys(league.queue).length
+    if (Object.keys(league.queue).length < teamSize * 2) return
 
-  if (queueLength >= teamSize * 2) {
-    context.channel.send(`Creating new match...`)
     const match = await createMatch(leagueId)
     context.channel.send(messages.CREATE_MATCH(match))
+  } catch (err) {
+    console.log('[ERROR]', err)
+    context.channel.send(err)
+    return
   }
 }
 
@@ -70,6 +67,7 @@ const onUnqueue = async (leagueName, context) => {
 }
 
 module.exports = {
+  getTeamSize,
   updateQueue,
   onQueue,
   onUnqueue

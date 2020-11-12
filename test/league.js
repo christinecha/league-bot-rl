@@ -1,5 +1,5 @@
 const league2s = {
-  id: '12345',
+  id: 'hooo-crew-2',
   queue: {
     'mark': 0,
     'stardust': 1,

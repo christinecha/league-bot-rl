@@ -43,8 +43,6 @@ const onReportLoss = async (matchId, context) => {
 }
 
 module.exports = {
-  getWinner,
-  report,
   onReportWin,
   onReportLoss
 }
