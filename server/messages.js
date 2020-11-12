@@ -7,7 +7,7 @@ const CREATE_MATCH = (match) => {
 
   return new Discord.MessageEmbed()
     .setColor('#0099ff')
-    .setTitle(`${teamSize} Match!!!`)
+    .setTitle(`${teamSize}s Match!!!`)
     // .setURL('https://discord.js.org/')
     // .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
     .setDescription(`id: ${match.id}`)
@@ -20,6 +20,23 @@ const CREATE_MATCH = (match) => {
     .setFooter('Some footer text here');
 }
 
+const QUEUE = (league) => {
+  const { queue, teamSize } = league
+  const players = Object.keys(queue)
+
+  const queueList = players.length
+    ? players.map(id => `<@!${id}>`).join(' ')
+    : 'No one in the queue.'
+
+  return new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .addFields(
+      { name: `${teamSize}s League Queue`, value: queueList },
+    )
+    .setTimestamp()
+}
+
 module.exports = {
-  CREATE_MATCH
+  CREATE_MATCH,
+  QUEUE
 }

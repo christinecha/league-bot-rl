@@ -75,7 +75,7 @@ test('queue & trigger match in 2s league', async (done) => {
   // Match created & sent to channel
   expect(send).toHaveBeenNthCalledWith(5,
     expect.objectContaining({
-      title: '2 Match!!!',
+      title: '2s Match!!!',
       fields: [
         {
           inline: false,

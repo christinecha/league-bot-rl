@@ -14,7 +14,7 @@ const match = {
 test('message: CREATE_MATCH', async (done) => {
   const message = messages.CREATE_MATCH(match)
 
-  expect(message.title).toBe('2 Match!!!')
+  expect(message.title).toBe('2s Match!!!')
   expect(message.description).toBe(`id: ${match.id}`)
   expect(message.fields).toStrictEqual([
     {

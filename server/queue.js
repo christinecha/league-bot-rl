@@ -23,13 +23,17 @@ const updateQueue = async (leagueId, userId, shouldQueue) => {
   const newValue = shouldQueue ? Date.now() : FieldValue.delete()
   const update = { [`queue.${userId}`]: newValue }
   await leagues.update({ id: leagueId, ...update })
-  return {
+
+  const newLeague = {
     ...league,
     queue: {
       ...league.queue,
       [userId]: newValue
     }
   }
+
+  if (!shouldQueue) delete newLeague.queue[userId]
+  return newLeague
 }
 
 const onUpdateQueue = async (leagueName, shouldQueue, context) => {
@@ -40,12 +44,12 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     leagueId = `${context.guild.id}-${teamSize}`
     league = await updateQueue(leagueId, context.author.id, shouldQueue)
 
+    context.channel.send(messages.QUEUE(league))
+
     if (!shouldQueue) {
       context.channel.send(`You have been removed from the queue.`)
       return
     }
-
-    context.channel.send(`You have been added to the queue.`)
 
     if (Object.keys(league.queue).length < teamSize * 2) return
 
