@@ -1,11 +1,10 @@
 const match2s = {
-  team1: {
-    'mark': true,
-    'stardust': true,
-  },
-  team1: {
-    'space': true,
-    'bubbles': true,
+  id: '12345',
+  players: {
+    mark: { team: 1 },
+    stardust: { team: 1 },
+    space: { team: 2 },
+    bubbles: { team: 2 },
   },
   teamSize: 2
 }

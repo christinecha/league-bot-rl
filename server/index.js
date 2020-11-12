@@ -2,7 +2,8 @@ require('dotenv').config()
 
 const Discord = require('discord.js')
 const leagues = require('./data/leagues')
-const queue = require('./queue')
+const { onQueue, onUnqueue } = require('./queue')
+const { onReportWin, onReportLoss } = require('./report')
 const client = new Discord.Client()
 
 const BOT_ID = process.env.BOT_ID
@@ -13,12 +14,20 @@ client.once('ready', () => {
 
 const COMMANDS = {
   QUEUE: 'queue',
+  LEAVE: 'leave',
   NEW: 'new',
+  WIN: 'win',
+  LOSS: 'loss',
 }
 
 const ALIAS = {
   q: COMMANDS.QUEUE,
+  l: COMMANDS.LEAVE,
+  n: COMMANDS.NEW,
   join: COMMANDS.QUEUE,
+  won: COMMANDS.WIN,
+  lose: COMMANDS.LOSS,
+  lost: COMMANDS.LOSS,
 }
 
 const MESSAGE_ACTIONS = {
@@ -43,12 +52,17 @@ const MESSAGE_ACTIONS = {
     context.channel.send(`Creating a new league with team size ${teamSize}.`)
     await leagues.create({ id, teamSize, name: `${teamSize}s` })
   },
-  [COMMANDS.QUEUE]: queue,
+  [COMMANDS.QUEUE]: onQueue,
+  [COMMANDS.LEAVE]: onUnqueue,
+  [COMMANDS.WIN]: onReportWin,
+  [COMMANDS.LOSS]: onReportLoss,
 }
 
 client.on('message', async message => {
-  const parts = message.content.split(' ')
-  if (parts[0] !== `<@!${BOT_ID}>`) return
+  const parts = message.content.split(/\s+/)
+  console.log('Message received!', message.content, parts)
+
+  if (![`<@!${BOT_ID}>`, `<@${BOT_ID}>`].includes(parts[0])) return
 
   const [_, command, ...args] = parts
   const context = message

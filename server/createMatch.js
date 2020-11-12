@@ -8,26 +8,25 @@ const createMatch = async (leagueId) => {
   const { queue, teamSize } = league
 
   const allPlayers = Object.keys(queue).sort((a, b) => queue[a] - queue[b])
-  const players = allPlayers.slice(0, teamSize * 2)
+  const queuedPlayers = allPlayers.slice(0, teamSize * 2)
 
+  // Remove match players from queue.
   const queueUpdates = {}
-  players.forEach(id => queueUpdates[`queue.${id}`] = FieldValue.delete())
+  queuedPlayers.forEach(id => queueUpdates[`queue.${id}`] = FieldValue.delete())
   await leagues.update({ id: league.id, ...queueUpdates })
 
-  const team1 = {}
-  const team2 = {}
+  const players = {}
 
   for (let i = 0; i < teamSize * 2; i++) {
-    const rand = Math.floor(Math.random() * players.length)
-    const player = players.splice(rand, 1)
-    const team = i % 2 === 0 ? team1 : team2
-    team[player] = true
+    const rand = Math.floor(Math.random() * queuedPlayers.length)
+    const player = queuedPlayers.splice(rand, 1)
+    const team = i % 2 === 0 ? 1 : 2
+    players[player] = { team }
   }
 
   return await matches.create({
     teamSize,
-    team1,
-    team2,
+    players
   })
 }
 
