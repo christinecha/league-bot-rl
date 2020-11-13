@@ -6,7 +6,7 @@
   "author": "Christine Cha <hello@christinecha.com>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn run build && node ./server/index.js",
+    "start": "node ./server/index.js",
     "build": "webpack",
     "dev": "webpack-dev-server & nodemon ./server/index.js",
     "test": "FIRESTORE_EMULATOR_HOST=\"localhost:8080\" GCLOUD_PROJECT=\"discord-league-bot\" jest"
