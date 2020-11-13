@@ -1,6 +1,6 @@
-const leagues = require('./data/leagues')
-const matches = require('./data/matches')
-const { admin } = require('./data/util/firebase')
+const leagues = require('../data/leagues')
+const matches = require('../data/matches')
+const { admin } = require('../data/util/firebase')
 const FieldValue = admin.firestore.FieldValue
 
 const createMatch = async (leagueId) => {

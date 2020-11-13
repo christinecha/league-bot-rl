@@ -1,5 +1,5 @@
-const { league2s } = require('../test/league');
-const leagues = require('./data/leagues')
+const { league2s } = require('../../test/league');
+const leagues = require('../data/leagues')
 const createMatch = require('./createMatch');
 
 beforeEach(async (done) => {

@@ -1,5 +1,5 @@
 const ERRORS = require('./constants/ERRORS')
-const matches = require('./data/matches')
+const matches = require('../data/matches')
 const { onReportWin } = require('./report')
 
 const user1 = 'flips'

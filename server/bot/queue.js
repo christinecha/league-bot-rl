@@ -1,8 +1,8 @@
-const leagues = require('./data/leagues')
+const leagues = require('../data/leagues')
 const createMatch = require('./createMatch')
 const messages = require('./messages')
 const ERRORS = require('./constants/ERRORS')
-const { admin } = require('./data/util/firebase')
+const { admin } = require('../data/util/firebase')
 const FieldValue = admin.firestore.FieldValue
 
 const getTeamSize = (str) => {

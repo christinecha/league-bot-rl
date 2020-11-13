@@ -1,4 +1,4 @@
-const leagues = require('./data/leagues')
+const leagues = require('../data/leagues')
 const { onQueue, onUnqueue } = require('./queue');
 const ERRORS = require('./constants/ERRORS')
 

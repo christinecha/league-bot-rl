@@ -1,4 +1,4 @@
-const matches = require('./data/matches')
+const matches = require('../data/matches')
 const ERRORS = require('./constants/ERRORS')
 
 const getWinner = (match, userId, didWin) => {

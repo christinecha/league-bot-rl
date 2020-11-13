@@ -1,5 +1,6 @@
 secrets.json
 /node_modules
+client/public/dist
 
 .env
 *.log

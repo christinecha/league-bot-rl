@@ -6,20 +6,26 @@
   "author": "Christine Cha <hello@christinecha.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node ./server/index.js",
-    "dev": "nodemon ./server/index.js",
+    "start": "yarn run build && node ./server/index.js",
+    "build": "webpack",
+    "dev": "webpack-dev-server & nodemon ./server/index.js",
     "test": "FIRESTORE_EMULATOR_HOST=\"localhost:8080\" GCLOUD_PROJECT=\"discord-league-bot\" jest"
   },
   "dependencies": {
-    "discord.js": "^12.4.1",
-    "dotenv": "^8.2.0",
-    "firebase": "^8.0.1",
-    "uuid": "^8.3.1"
+    "discord.js": "12.4.1",
+    "dotenv": "8.2.0",
+    "express": "4.17.1",
+    "firebase": "8.0.1",
+    "uuid": "8.3.1"
   },
   "devDependencies": {
-    "firebase-admin": "^9.3.0",
-    "jest": "^26.6.3",
-    "nodemon": "^2.0.6"
+    "babel-loader": "8.2.1",
+    "firebase-admin": "9.3.0",
+    "jest": "26.6.3",
+    "nodemon": "2.0.6",
+    "webpack": "5.4.0",
+    "webpack-cli": "3.3.8",
+    "webpack-dev-server": "3.7.1"
   },
   "jest": {
     "setupFiles": [
