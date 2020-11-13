@@ -12,11 +12,11 @@ module.exports = {
     compress: true,
     port: 4242,
     historyApiFallback: true,
-    // proxy: {
-    //   '/.netlify/*': {
-    //     target: 'http://localhost:8888'
-    //   }
-    // }
+    proxy: {
+      '/api/*': {
+        target: 'http://localhost:3333'
+      }
+    }
   },
   output: {
     path: path.resolve(PUBLIC_DIR),

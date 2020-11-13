@@ -1,12 +1,11 @@
-const Discord = require('discord.js')
+const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
-const client = new Discord.Client()
 
 const BOT_ID = process.env.BOT_ID
 
-client.once('ready', () => {
+discord.once('ready', () => {
   console.log('[bot] listening')
 })
 
@@ -56,9 +55,9 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.LOSS]: onReportLoss,
 }
 
-client.on('message', async message => {
+discord.on('message', async message => {
   const parts = message.content.split(/\s+/)
-  console.log('Message received!', message.content, parts)
+  console.log('Message received!', message.guild.id, message.content, parts)
 
   if (![`<@!${BOT_ID}>`, `<@${BOT_ID}>`].includes(parts[0])) return
 
@@ -75,5 +74,3 @@ client.on('message', async message => {
     }
   }
 })
-
-client.login(process.env.BOT_TOKEN)
