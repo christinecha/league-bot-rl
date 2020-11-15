@@ -21,3 +21,13 @@ export const getGuildUser = ({ userId, guildId }) => (
     }
   })
 )
+
+export const getGuild = ({ guildId }) => (
+  axios({
+    method: 'POST',
+    url: '/api/guild',
+    data: {
+      id: guildId
+    }
+  })
+)

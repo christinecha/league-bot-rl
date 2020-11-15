@@ -15,6 +15,9 @@
     "test": "FIRESTORE_EMULATOR_HOST=\"localhost:8080\" GCLOUD_PROJECT=\"discord-league-bot\" jest"
   },
   "dependencies": {
+    "@emotion/css": "^11.0.0",
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
     "axios": "^0.21.0",
     "discord.js": "12.4.1",
     "dotenv": "8.2.0",
@@ -24,6 +27,7 @@
     "qs": "^6.9.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-table": "^7.6.2",
     "uuid": "8.3.1"
   },
   "devDependencies": {

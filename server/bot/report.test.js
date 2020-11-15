@@ -75,7 +75,7 @@ test('report match loss', async (done) => {
   // Match cannot be reported by a non-participating player
   expect(send).toHaveBeenCalledWith(ERRORS.MATCH_NO_SUCH_USER)
 
-  // Report win
+  // Report loss
   await onReportLoss(match1.id, {
     author: { id: user2 },
     guild: { id: 'hooo-crew' },

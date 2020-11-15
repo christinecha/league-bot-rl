@@ -47,6 +47,17 @@ app.post('/api/user', async (req, res) => {
   }
 })
 
+app.post('/api/guild', async (req, res) => {
+  const { id } = req.body
+
+  try {
+    const guild = await discord.guilds.fetch(id)
+    res.send(guild)
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
+})
+
 app.post('/api/guild-user', async (req, res) => {
   const { userId, guildId } = req.body
 
