@@ -2,6 +2,7 @@ const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
+const messages = require('./messages')
 
 const BOT_ID = process.env.BOT_ID
 
@@ -16,6 +17,7 @@ const COMMANDS = {
   WIN: 'win',
   LOSS: 'loss',
   LEADERBOARD: 'leaderboard',
+  HELP: 'help',
 }
 
 const ALIAS = {
@@ -26,6 +28,7 @@ const ALIAS = {
   won: COMMANDS.WIN,
   lose: COMMANDS.LOSS,
   lost: COMMANDS.LOSS,
+  h: COMMANDS.HELP
 }
 
 const MESSAGE_ACTIONS = {
@@ -56,6 +59,10 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.LOSS]: onReportLoss,
   [COMMANDS.LEADERBOARD]: (teamSize, context) => {
     context.channel.send(`https://cha-discord-league-bot.herokuapp.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
+  },
+  [COMMANDS.HELP]: (context) => {
+    console.log('hlp')
+    context.channel.send(messages.HELP())
   }
 }
 

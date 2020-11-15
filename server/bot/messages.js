@@ -38,7 +38,29 @@ const QUEUE = (league) => {
     .setTimestamp()
 }
 
+const HELP = () => {
+  return new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .addFields(
+      {
+        name: 'Variables', value: `
+- \`league-name\` - Either "1s", "2s", or "3s".
+- \`match-id\` - The "id" specified in a created match.
+      `},
+      {
+        name: 'Commands', value: `
+- \`@LeagueBot new | n [league-name]\` - Create new league
+- \`@LeagueBot queue | q [league-name]\` - Join active queue for a league
+- \`@LeagueBot leave | l [league-name]\` - Leave active queue for a league
+- \`@LeagueBot leaderboard [league-name]\` - Show leaderboard for a league
+- \`@LeagueBot win | won [match-id]\` - Report match as a win for your team!
+- \`@LeagueBot lose | loss | lost [match-id]\` - Report match as a loss. :(
+      `},
+    )
+}
+
 module.exports = {
   CREATE_MATCH,
-  QUEUE
+  QUEUE,
+  HELP
 }
