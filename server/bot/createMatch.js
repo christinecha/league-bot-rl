@@ -25,6 +25,7 @@ const createMatch = async (leagueId) => {
   }
 
   return await matches.create({
+    league: leagueId,
     teamSize,
     players
   })

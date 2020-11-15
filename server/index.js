@@ -20,12 +20,13 @@ app.get('/', (req, res) => {
 })
 
 app.post('/api/matches', async (req, res) => {
-  const { teamSize } = req.body
+  const { league, teamSize } = req.body
 
   try {
     const results = await matches.search({
       rules: [
-        ['teamSize', '==', teamSize]
+        ['teamSize', '==', teamSize],
+        ['league', '==', league],
       ]
     })
 

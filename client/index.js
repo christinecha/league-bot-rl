@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
+import qs from 'qs'
 import { getMatches, getGuildUser } from './api';
 
 const RANK_ROLES = [
@@ -36,7 +37,7 @@ const getPlayerStats = (matches) => {
   return players
 }
 
-const DiscordUser = ({ userId, guildId = '341614487477944331' }) => {
+const DiscordUser = ({ userId, guildId }) => {
   const [user, setUser] = useState({})
 
   useEffect(() => {
@@ -56,11 +57,12 @@ const DiscordUser = ({ userId, guildId = '341614487477944331' }) => {
   )
 }
 
-const League = ({ teamSize }) => {
+const League = ({ teamSize, guildId }) => {
   const [matches, setMatches] = useState([])
+  const league = `${guildId}-${teamSize}`
 
   useEffect(() => {
-    getMatches({ teamSize }).then(({ data }) => {
+    getMatches({ teamSize, league }).then(({ data }) => {
       setMatches(data)
     })
   }, [teamSize])
@@ -80,7 +82,7 @@ const League = ({ teamSize }) => {
           return (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td><DiscordUser userId={id} /></td>
+              <td><DiscordUser userId={id} guildId={guildId} /></td>
               <td>{points} points</td>
               <td>{win} wins</td>
               <td>{loss} losses</td>
@@ -94,6 +96,8 @@ const League = ({ teamSize }) => {
 }
 
 const App = () => {
+  const { guildId } = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+
   return (
     <main>
       <h1>LEADERBOARD</h1>
@@ -102,9 +106,9 @@ const App = () => {
       </p>
 
       <br />
-      <League teamSize={1} />
-      <League teamSize={2} />
-      <League teamSize={3} />
+      <League teamSize={1} guildId={guildId} />
+      <League teamSize={2} guildId={guildId} />
+      <League teamSize={3} guildId={guildId} />
     </main>
   )
 }

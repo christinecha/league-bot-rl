@@ -24,7 +24,7 @@ const onReport = async (matchId, didWin, context) => {
   let match
 
   try {
-    match = await report(matchId, userId, true)
+    match = await report(matchId, userId, didWin)
   } catch (err) {
     console.log(err)
     if (err) context.channel.send(err)

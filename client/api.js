@@ -1,11 +1,12 @@
 import axios from 'axios'
 
-export const getMatches = ({ teamSize }) => (
+export const getMatches = ({ teamSize, league }) => (
   axios({
     method: 'POST',
     url: '/api/matches',
     data: {
-      teamSize
+      teamSize,
+      league
     }
   })
 )
