@@ -1,10 +1,12 @@
 const leagues = require('../data/leagues')
+const matches = require('../data/matches')
 const { onQueue, onUnqueue } = require('./queue');
 const ERRORS = require('./constants/ERRORS')
 
 const league1 = {
-  id: 'hooo-crew-2',
+  id: 'h000-2',
   teamSize: 2,
+  matchCount: 2,
 }
 const user1 = 'pickle'
 
@@ -22,7 +24,7 @@ test('queue & unqueue in the 2s league', async (done) => {
   const send = jest.fn()
   const message = {
     author: { id: user1 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   }
 
@@ -63,7 +65,7 @@ test('queue & trigger match in 2s league', async (done) => {
   const send = jest.fn()
   const message = {
     author: { id: user1 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   }
 
@@ -72,8 +74,21 @@ test('queue & trigger match in 2s league', async (done) => {
   await onQueue('2s', { ...message, author: { id: 'cha' } })
   await onQueue('2s', { ...message, author: { id: 'mark' } })
 
-  // Match created & sent to channel
-  expect(send).toHaveBeenNthCalledWith(5,
+  const queueMessage = expect.objectContaining({
+    fields: [
+      expect.objectContaining({
+        name: '2s League Queue'
+      })
+    ]
+  })
+
+  // Each time a user queues, they should receive a message with the updated list
+  expect(send).toHaveBeenNthCalledWith(1, queueMessage)
+  expect(send).toHaveBeenNthCalledWith(2, queueMessage)
+  expect(send).toHaveBeenNthCalledWith(3, queueMessage)
+
+  // Match info sent to channel
+  expect(send).toHaveBeenNthCalledWith(4,
     expect.objectContaining({
       title: '2s Match!!!',
       fields: [
@@ -90,6 +105,21 @@ test('queue & trigger match in 2s league', async (done) => {
       ]
     })
   )
+
+  // Match created in database
+  const matchId = `${league1.id}-${league1.matchCount + 1}`
+  const match = await matches.get(matchId)
+  expect(match).toStrictEqual(expect.objectContaining({
+    id: matchId,
+    teamSize: 2,
+    league: league1.id,
+    players: expect.objectContaining({
+      space: { team: expect.any(Number) },
+      dewb: { team: expect.any(Number) },
+      cha: { team: expect.any(Number) },
+      mark: { team: expect.any(Number) },
+    })
+  }))
 
   done()
 })

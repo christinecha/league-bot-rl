@@ -1,16 +1,18 @@
 const Discord = require('discord.js')
+const { parseMatchId } = require('../data/matchId')
 
 const CREATE_MATCH = (match) => {
   const { players, teamSize } = match
   const team1 = Object.keys(players).filter(p => players[p].team === 1)
   const team2 = Object.keys(players).filter(p => players[p].team === 2)
+  const { key } = parseMatchId(match.id)
 
   return new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle(`${teamSize}s Match!!!`)
     // .setURL('https://discord.js.org/')
     // .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
-    .setDescription(`id: ${match.id}`)
+    .setDescription(`ID: ${key}`)
     // .setThumbnail('https://i.imgur.com/wSTFkRM.png')
     .addFields(
       { name: 'Team 1', value: team1.map(id => `<@!${id}>`).join(' ') },

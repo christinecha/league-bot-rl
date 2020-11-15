@@ -44,14 +44,15 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     leagueId = `${context.guild.id}-${teamSize}`
     league = await updateQueue(leagueId, context.author.id, shouldQueue)
 
-    context.channel.send(messages.QUEUE(league))
-
     if (!shouldQueue) {
       context.channel.send(`You have been removed from the queue.`)
       return
     }
 
-    if (Object.keys(league.queue).length < teamSize * 2) return
+    if (Object.keys(league.queue).length < teamSize * 2) {
+      context.channel.send(messages.QUEUE(league))
+      return
+    }
 
     const match = await createMatch(leagueId)
     context.channel.send(messages.CREATE_MATCH(match))

@@ -7,7 +7,7 @@ const user2 = 'quantum'
 const user3 = 'pickle'
 
 const match1 = {
-  id: 'match-1',
+  id: 'h000-2-55',
   teamSize: 2,
   players: {
     [user2]: { team: 1 },
@@ -29,10 +29,11 @@ afterEach(async (done) => {
 
 test('report match win', async (done) => {
   const send = jest.fn()
+  const matchKey = '255'
 
-  await onReportWin(match1.id, {
+  await onReportWin(matchKey, {
     author: { id: user1 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   })
 
@@ -40,9 +41,9 @@ test('report match win', async (done) => {
   expect(send).toHaveBeenCalledWith(ERRORS.MATCH_NO_SUCH_USER)
 
   // Report win
-  await onReportWin(match1.id, {
+  await onReportWin(matchKey, {
     author: { id: user2 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   })
 
@@ -51,9 +52,9 @@ test('report match win', async (done) => {
   // Match is reported correctly
   expect(match.winner).toBe(match1.players[user2].team)
 
-  await onReportWin(match1.id, {
+  await onReportWin(matchKey, {
     author: { id: user2 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   })
 
@@ -65,10 +66,11 @@ test('report match win', async (done) => {
 
 test('report match loss', async (done) => {
   const send = jest.fn()
+  const matchKey = '255'
 
-  await onReportLoss(match1.id, {
+  await onReportLoss(matchKey, {
     author: { id: user1 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   })
 
@@ -76,9 +78,9 @@ test('report match loss', async (done) => {
   expect(send).toHaveBeenCalledWith(ERRORS.MATCH_NO_SUCH_USER)
 
   // Report loss
-  await onReportLoss(match1.id, {
+  await onReportLoss(matchKey, {
     author: { id: user2 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   })
 
@@ -88,9 +90,9 @@ test('report match loss', async (done) => {
   expect(match.winner).not.toBe(match1.players[user2].team)
   expect(match.winner).toBe(match1.players[user3].team)
 
-  await onReportLoss(match1.id, {
+  await onReportLoss(matchKey, {
     author: { id: user2 },
-    guild: { id: 'hooo-crew' },
+    guild: { id: 'h000' },
     channel: { send }
   })
 

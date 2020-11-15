@@ -1,5 +1,7 @@
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
+const ERRORS = require('./constants/ERRORS')
+const { generateMatchId } = require('../data/matchId')
 const { admin } = require('../data/util/firebase')
 const FieldValue = admin.firestore.FieldValue
 
@@ -24,11 +26,19 @@ const createMatch = async (leagueId) => {
     players[player] = { team }
   }
 
-  return await matches.create({
-    league: leagueId,
-    teamSize,
-    players
-  })
+  try {
+    const matchId = await generateMatchId({ leagueId })
+
+    return await matches.create({
+      id: matchId,
+      league: leagueId,
+      teamSize,
+      players
+    })
+  } catch (err) {
+    console.log('[ERROR]', err)
+    throw ERRORS.MATCH_CREATION_ERROR
+  }
 }
 
 module.exports = createMatch

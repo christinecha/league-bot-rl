@@ -1,4 +1,5 @@
 const matches = require('../data/matches')
+const { formMatchId } = require('../data/matchId')
 const ERRORS = require('./constants/ERRORS')
 
 const getWinner = (match, userId, didWin) => {
@@ -7,8 +8,11 @@ const getWinner = (match, userId, didWin) => {
   return team === 1 ? 2 : 1
 }
 
-const report = async (matchId, userId, didWin) => {
+const report = async ({ matchKey, userId, guildId, didWin }) => {
+  const matchId = formMatchId({ guildId, matchKey })
   const match = await matches.get(matchId)
+  if (!match) throw (ERRORS.MATCH_INVALID)
+
   const players = match.players || {}
 
   if (!players[userId]) throw (ERRORS.MATCH_NO_SUCH_USER)
@@ -18,28 +22,28 @@ const report = async (matchId, userId, didWin) => {
   return await matches.update({ id: matchId, winner })
 }
 
-const onReport = async (matchId, didWin, context) => {
+const onReport = async (matchKey, didWin, context) => {
   const userId = context.author.id
   const verb = didWin ? 'won' : 'lost'
   let match
 
   try {
-    match = await report(matchId, userId, didWin)
+    match = await report({ matchKey, userId, guildId: context.guild.id, didWin })
   } catch (err) {
     console.log(err)
     if (err) context.channel.send(err)
     return
   }
 
-  context.channel.send(`Team ${match.winner} ${verb} Match #${matchId}!`)
+  context.channel.send(`Team ${match.winner} ${verb} Match #${matchKey}!`)
 }
 
-const onReportWin = async (matchId, context) => {
-  return onReport(matchId, true, context)
+const onReportWin = async (matchKey, context) => {
+  return onReport(matchKey, true, context)
 }
 
-const onReportLoss = async (matchId, context) => {
-  return onReport(matchId, false, context)
+const onReportLoss = async (matchKey, context) => {
+  return onReport(matchKey, false, context)
 }
 
 module.exports = {
