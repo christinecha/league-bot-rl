@@ -211,7 +211,7 @@ const League = ({ teamSize, guildId }) => {
             accessor: 'points',
           },
           {
-            Header: 'Win Ratio',
+            Header: 'Win %',
             accessor: 'ratio',
             Cell: ({ value }) => `${(value * 100).toFixed(1)}%`
           },

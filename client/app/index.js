@@ -101,7 +101,7 @@ const App = () => {
 
           main {
             width: 90%;
-            max-width: 1200px;
+            max-width: 850px;
             margin: auto;
           }
         `}
