@@ -7,7 +7,7 @@ const generateMatchId = async ({ leagueId }) => {
     const leagueRef = db.collection('leagues').doc(leagueId)
     const league = await t.get(leagueRef)
     const _matchCount = league.data().matchCount
-    matchCount = Number.isNaN(_matchCount) ? 1 : _matchCount + 1
+    matchCount = !_matchCount ? 1 : _matchCount + 1
     t.update(leagueRef, { matchCount })
   })
 
