@@ -1,3 +1,4 @@
+const Discord = require('discord.js')
 const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue } = require('./queue')
@@ -18,6 +19,7 @@ const COMMANDS = {
   LOSS: 'loss',
   LEADERBOARD: 'leaderboard',
   HELP: 'help',
+  TEST: 'test'
 }
 
 const ALIAS = {
@@ -61,8 +63,19 @@ const MESSAGE_ACTIONS = {
     context.channel.send(`https://cha-discord-league-bot.herokuapp.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
   },
   [COMMANDS.HELP]: (context) => {
-    console.log('hlp')
     context.channel.send(messages.HELP())
+  },
+  [COMMANDS.TEST]: async (context) => {
+    const embed = messages.HELP()
+    const message = await context.channel.send(embed)
+
+    message.react('🤖')
+    message.react('👻')
+
+    const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+    message.awaitReactions(filter, { time: 15000 })
+      .then(collected => console.log(`Collected ${collected.size} reactions`))
+      .catch(console.error)
   }
 }
 

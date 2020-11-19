@@ -62,10 +62,13 @@ test('queue & unqueue in the 2s league', async (done) => {
 })
 
 test('queue & trigger match in 2s league', async (done) => {
-  const send = jest.fn()
+  const react = jest.fn()
+  const send = jest.fn(() => Promise.resolve(message))
   const message = {
     author: { id: user1 },
     guild: { id: 'h000' },
+    react,
+    awaitReactions: () => Promise.resolve(),
     channel: { send }
   }
 
@@ -73,6 +76,11 @@ test('queue & trigger match in 2s league', async (done) => {
   await onQueue('2s', { ...message, author: { id: 'dewb' } })
   await onQueue('2s', { ...message, author: { id: 'cha' } })
   await onQueue('2s', { ...message, author: { id: 'mark' } })
+
+  // Match created in database
+  const matchKey = `${league1.matchCount + 1}`
+  const matchId = `${league1.id}-${matchKey}`
+  const match = await matches.get(matchId)
 
   const queueMessage = expect.objectContaining({
     fields: [
@@ -87,10 +95,23 @@ test('queue & trigger match in 2s league', async (done) => {
   expect(send).toHaveBeenNthCalledWith(2, queueMessage)
   expect(send).toHaveBeenNthCalledWith(3, queueMessage)
 
-  // Match info sent to channel
+  // Match mode voting message sent
   expect(send).toHaveBeenNthCalledWith(4,
     expect.objectContaining({
-      title: '2s Match!!!',
+      fields: expect.arrayContaining([
+        expect.objectContaining({
+          value: expect.stringMatching(/<@!(.*)> <@!(.*)> <@!(.*)> <@!(.*)>/),
+        }),
+      ])
+    })
+  )
+
+  expect(react).toHaveBeenCalledTimes(2)
+
+  // Match info sent to channel
+  expect(send).toHaveBeenNthCalledWith(5,
+    expect.objectContaining({
+      description: expect.stringMatching(matchKey),
       fields: [
         {
           inline: false,
@@ -106,13 +127,11 @@ test('queue & trigger match in 2s league', async (done) => {
     })
   )
 
-  // Match created in database
-  const matchId = `${league1.id}-${league1.matchCount + 1}`
-  const match = await matches.get(matchId)
   expect(match).toStrictEqual(expect.objectContaining({
     id: matchId,
     teamSize: 2,
     league: league1.id,
+    mode: expect.stringMatching(/(auto|random)/),
     players: expect.objectContaining({
       space: { team: expect.any(Number) },
       dewb: { team: expect.any(Number) },

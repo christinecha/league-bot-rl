@@ -1,6 +1,18 @@
-const { league2s } = require('../../test/league');
 const leagues = require('../data/leagues')
 const createMatch = require('./createMatch');
+
+const league2s = {
+  id: 'hooo-crew-2',
+  queue: {
+    'mark': 0,
+    'stardust': 1,
+    'space': 2,
+    'bubbles': 3,
+    'duke': 4,
+    'dep': 5
+  },
+  teamSize: 2
+}
 
 beforeEach(async (done) => {
   await leagues.create(league2s)
@@ -13,7 +25,12 @@ afterEach(async (done) => {
 });
 
 test('create a 2s match', async (done) => {
-  const match = await createMatch(league2s.id)
+  const match = await createMatch({
+    leagueId: league2s.id,
+    playerIds: ['mark', 'stardust', 'space', 'bubbles'],
+    mode: 'random',
+    teamSize: 2
+  })
 
   const team1 = Object.values(match.players).filter(p => p.team === 1)
   const team2 = Object.values(match.players).filter(p => p.team === 2)

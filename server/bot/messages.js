@@ -1,25 +1,39 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
 
+const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
+  return new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .addFields(
+      {
+        name: `We've got a ${teamSize}s match!`,
+        value: playerIds.map(id => `<@!${id}>`).join(' ')
+      },
+      {
+        value: 'Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.'
+      },
+    )
+}
+
 const CREATE_MATCH = (match) => {
-  const { players, teamSize } = match
+  const { players, teamSize, mode } = match
   const team1 = Object.keys(players).filter(p => players[p].team === 1)
   const team2 = Object.keys(players).filter(p => players[p].team === 2)
   const { key } = parseMatchId(match.id)
 
   return new Discord.MessageEmbed()
     .setColor('#0099ff')
-    .setTitle(`${teamSize}s Match!!!`)
+    .setTitle(`${teamSize}s Match`)
     // .setURL('https://discord.js.org/')
     // .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
-    .setDescription(`ID: ${key}`)
+    .setDescription(`Match ID: ${key} • Mode: ${mode}`)
     // .setThumbnail('https://i.imgur.com/wSTFkRM.png')
     .addFields(
       { name: 'Team 1', value: team1.map(id => `<@!${id}>`).join(' ') },
       { name: 'Team 2', value: team2.map(id => `<@!${id}>`).join(' ') },
     )
     .setTimestamp()
-    .setFooter('Some footer text here');
+  // .setFooter('Some footer text here');
 }
 
 const QUEUE = (league) => {
@@ -60,6 +74,7 @@ const HELP = () => {
 }
 
 module.exports = {
+  GET_MATCH_MODE,
   CREATE_MATCH,
   QUEUE,
   HELP

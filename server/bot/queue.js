@@ -1,5 +1,6 @@
 const leagues = require('../data/leagues')
 const createMatch = require('./createMatch')
+const matches = require('../data/matches')
 const messages = require('./messages')
 const ERRORS = require('./constants/ERRORS')
 const { admin } = require('../data/util/firebase')
@@ -36,6 +37,61 @@ const updateQueue = async (leagueId, userId, shouldQueue) => {
   return newLeague
 }
 
+const MATCH_MODE = {
+  AUTO: 'auto',
+  RANDOM: 'random'
+}
+
+const MODE_EMOTE = {
+  '🤖': MATCH_MODE.AUTO,
+  '👻': MATCH_MODE.RANDOM
+}
+
+const getMatchMode = async ({ message, playerIds }) => {
+  return new Promise((resolve, reject) => {
+    message.react('🤖')
+    message.react('👻')
+
+    const modes = {
+      [MATCH_MODE.AUTO]: 0,
+      [MATCH_MODE.RANDOM]: 0
+    }
+
+    const filter = (reaction, user) => {
+      if (!playerIds.includes(user.id)) return
+
+      const selected = MODE_EMOTE[reaction.emoji.name]
+      if (selected) modes[selected] += 1
+
+      const official = Object.keys(modes).find(k => modes[k] >= playerIds.length * 0.5)
+      if (!official) return
+
+      resolve(official)
+    }
+
+    const twoMinutes = 1000 * 60 * 2
+    message.awaitReactions(filter, { time: twoMinutes })
+      .then(() => {
+        if (modes[MATCH_MODE.AUTO] >= modes[MATCH_MODE.RANDOM]) resolve(MATCH_MODE.AUTO)
+        resolve(MATCH_MODE.RANDOM)
+      })
+  })
+}
+
+const getMatchPlayers = async (leagueId) => {
+  const league = await leagues.get(leagueId)
+  const { queue, teamSize } = league
+
+  const allPlayers = Object.keys(queue).sort((a, b) => queue[a] - queue[b])
+  const queuedPlayers = allPlayers.slice(0, teamSize * 2)
+
+  // Remove match players from queue.
+  const queueUpdates = {}
+  queuedPlayers.forEach(id => queueUpdates[`queue.${id}`] = FieldValue.delete())
+  await leagues.update({ id: league.id, ...queueUpdates })
+  return queuedPlayers
+}
+
 const onUpdateQueue = async (leagueName, shouldQueue, context) => {
   let leagueId, league
 
@@ -54,8 +110,11 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
       return
     }
 
-    const match = await createMatch(leagueId)
-    context.channel.send(messages.CREATE_MATCH(match))
+    const playerIds = await getMatchPlayers(leagueId)
+    const message = await context.channel.send(messages.GET_MATCH_MODE({ playerIds, teamSize }))
+    const mode = await getMatchMode({ message, playerIds })
+    const match = await createMatch({ leagueId, playerIds, mode, teamSize })
+    await context.channel.send(messages.CREATE_MATCH(match))
   } catch (err) {
     console.log('[ERROR]', err)
     context.channel.send(err)
