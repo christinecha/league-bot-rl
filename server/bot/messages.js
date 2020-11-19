@@ -10,6 +10,7 @@ const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
         value: playerIds.map(id => `<@!${id}>`).join(' ')
       },
       {
+        name: '',
         value: 'Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.'
       },
     )
