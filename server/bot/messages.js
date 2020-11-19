@@ -7,11 +7,10 @@ const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
     .addFields(
       {
         name: `We've got a ${teamSize}s match!`,
-        value: playerIds.map(id => `<@!${id}>`).join(' ')
-      },
-      {
-        name: '',
-        value: 'Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.'
+        value: `${playerIds.map(id => `<@!${id}>`).join(' ')}
+
+        Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
+`
       },
     )
 }
