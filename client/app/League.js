@@ -22,7 +22,7 @@ const DiscordUser = ({ userId, guildId }) => {
     getGuildUser({ userId, guildId }).then(({ data }) => setUser(data))
   }, [userId, guildId])
 
-  const imgSrc = user.user && user.user.avatarURL || ''
+  const imgSrc = user.avatarURL || ''
 
   return (
     <div className={css`

@@ -20,8 +20,10 @@ const getGuildUser = async ({ userId, guildId }) => {
   try {
     const guild = await discord.guilds.fetch(guildId)
     const res = await guild.members.fetch(userId)
+
     user = {
       ...res.user,
+      avatarURL: res.user.avatarURL(),
       roles: res.roles
     }
   } catch (err) {
