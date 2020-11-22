@@ -8,6 +8,49 @@ const getWinner = (match, userId, didWin) => {
   return team === 1 ? 2 : 1
 }
 
+const getRandom = (arr) => {
+  const rand = Math.floor(Math.random() * arr.length)
+  return arr[rand]
+}
+
+const getInsult = ({ userId, teamSize }) => {
+  const insults = [
+    `Maybe <@!${userId}> can hit the ball in the right direction next time.`,
+    `Tough luck, <@!${userId}>! ${teamSize - 1}v${teamSize + 1} is pretty hard.`,
+    `<@!${userId}> - remember: ball goes in the other team's net.`,
+    `<@!${userId}> bot confirmed??`,
+    `Some questionable shots there, <@!${userId}>.`,
+    `Did you forget to turn your monitor on, <@!${userId}>?`,
+  ]
+
+  return getRandom(insults)
+}
+
+const getCompliment = ({ userId }) => {
+  const compliments = [
+    `<@!${userId}> was absolutely CRACKED today!`,
+    `Nothing gets past <@!${userId}>!`,
+    `<@!${userId}> - next stop: RLCS.`,
+    `See you at the top of the leaderboard, <@!${userId}>.`,
+    `And <@!${userId}> wasn't even trying.`,
+    `And that's why <@!${userId}> = the best.`,
+  ]
+
+  return getRandom(compliments)
+}
+
+const getCommentary = (match) => {
+  if (Math.random() > 0.5) {
+    const losers = Object.keys(match.players).filter(p => match.players[p].team !== match.winner)
+    const target = getRandom(losers)
+    return getInsult({ userId: target, teamSize: match.teamSize })
+  }
+
+  const winners = Object.keys(match.players).filter(p => match.players[p].team === match.winner)
+  const target = getRandom(winners)
+  return getCompliment({ userId: target, teamSize: match.teamSize })
+}
+
 const report = async ({ matchKey, userId, guildId, didWin }) => {
   const matchId = formMatchId({ guildId, matchKey })
   const match = await matches.get(matchId)
@@ -19,7 +62,8 @@ const report = async ({ matchKey, userId, guildId, didWin }) => {
   if (match.winner) throw (ERRORS.MATCH_DUPLICATE_REPORT)
 
   const winner = getWinner(match, userId, didWin)
-  return await matches.update({ id: matchId, winner })
+  await matches.update({ id: matchId, winner })
+  return await matches.get(matchId)
 }
 
 const onReport = async (matchKey, didWin, context) => {
@@ -28,13 +72,14 @@ const onReport = async (matchKey, didWin, context) => {
 
   try {
     match = await report({ matchKey, userId, guildId: context.guild.id, didWin })
+    const comment = getCommentary(match)
+
+    context.channel.send(`Team ${match.winner} won Match #${matchKey}! ${comment}`)
   } catch (err) {
     console.log(err)
     if (err) context.channel.send(err)
     return
   }
-
-  context.channel.send(`Team ${match.winner} won Match #${matchKey}!`)
 }
 
 const onReportWin = async (matchKey, context) => {

@@ -51,7 +51,10 @@ test('report match win', async (done) => {
 
   // Match is reported correctly
   expect(match.winner).toBe(match1.players[user2].team)
-  expect(send).toHaveBeenNthCalledWith(2, `Team ${match.winner} won Match #${matchKey}!`)
+  expect(send).toHaveBeenNthCalledWith(
+    2,
+    expect.stringMatching(`Team ${match.winner} won Match #${matchKey}!`)
+  )
 
   await onReportWin(matchKey, {
     author: { id: user2 },
@@ -90,7 +93,10 @@ test('report match loss', async (done) => {
   // Match is reported correctly
   expect(match.winner).not.toBe(match1.players[user2].team)
   expect(match.winner).toBe(match1.players[user3].team)
-  expect(send).toHaveBeenNthCalledWith(2, `Team ${match.winner} won Match #${matchKey}!`)
+  expect(send).toHaveBeenNthCalledWith(
+    2,
+    expect.stringMatching(`Team ${match.winner} won Match #${matchKey}!`)
+  )
 
   await onReportLoss(matchKey, {
     author: { id: user2 },
