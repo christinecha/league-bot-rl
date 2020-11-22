@@ -6,30 +6,37 @@ const RANK_ROLES = {
   'Gold': 2,
   'Platinum': 3,
   'Diamond': 5,
-  'Champion': 7,
-  'Grand Champion': 9,
-  'Supersonic Legend': 13,
+  'Champ': 7,
+  'GC': 9,
+  'SSL': 13,
 }
 
 const getGuildUser = async ({ userId, guildId }) => {
+  let user = {
+    id: userId,
+    roles: {}
+  }
+
   try {
     const guild = await discord.guilds.fetch(guildId)
-    const user = await guild.members.fetch(userId)
-    const roles = user.roles.cache || []
-    const rankRole = roles.find(r => RANK_ROLES[r.name])
-    const rank = rankRole ? RANK_ROLES[rankRole.name] : undefined
-
-    return {
-      ...user,
-      displayName: user.displayName,
-      roles,
-      rank
+    const res = await guild.members.fetch(userId)
+    user = {
+      ...res.user,
+      roles: res.roles
     }
   } catch (err) {
-    console.log(err)
-    return {
-      id: userId
-    }
+    console.log('ERROR: Could not get guild user:', err)
+  }
+
+  const roles = user.roles.cache || []
+  const rankRole = roles.find(r => RANK_ROLES[r.name])
+  const rank = rankRole ? RANK_ROLES[rankRole.name] : undefined
+
+  return {
+    ...user,
+    displayName: user.displayName,
+    roles,
+    rank
   }
 }
 
