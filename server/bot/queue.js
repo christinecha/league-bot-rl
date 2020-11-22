@@ -1,6 +1,5 @@
 const leagues = require('../data/leagues')
 const createMatch = require('./createMatch')
-const matches = require('../data/matches')
 const messages = require('./messages')
 const ERRORS = require('./constants/ERRORS')
 const { admin } = require('../data/util/firebase')
@@ -28,7 +27,7 @@ const updateQueue = async (leagueId, userId, shouldQueue) => {
   const newLeague = {
     ...league,
     queue: {
-      ...league.queue,
+      ...queue,
       [userId]: newValue
     }
   }
@@ -106,13 +105,20 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     }
 
     if (Object.keys(league.queue).length < teamSize * 2) {
+      console.log('Adding player to queue.')
       context.channel.send(messages.QUEUE(league))
       return
     }
 
     const playerIds = await getMatchPlayers(leagueId)
-    const message = await context.channel.send(messages.GET_MATCH_MODE({ playerIds, teamSize }))
-    const mode = await getMatchMode({ message, playerIds })
+
+    let mode = MATCH_MODE.RANDOM
+
+    if (teamSize > 1) {
+      const message = await context.channel.send(messages.GET_MATCH_MODE({ playerIds, teamSize }))
+      mode = await getMatchMode({ message, playerIds })
+    }
+
     const match = await createMatch({ leagueId, playerIds, mode, teamSize })
     await context.channel.send(messages.CREATE_MATCH(match))
   } catch (err) {
@@ -134,5 +140,5 @@ module.exports = {
   getTeamSize,
   updateQueue,
   onQueue,
-  onUnqueue
+  onUnqueue,
 }

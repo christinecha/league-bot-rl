@@ -1,11 +1,26 @@
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
-const { onQueue, onUnqueue } = require('./queue');
+const { onQueue, onUnqueue } = require('./queue')
 const ERRORS = require('./constants/ERRORS')
+const { getLeagueStats } = require("../getLeagueStats")
+const { discord } = require('../data/util/discord')
+
+jest.mock("../getLeagueStats");
+getLeagueStats.mockResolvedValue({});
+discord.guilds.fetch = jest.fn((guildId) => Promise.resolve({
+  id: guildId,
+  members: {
+    fetch: (userId) => Promise.resolve({
+      id: userId,
+      roles: {}
+    })
+  }
+}))
 
 const league1 = {
   id: 'h000-2',
   teamSize: 2,
+  queue: {},
   matchCount: 2,
 }
 const user1 = 'pickle'

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getMatches, getGuildUser } from '../api';
+import { getMatches, getGuildUser, getStats } from '../api';
 import { useTable, useSortBy } from 'react-table'
 import styled from '@emotion/styled'
 import { css } from '@emotion/css'
@@ -15,44 +15,6 @@ const RANK_ROLES = [
   'Supersonic Legend',
 ]
 
-const getPlayerStats = (matches) => {
-  const players = {}
-
-  matches.forEach(m => {
-    Object.keys(m.players).forEach(playerId => {
-      if (!m.winner) return
-
-      players[playerId] = players[playerId] || { win: 0, loss: 0 }
-
-      const didWin = m.winner === m.players[playerId].team
-      players[playerId][didWin ? 'win' : 'loss'] += 1
-    })
-  })
-
-  let place = 1
-  const sorted = Object.keys(players)
-    .map(id => {
-      const { win, loss } = players[id]
-      return {
-        id,
-        win,
-        loss,
-        points: win - loss,
-        ratio: win / (win + loss)
-      }
-    })
-    .sort((a, b) => a.points < b.points ? 1 : -1)
-
-  const placed = sorted
-    .map((player, i) => {
-      const prev = sorted[i - 1]
-      if (prev && prev.points > player.points) place = i + 1
-      return { ...player, place }
-    })
-
-  return placed
-}
-
 const DiscordUser = ({ userId, guildId }) => {
   const [user, setUser] = useState({})
 
@@ -60,7 +22,6 @@ const DiscordUser = ({ userId, guildId }) => {
     getGuildUser({ userId, guildId }).then(({ data }) => setUser(data))
   }, [userId, guildId])
 
-  const rank = (user.roles || []).find(r => RANK_ROLES.includes(r.name))
   const imgSrc = user.user && user.user.avatarURL || ''
 
   return (
@@ -172,16 +133,14 @@ const Table = ({ columns, data }) => {
 }
 
 const League = ({ teamSize, guildId }) => {
-  const [matches, setMatches] = useState([])
+  const [stats, setStats] = useState([])
   const league = `${guildId}-${teamSize}`
 
   useEffect(() => {
-    getMatches({ teamSize, league }).then(({ data }) => {
-      setMatches(data)
+    getStats({ leagueId: league }).then(({ data }) => {
+      setStats(data)
     })
   }, [teamSize])
-
-  const data = getPlayerStats(matches)
 
   const columns = React.useMemo(
     () => [
@@ -223,7 +182,7 @@ const League = ({ teamSize, guildId }) => {
 
   return (
     <Styles>
-      <Table columns={columns} data={data} />
+      <Table columns={columns} data={stats} />
     </Styles>
   )
 }

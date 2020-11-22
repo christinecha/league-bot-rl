@@ -1,4 +1,3 @@
-const Discord = require('discord.js')
 const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue } = require('./queue')
@@ -47,7 +46,6 @@ const MESSAGE_ACTIONS = {
     const existing = await leagues.get(id)
 
     if (existing) {
-      console.log('Existing!', existing)
       context.channel.send(`A league with team size ${teamSize} already exists in this server.`)
       return
     }
@@ -76,14 +74,14 @@ const MESSAGE_ACTIONS = {
     message.awaitReactions(filter, { time: 15000 })
       .then(collected => console.log(`Collected ${collected.size} reactions`))
       .catch(console.error)
-  }
+  },
 }
 
 discord.on('message', async message => {
   const parts = message.content.split(/\s+/)
   console.log('Message received!', message.guild.id, message.content, parts)
 
-  if (![`<@!${BOT_ID}>`, `<@${BOT_ID}>`].includes(parts[0])) return
+  if (!parts[0].match(BOT_ID)) return
 
   const [_, command, ...args] = parts
   const context = message
@@ -96,5 +94,7 @@ discord.on('message', async message => {
     } catch (err) {
       console.log(err)
     }
+  } else {
+    message.channel.send('Sorry, I didn\'t understand that command.')
   }
 })
