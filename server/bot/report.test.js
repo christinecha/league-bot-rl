@@ -38,7 +38,7 @@ test('report match win', async (done) => {
   })
 
   // Match cannot be reported by a non-participating player
-  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_NO_SUCH_USER)
+  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MATCH_NO_SUCH_USER)
 
   // Report win
   await onReportWin(matchKey, {
@@ -51,6 +51,7 @@ test('report match win', async (done) => {
 
   // Match is reported correctly
   expect(match.winner).toBe(match1.players[user2].team)
+  expect(send).toHaveBeenNthCalledWith(2, `Team ${match.winner} won Match #${matchKey}!`)
 
   await onReportWin(matchKey, {
     author: { id: user2 },
@@ -59,7 +60,7 @@ test('report match win', async (done) => {
   })
 
   // Match cannot be reported twice
-  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_DUPLICATE_REPORT)
+  expect(send).toHaveBeenNthCalledWith(3, ERRORS.MATCH_DUPLICATE_REPORT)
 
   done()
 })
@@ -75,7 +76,7 @@ test('report match loss', async (done) => {
   })
 
   // Match cannot be reported by a non-participating player
-  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_NO_SUCH_USER)
+  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MATCH_NO_SUCH_USER)
 
   // Report loss
   await onReportLoss(matchKey, {
@@ -89,6 +90,7 @@ test('report match loss', async (done) => {
   // Match is reported correctly
   expect(match.winner).not.toBe(match1.players[user2].team)
   expect(match.winner).toBe(match1.players[user3].team)
+  expect(send).toHaveBeenNthCalledWith(2, `Team ${match.winner} won Match #${matchKey}!`)
 
   await onReportLoss(matchKey, {
     author: { id: user2 },
@@ -97,7 +99,7 @@ test('report match loss', async (done) => {
   })
 
   // Match cannot be reported twice
-  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_DUPLICATE_REPORT)
+  expect(send).toHaveBeenNthCalledWith(3, ERRORS.MATCH_DUPLICATE_REPORT)
 
   done()
 })
