@@ -19,6 +19,7 @@ Discord.Client = jest.fn(() => {
           fetch: (userId) => Promise.resolve({
             user: {
               id: userId,
+              avatarURL: () => ''
             },
             roles: {}
           })
