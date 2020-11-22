@@ -100,13 +100,13 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     league = await updateQueue(leagueId, context.author.id, shouldQueue)
 
     if (!shouldQueue) {
-      context.channel.send(`You have been removed from the queue.`)
+      await context.channel.send(`You have been removed from the queue.`)
       return
     }
 
     if (Object.keys(league.queue).length < teamSize * 2) {
       console.log('Adding player to queue.')
-      context.channel.send(messages.QUEUE(league))
+      await context.channel.send(messages.QUEUE(league))
       return
     }
 
@@ -123,7 +123,7 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     await context.channel.send(messages.CREATE_MATCH(match))
   } catch (err) {
     console.log('[ERROR]', err)
-    context.channel.send(err)
+    await context.channel.send(err)
     return
   }
 }

@@ -2,20 +2,6 @@ const leagues = require('../data/leagues')
 const matches = require('../data/matches')
 const { onQueue, onUnqueue } = require('./queue')
 const ERRORS = require('./constants/ERRORS')
-const { getLeagueStats } = require("../getLeagueStats")
-const { discord } = require('../data/util/discord')
-
-jest.mock("../getLeagueStats");
-getLeagueStats.mockResolvedValue({});
-discord.guilds.fetch = jest.fn((guildId) => Promise.resolve({
-  id: guildId,
-  members: {
-    fetch: (userId) => Promise.resolve({
-      id: userId,
-      roles: {}
-    })
-  }
-}))
 
 const league1 = {
   id: 'h000-2',
@@ -27,6 +13,7 @@ const user1 = 'pickle'
 
 beforeEach(async (done) => {
   await leagues.create(league1)
+  const l = await leagues.get(league1.id)
   done()
 })
 
@@ -129,12 +116,10 @@ test('queue & trigger match in 2s league', async (done) => {
       description: expect.stringMatching(matchKey),
       fields: [
         {
-          inline: false,
           name: 'Team 1',
           value: expect.stringMatching(/<@!(.*)> <@!(.*)>/),
         },
         {
-          inline: false,
           name: 'Team 2',
           value: expect.stringMatching(/<@!(.*)> <@!(.*)>/),
         },

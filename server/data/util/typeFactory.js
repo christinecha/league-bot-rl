@@ -72,8 +72,7 @@ const typeFactory = (type, { beforeCreate = op, beforeUpdate = op, afterGet = op
 
     const { id } = data
     const ref = db.collection(type).doc(id)
-    await ref.update(data)
-    return data
+    return ref.update(data)
   }
 
   const updateMultiple = async (_data) => {

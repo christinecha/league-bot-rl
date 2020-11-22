@@ -1,6 +1,15 @@
 const Discord = require('discord.js')
-const client = new Discord.Client()
 
-client.login(process.env.BOT_TOKEN)
+let client
+
+const getClient = () => {
+  if (!client) {
+    client = new Discord.Client()
+    client.login(process.env.BOT_TOKEN)
+  }
+  return client
+}
+
+getClient()
 
 module.exports = { discord: client }

@@ -3,8 +3,8 @@ const createMatch = require("./createMatch");
 const { getLeagueStats } = require("../getLeagueStats");
 const { getGuildUser } = require("../getGuildUser");
 
-jest.mock("../getLeagueStats");
-jest.mock("../getGuildUser");
+jest.mock('../getLeagueStats');
+jest.mock('../getGuildUser');
 
 const league2s = {
   id: "h000-2",
