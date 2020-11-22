@@ -21,6 +21,7 @@ const getInsult = ({ userId, teamSize }) => {
     `<@!${userId}> bot confirmed??`,
     `Some questionable shots there, <@!${userId}>.`,
     `Did you forget to turn your monitor on, <@!${userId}>?`,
+    `You're not supposed to fake *every* ball, <@!${userId}>.`,
   ]
 
   return getRandom(insults)
@@ -34,6 +35,7 @@ const getCompliment = ({ userId }) => {
     `See you at the top of the leaderboard, <@!${userId}>.`,
     `And <@!${userId}> wasn't even trying.`,
     `And that's why <@!${userId}> = the best.`,
+    `<@!${userId}> is a legend!!`,
   ]
 
   return getRandom(compliments)
