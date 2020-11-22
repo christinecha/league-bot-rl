@@ -31,7 +31,7 @@ const DiscordUser = ({ userId, guildId }) => {
     `}>
       <img
         src={imgSrc}
-        alt={`Avatar for user ${user.displayName || userId}`}
+        alt={`Avatar for user ${user.username || userId}`}
         className={css`
           width: 20px;
           margin-right: 5px;
@@ -39,7 +39,7 @@ const DiscordUser = ({ userId, guildId }) => {
           display: ${imgSrc ? 'inline' : 'none'};
         `}
       />
-      {user.displayName || userId}{'  '}
+      {user.username || userId}{'  '}
       {/* {rank && rank.name} */}
     </div>
   )
