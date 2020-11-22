@@ -19,6 +19,7 @@ const createMatch = async ({ leagueId, playerIds, mode = MATCH_MODE.AUTO, teamSi
   const players = {}
   const guildId = leagueId.split('-')[0]
 
+
   try {
     if (mode === MATCH_MODE.RANDOM) {
       for (let i = 0; i < teamSize * 2; i++) {

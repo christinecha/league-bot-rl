@@ -97,10 +97,7 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
   try {
     const teamSize = getTeamSize(leagueName)
     leagueId = `${context.guild.id}-${teamSize}`
-    console.log('updatepls', shouldQueue, leagueId)
-    debugger
     league = await updateQueue(leagueId, context.author.id, shouldQueue)
-    console.log('done')
 
     if (!shouldQueue) {
       context.channel.send(`You have been removed from the queue.`)
@@ -144,5 +141,4 @@ module.exports = {
   updateQueue,
   onQueue,
   onUnqueue,
-  getMatchMode
 }

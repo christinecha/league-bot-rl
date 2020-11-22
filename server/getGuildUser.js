@@ -26,7 +26,10 @@ const getGuildUser = async ({ userId, guildId }) => {
       rank
     }
   } catch (err) {
-    throw (err)
+    console.log(err)
+    return {
+      id: userId
+    }
   }
 }
 
