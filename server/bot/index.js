@@ -1,6 +1,6 @@
 const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
-const { onQueue, onUnqueue } = require('./queue')
+const { onQueue, onUnqueue, onClear } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
 const messages = require('./messages')
 
@@ -18,7 +18,8 @@ const COMMANDS = {
   LOSS: 'loss',
   LEADERBOARD: 'leaderboard',
   HELP: 'help',
-  TEST: 'test'
+  TEST: 'test',
+  CLEAR: 'clear'
 }
 
 const ALIAS = {
@@ -75,6 +76,7 @@ const MESSAGE_ACTIONS = {
       .then(collected => console.log(`Collected ${collected.size} reactions`))
       .catch(console.error)
   },
+  [COMMANDS.CLEAR]: onClear
 }
 
 discord.on('message', async message => {

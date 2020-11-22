@@ -1,6 +1,6 @@
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
-const { onQueue, onUnqueue } = require('./queue')
+const { onQueue, onUnqueue, onClear } = require('./queue')
 const ERRORS = require('./constants/ERRORS')
 
 const league1 = {
@@ -139,6 +139,31 @@ test('queue & trigger match in 2s league', async (done) => {
       mark: { team: expect.any(Number) },
     })
   }))
+
+  done()
+})
+
+test('clear a queue in the 2s league', async (done) => {
+  const send = jest.fn()
+  const message = {
+    author: { id: user1 },
+    guild: { id: 'h000' },
+    channel: { send }
+  }
+
+  await onQueue('2s', message)
+
+  let league
+  league = await leagues.get(league1.id)
+
+  // Only one user is queued
+  expect(Object.keys(league.queue).length).toBe(1)
+
+  await onClear('2s', message)
+  league = await leagues.get(league1.id)
+
+  // No one should be in the queue now
+  expect(league.queue).toStrictEqual({})
 
   done()
 })

@@ -136,9 +136,23 @@ const onUnqueue = async (leagueName, context) => {
   return await onUpdateQueue(leagueName, false, context)
 }
 
+const onClear = async (leagueName, context) => {
+  try {
+    const teamSize = getTeamSize(leagueName)
+    const leagueId = `${context.guild.id}-${teamSize}`
+    await leagues.update({ id: leagueId, queue: {} })
+    await context.channel.send(`${teamSize}s queue has been cleared.`)
+  } catch (err) {
+    console.log('[ERROR]', err)
+    await context.channel.send(err)
+    return
+  }
+}
+
 module.exports = {
   getTeamSize,
   updateQueue,
   onQueue,
   onUnqueue,
+  onClear
 }
