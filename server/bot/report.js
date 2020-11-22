@@ -24,7 +24,6 @@ const report = async ({ matchKey, userId, guildId, didWin }) => {
 
 const onReport = async (matchKey, didWin, context) => {
   const userId = context.author.id
-  const verb = didWin ? 'won' : 'lost'
   let match
 
   try {
@@ -35,7 +34,7 @@ const onReport = async (matchKey, didWin, context) => {
     return
   }
 
-  context.channel.send(`Team ${match.winner} ${verb} Match #${matchKey}!`)
+  context.channel.send(`Team ${match.winner} won Match #${matchKey}!`)
 }
 
 const onReportWin = async (matchKey, context) => {
