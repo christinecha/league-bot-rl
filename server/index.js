@@ -6,6 +6,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const matches = require('./data/matches')
 const { discord } = require('./data/util/discord')
+const { getLeagueStatsOrdered } = require('./getLeagueStats')
+const { getGuildUser } = require('./getGuildUser')
 const app = express()
 const port = process.env.PORT || 3333
 
@@ -31,6 +33,17 @@ app.post('/api/matches', async (req, res) => {
     })
 
     res.send(results)
+  } catch (err) {
+    res.status(500).send(err.message)
+  }
+})
+
+app.post('/api/stats', async (req, res) => {
+  const { leagueId } = req.body
+
+  try {
+    const stats = await getLeagueStatsOrdered(leagueId)
+    res.send(stats)
   } catch (err) {
     res.status(500).send(err.message)
   }
@@ -62,13 +75,8 @@ app.post('/api/guild-user', async (req, res) => {
   const { userId, guildId } = req.body
 
   try {
-    const guild = await discord.guilds.fetch(guildId)
-    const user = await guild.members.fetch(userId)
-    res.send({
-      ...user,
-      displayName: user.displayName,
-      roles: user.roles.cache
-    })
+    const user = await getGuildUser({ userId, guildId })
+    res.send(user)
   } catch (err) {
     res.status(500).send(err.message)
   }

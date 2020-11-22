@@ -11,6 +11,16 @@ export const getMatches = ({ teamSize, league }) => (
   })
 )
 
+export const getStats = ({ leagueId }) => (
+  axios({
+    method: 'POST',
+    url: '/api/stats',
+    data: {
+      leagueId
+    }
+  })
+)
+
 export const getGuildUser = ({ userId, guildId }) => (
   axios({
     method: 'POST',

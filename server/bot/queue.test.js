@@ -1,7 +1,10 @@
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
-const { onQueue, onUnqueue } = require('./queue');
+const { onQueue, onUnqueue, getMatchMode } = require('./queue');
 const ERRORS = require('./constants/ERRORS')
+
+jest.mock('./queue')
+getMatchMode.mockResolvedValue('random')
 
 const league1 = {
   id: 'h000-2',
@@ -49,6 +52,8 @@ test('queue & unqueue in the 2s league', async (done) => {
 
   await onUnqueue('2s', message)
   league = await leagues.get(league1.id)
+
+  console.log(league)
 
   // No one should be in the queue now
   expect(league.queue[user1]).toBe(undefined)

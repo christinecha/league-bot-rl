@@ -26,14 +26,14 @@ const CREATE_MATCH = (match) => {
     .setTitle(`${teamSize}s Match`)
     // .setURL('https://discord.js.org/')
     // .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
-    .setDescription(`Match ID: ${key} • Mode: ${mode}`)
+    .setDescription(`Match ID: ${key}`)
     // .setThumbnail('https://i.imgur.com/wSTFkRM.png')
     .addFields(
       { name: 'Team 1', value: team1.map(id => `<@!${id}>`).join(' ') },
       { name: 'Team 2', value: team2.map(id => `<@!${id}>`).join(' ') },
     )
     .setTimestamp()
-  // .setFooter('Some footer text here');
+    .setFooter(`Teams were ${mode === 'auto' ? 'auto-balanced' : 'selected randomly'}`);
 }
 
 const QUEUE = (league) => {
