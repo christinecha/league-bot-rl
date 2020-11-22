@@ -1,7 +1,9 @@
+const Discord = require('discord.js')
 const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
+const messages = require('./messages')
 
 const BOT_ID = process.env.BOT_ID
 
@@ -15,6 +17,9 @@ const COMMANDS = {
   NEW: 'new',
   WIN: 'win',
   LOSS: 'loss',
+  LEADERBOARD: 'leaderboard',
+  HELP: 'help',
+  TEST: 'test'
 }
 
 const ALIAS = {
@@ -25,6 +30,7 @@ const ALIAS = {
   won: COMMANDS.WIN,
   lose: COMMANDS.LOSS,
   lost: COMMANDS.LOSS,
+  h: COMMANDS.HELP
 }
 
 const MESSAGE_ACTIONS = {
@@ -53,6 +59,24 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.LEAVE]: onUnqueue,
   [COMMANDS.WIN]: onReportWin,
   [COMMANDS.LOSS]: onReportLoss,
+  [COMMANDS.LEADERBOARD]: (teamSize, context) => {
+    context.channel.send(`https://cha-discord-league-bot.herokuapp.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
+  },
+  [COMMANDS.HELP]: (context) => {
+    context.channel.send(messages.HELP())
+  },
+  [COMMANDS.TEST]: async (context) => {
+    const embed = messages.HELP()
+    const message = await context.channel.send(embed)
+
+    message.react('🤖')
+    message.react('👻')
+
+    const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someID'
+    message.awaitReactions(filter, { time: 15000 })
+      .then(collected => console.log(`Collected ${collected.size} reactions`))
+      .catch(console.error)
+  }
 }
 
 discord.on('message', async message => {

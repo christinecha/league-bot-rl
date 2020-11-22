@@ -38,3 +38,5 @@ match
 - players
   - id (string)
   - win (boolean)
+
+requeue
