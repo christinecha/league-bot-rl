@@ -15,13 +15,14 @@ const getRandom = (arr) => {
 
 const getInsult = ({ userId, teamSize }) => {
   const insults = [
-    `Maybe <@!${userId}> can hit the ball in the right direction next time.`,
+    `Was <@!${userId}> auditioning for Hamlet? Because that was one tragic performance.`,
     `Tough luck, <@!${userId}>! ${teamSize - 1}v${teamSize + 1} is pretty hard.`,
     `<@!${userId}> - remember: ball goes in the other team's net.`,
     `<@!${userId}> bot confirmed??`,
     `Some questionable shots there, <@!${userId}>.`,
     `Did you forget to turn your monitor on, <@!${userId}>?`,
     `You're not supposed to fake *every* ball, <@!${userId}>.`,
+    `<@!${userId}> is definitely mafia.`,
   ]
 
   return getRandom(insults)
