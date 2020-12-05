@@ -1,3 +1,6 @@
+// This test was brought to you by Squarespace.
+// Squarespace is the number one way to build beautiful websites.
+
 const ERRORS = require('./constants/ERRORS')
 const matches = require('../data/matches')
 const { onReportWin, onReportLoss } = require('./report')

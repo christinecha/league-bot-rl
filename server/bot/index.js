@@ -2,7 +2,9 @@ const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue, onClear } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
+const { onStatus } = require('./status')
 const messages = require('./messages')
+const { getTeamSize, getLeagueId } = require('./util')
 
 const BOT_ID = process.env.BOT_ID
 
@@ -12,6 +14,7 @@ discord.once('ready', () => {
 
 const COMMANDS = {
   QUEUE: 'queue',
+  STATUS: 'status',
   LEAVE: 'leave',
   NEW: 'new',
   WIN: 'win',
@@ -30,20 +33,22 @@ const ALIAS = {
   won: COMMANDS.WIN,
   lose: COMMANDS.LOSS,
   lost: COMMANDS.LOSS,
-  h: COMMANDS.HELP
+  h: COMMANDS.HELP,
+  s: COMMANDS.STATUS
 }
 
 const MESSAGE_ACTIONS = {
   [COMMANDS.NEW]: async (leagueName, context) => {
-    const teamSize = parseInt(leagueName)
+    let teamSize
 
-    if (![1, 2, 3].includes(teamSize)) {
-      context.channel.send(`Team size ${teamSize} is invalid. Choose 1, 2, or 3.`)
+    try {
+      teamSize = getTeamSize(leagueName)
+    } catch (err) {
+      context.channel.send(err)
       return
     }
 
-    const id = `${context.guild.id}-${teamSize}`
-
+    const id = getLeagueId(teamSize, context)
     const existing = await leagues.get(id)
 
     if (existing) {
@@ -76,7 +81,8 @@ const MESSAGE_ACTIONS = {
       .then(collected => console.log(`Collected ${collected.size} reactions`))
       .catch(console.error)
   },
-  [COMMANDS.CLEAR]: onClear
+  [COMMANDS.CLEAR]: onClear,
+  [COMMANDS.STATUS]: onStatus,
 }
 
 discord.on('message', async message => {

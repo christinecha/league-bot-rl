@@ -4,13 +4,8 @@ const messages = require('./messages')
 const ERRORS = require('./constants/ERRORS')
 const TEAM_SIZES = require('./constants/TEAM_SIZES')
 const { admin } = require('../data/util/firebase')
+const { getTeamSize } = require('./util')
 const FieldValue = admin.firestore.FieldValue
-
-const getTeamSize = (str) => {
-  const teamSize = parseInt(str)
-  if (![1, 2, 3].includes(teamSize)) throw (ERRORS.INVALID_TEAM_SIZE)
-  return teamSize
-}
 
 const updateQueue = async (leagueId, userId, shouldQueue) => {
   const league = await leagues.get(leagueId)
