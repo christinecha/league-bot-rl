@@ -12,6 +12,7 @@
     "dev": "yarn run dev:client & yarn run dev:server",
     "dev:client": "webpack-dev-server",
     "dev:server": "nodemon ./server/index.js",
+    "test:server": "firebase emulators:start",
     "test": "TEST=true FIRESTORE_EMULATOR_HOST=\"localhost:8080\" GCLOUD_PROJECT=\"discord-league-bot-staging\" jest --detectOpenHandles"
   },
   "dependencies": {

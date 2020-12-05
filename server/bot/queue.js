@@ -2,6 +2,7 @@ const leagues = require('../data/leagues')
 const createMatch = require('./createMatch')
 const messages = require('./messages')
 const ERRORS = require('./constants/ERRORS')
+const TEAM_SIZES = require('./constants/TEAM_SIZES')
 const { admin } = require('../data/util/firebase')
 const FieldValue = admin.firestore.FieldValue
 
@@ -91,7 +92,7 @@ const getMatchPlayers = async (leagueId) => {
   return queuedPlayers
 }
 
-const onUpdateQueue = async (leagueName, shouldQueue, context) => {
+const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
   let leagueId, league
 
   try {
@@ -100,13 +101,13 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     league = await updateQueue(leagueId, context.author.id, shouldQueue)
 
     if (!shouldQueue) {
-      await context.channel.send(`You have been removed from the queue.`)
+      if (!opts.hideMessage) await context.channel.send(`You have been removed from the queue.`)
       return
     }
 
     if (Object.keys(league.queue).length < teamSize * 2) {
       console.log('Adding player to queue.')
-      await context.channel.send(messages.QUEUE(league))
+      if (!opts.hideMessage) await context.channel.send(messages.QUEUE(league))
       return
     }
 
@@ -123,7 +124,7 @@ const onUpdateQueue = async (leagueName, shouldQueue, context) => {
     await context.channel.send(messages.CREATE_MATCH(match))
   } catch (err) {
     console.log('[ERROR]', err)
-    await context.channel.send(err)
+    if (!opts.hideMessage) await context.channel.send(err)
     return
   }
 }
@@ -133,6 +134,16 @@ const onQueue = async (leagueName, context) => {
 }
 
 const onUnqueue = async (leagueName, context) => {
+  if (!leagueName) {
+    const promises = TEAM_SIZES.map(size => new Promise((resolve) => {
+      onUpdateQueue(size, false, context, { hideMessage: true }).finally(resolve)
+    }))
+
+    await Promise.all(promises)
+    await context.channel.send(`You have been removed from all queues.`)
+    return
+  }
+
   return await onUpdateQueue(leagueName, false, context)
 }
 

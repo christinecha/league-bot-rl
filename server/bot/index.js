@@ -85,14 +85,14 @@ discord.on('message', async message => {
 
   if (!parts[0].match(BOT_ID)) return
 
-  const [_, command, ...args] = parts
+  const [_, command, arg] = parts
   const context = message
 
   const action = ALIAS[command] || command
 
   if (action && MESSAGE_ACTIONS[action]) {
     try {
-      await MESSAGE_ACTIONS[action](...args, context)
+      await MESSAGE_ACTIONS[action](arg, context)
     } catch (err) {
       console.log(err)
     }

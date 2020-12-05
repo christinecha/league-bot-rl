@@ -23,7 +23,7 @@ afterEach(async (done) => {
 });
 
 test('queue & unqueue in the 2s league', async (done) => {
-  const send = jest.fn()
+  const send = jest.fn(() => Promise.resolve())
   const message = {
     author: { id: user1 },
     guild: { id: 'h000' },
