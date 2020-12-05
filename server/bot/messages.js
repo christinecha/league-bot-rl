@@ -65,6 +65,7 @@ const HELP = () => {
         name: 'Commands', value: `
 - \`@LeagueBot new | n [league-name]\` - Create new league
 - \`@LeagueBot queue | q [league-name]\` - Join active queue for a league
+- \`@LeagueBot leave | l\` - Leave all league queues
 - \`@LeagueBot leave | l [league-name]\` - Leave active queue for a league
 - \`@LeagueBot clear [league-name]\` - Clear the queue for a league
 - \`@LeagueBot leaderboard [league-name]\` - Show leaderboard for a league
