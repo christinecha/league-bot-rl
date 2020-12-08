@@ -1,8 +1,10 @@
 const matches = require('../data/matches')
+const leagues = require('../data/leagues')
 const ERRORS = require('./constants/ERRORS')
 const { generateMatchId } = require('../data/matchId')
 const { getLeagueStats } = require('../getLeagueStats')
 const { getGuildUser } = require('../getGuildUser')
+const { getTeamCombos } = require('./getTeamCombos')
 
 const MATCH_MODE = {
   RANDOM: 'random',
@@ -19,15 +21,21 @@ const createMatch = async ({ leagueId, playerIds, mode = MATCH_MODE.AUTO, teamSi
   const players = {}
   const guildId = leagueId.split('-')[0]
 
-
   try {
     if (mode === MATCH_MODE.RANDOM) {
-      for (let i = 0; i < teamSize * 2; i++) {
-        const rand = Math.floor(Math.random() * queue.length)
-        const player = queue.splice(rand, 1)
-        const team = i % 2 === 0 ? 1 : 2
-        players[player] = { team }
-      }
+      const { lastCombo } = await leagues.get(leagueId)
+      const teamCombos = getTeamCombos(teamSize)
+      if (lastCombo !== undefined) teamCombos.splice(lastCombo, 1)
+      const rand = Math.floor(Math.random() * teamCombos.length)
+
+      // ASYNC
+      await leagues.update({ id: leagueId, lastCombo: rand })
+
+      const order = teamCombos[rand]
+
+      order.forEach((team, i) => {
+        players[playerIds[i]] = { team }
+      })
     }
 
     if (mode === MATCH_MODE.AUTO) {

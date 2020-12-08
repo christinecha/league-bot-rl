@@ -48,6 +48,17 @@ test("create a random 2s match", async (done) => {
 
   // Team size is correct
   expect(match.teamSize).toBe(2);
+
+  const nextMatch = await createMatch({
+    leagueId: "h000-2",
+    playerIds: ["mark", "stardust", "space", "bubbles"],
+    mode: "random",
+    teamSize: 2,
+  });
+
+  // Random teams should not be the same order twice!
+  expect(nextMatch.players).not.toStrictEqual(match.players)
+
   done();
 });
 

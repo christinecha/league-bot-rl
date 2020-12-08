@@ -28,6 +28,14 @@ A bot that lets you run simultaneous 1s, 2s, and 3s leagues in your Discord chan
 
 
 #### Random Notes
+TODO:
+- When team is random, team should not be the same as previous
+- Requeue: Add everyone who was in the last match back to the queue
+- Add a hint to the default responder
+- Add a homepage to the frontend
+- Command "leaderboard" without args should open default leaderboard link
+- Why are tests so slow when streaming???
+
 league
 - teamSize
 - id (string) <server-id>-<league-name>
