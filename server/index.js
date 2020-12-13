@@ -67,6 +67,7 @@ app.post('/api/guild', async (req, res) => {
     const guild = await discord.guilds.fetch(id)
     res.send(guild)
   } catch (err) {
+    console.log(err)
     res.status(500).send(err.message)
   }
 })
