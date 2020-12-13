@@ -15,6 +15,7 @@ const StyledButton = styled.button`
   padding: 8px 20px;
   font-size: 1rem;
   font-weight: bold;
+  cursor: pointer;
 `
 
 const StyledCommand = ({ command, aliases, argument, description }) => {
@@ -52,7 +53,7 @@ export const Home = () => {
       <div data-row="6"></div>
       <div data-row>
         <div data-col="12">
-          <a target="_blank" href="https://discord.com/oauth2/authorize?client_id=471749111125770250&scope=bot">
+          <a target="_blank" href="https://discord.com/oauth2/authorize?client_id=775129640322203658&scope=bot">
             <StyledButton>Add it to my server</StyledButton>
           </a>
         </div>
