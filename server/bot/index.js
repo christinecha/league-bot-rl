@@ -64,7 +64,7 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.WIN]: onReportWin,
   [COMMANDS.LOSS]: onReportLoss,
   [COMMANDS.LEADERBOARD]: (teamSize, context) => {
-    context.channel.send(`https://cha-discord-league-bot.herokuapp.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
+    context.channel.send(`https://www.leaguebotrl.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
   },
   [COMMANDS.HELP]: (context) => {
     context.channel.send(messages.HELP())
