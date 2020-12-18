@@ -2,6 +2,7 @@ const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue, onClear } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
+const { onRoast } = require('./roast')
 const { onStatus } = require('./status')
 const messages = require('./messages')
 const { getTeamSize, getLeagueId } = require('./util')
@@ -22,7 +23,8 @@ const COMMANDS = {
   LEADERBOARD: 'leaderboard',
   HELP: 'help',
   TEST: 'test',
-  CLEAR: 'clear'
+  CLEAR: 'clear',
+  ROAST: 'roast'
 }
 
 const ALIAS = {
@@ -83,6 +85,7 @@ const MESSAGE_ACTIONS = {
   },
   [COMMANDS.CLEAR]: onClear,
   [COMMANDS.STATUS]: onStatus,
+  [COMMANDS.ROAST]: onRoast,
 }
 
 discord.on('message', async message => {
