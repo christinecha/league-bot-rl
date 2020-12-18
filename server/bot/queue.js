@@ -88,12 +88,13 @@ const getMatchPlayers = async (leagueId) => {
 }
 
 const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
-  let leagueId, league
+  let leagueId
 
   try {
     const teamSize = getTeamSize(leagueName)
     leagueId = `${context.guild.id}-${teamSize}`
-    league = await updateQueue(leagueId, context.author.id, shouldQueue)
+    await updateQueue(leagueId, context.author.id, shouldQueue)
+    const league = await leagues.get(leagueId)
 
     if (!shouldQueue) {
       if (!opts.hideMessage) await context.channel.send(`You have been removed from the queue.`)
