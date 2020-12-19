@@ -68,7 +68,7 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.LEADERBOARD]: (teamSize, context) => {
     context.channel.send(`https://www.leaguebotrl.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
   },
-  [COMMANDS.HELP]: (context) => {
+  [COMMANDS.HELP]: (_, context) => {
     context.channel.send(messages.HELP())
   },
   [COMMANDS.TEST]: async (context) => {

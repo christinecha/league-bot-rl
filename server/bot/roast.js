@@ -8,6 +8,7 @@ const getInsult = ({ userId }) => {
     `Was <@!${userId}> auditioning for Hamlet? Because that was one tragic performance.`,
     `<@!${userId}> - remember: ball goes in the other team's net.`,
     `<@!${userId}> bot confirmed??`,
+    `<@!${userId}> sus`,
     `Some questionable shots there, <@!${userId}>.`,
     `Did you forget to turn your monitor on, <@!${userId}>?`,
     `You're not supposed to fake *every* ball, <@!${userId}>.`,
