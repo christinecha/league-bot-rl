@@ -25,7 +25,7 @@ const createMatch = async ({ leagueId, playerIds, mode = MATCH_MODE.AUTO, teamSi
     if (mode === MATCH_MODE.RANDOM) {
       const { lastCombo } = await leagues.get(leagueId)
       const teamCombos = getTeamCombos(teamSize)
-      if (lastCombo !== undefined) teamCombos.splice(lastCombo, 1)
+      if (teamCombos.length > 1 && lastCombo !== undefined) teamCombos.splice(lastCombo, 1)
       const rand = Math.floor(Math.random() * teamCombos.length)
 
       // ASYNC

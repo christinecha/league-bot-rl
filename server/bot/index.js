@@ -71,7 +71,7 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.HELP]: (_, context) => {
     context.channel.send(messages.HELP())
   },
-  [COMMANDS.TEST]: async (context) => {
+  [COMMANDS.TEST]: async (_, context) => {
     const embed = messages.HELP()
     const message = await context.channel.send(embed)
 
