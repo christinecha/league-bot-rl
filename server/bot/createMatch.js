@@ -23,13 +23,15 @@ const createMatch = async ({ leagueId, playerIds, mode = MATCH_MODE.AUTO, teamSi
 
   try {
     if (mode === MATCH_MODE.RANDOM) {
-      const { lastCombo } = await leagues.get(leagueId)
       const teamCombos = getTeamCombos(teamSize)
-      if (teamCombos.length > 1 && lastCombo !== undefined) teamCombos.splice(lastCombo, 1)
-      const rand = Math.floor(Math.random() * teamCombos.length)
+      let rand = 0
 
-      // ASYNC
-      await leagues.update({ id: leagueId, lastCombo: rand })
+      if (teamCombos.length > 1) {
+        const { lastCombo } = await leagues.get(leagueId)
+        if (lastCombo !== undefined) teamCombos.splice(lastCombo, 1)
+        rand = Math.floor(Math.random() * teamCombos.length)
+        await leagues.update({ id: leagueId, lastCombo: rand })
+      }
 
       const order = teamCombos[rand]
 
