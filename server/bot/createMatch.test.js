@@ -3,8 +3,13 @@ const createMatch = require("./createMatch");
 const { getLeagueStats } = require("../getLeagueStats");
 const { getGuildUser } = require("../getGuildUser");
 
-jest.mock('../getLeagueStats');
-jest.mock('../getGuildUser');
+jest.mock("../getLeagueStats");
+jest.mock("../getGuildUser");
+
+const league1s = {
+  id: "h000-1",
+  teamSize: 1,
+};
 
 const league2s = {
   id: "h000-2",
@@ -17,14 +22,50 @@ const league3s = {
 };
 
 beforeEach(async (done) => {
+  await leagues.create(league1s);
   await leagues.create(league2s);
   await leagues.create(league3s);
   done();
 });
 
 afterEach(async (done) => {
+  await leagues.delete(league1s.id);
   await leagues.delete(league2s.id);
   await leagues.delete(league3s.id);
+  done();
+});
+
+test("create a random 1s match", async (done) => {
+  const match = await createMatch({
+    leagueId: "h000-1",
+    playerIds: ["racoon", "cheese"],
+    mode: "random",
+    teamSize: 1,
+  });
+
+  const team1 = Object.values(match.players).filter((p) => p.team === 1);
+  const team2 = Object.values(match.players).filter((p) => p.team === 2);
+
+  // All players are unique
+  expect(Object.keys(match.players).length).toBe(2);
+
+  // All teams have enough players
+  expect(team1.length).toBe(1);
+  expect(team2.length).toBe(1);
+
+  // Team size is correct
+  expect(match.teamSize).toBe(1);
+
+  // You should be able to queue a new one!
+  await expect(
+    createMatch({
+      leagueId: "h000-1",
+      playerIds: ["canada", "cha"],
+      mode: "random",
+      teamSize: 1,
+    })
+  ).resolves.not.toThrow()
+
   done();
 });
 
@@ -57,7 +98,7 @@ test("create a random 2s match", async (done) => {
   });
 
   // Random teams should not be the same order twice!
-  expect(nextMatch.players).not.toStrictEqual(match.players)
+  expect(nextMatch.players).not.toStrictEqual(match.players);
 
   done();
 });
