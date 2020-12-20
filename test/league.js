@@ -1,16 +1,23 @@
+const league1s = {
+  id: "h000-1",
+  teamSize: 1,
+  queue: {},
+};
+
 const league2s = {
-  id: 'hooo-crew-2',
-  queue: {
-    'mark': 0,
-    'stardust': 1,
-    'space': 2,
-    'bubbles': 3,
-    'duke': 4,
-    'dep': 5
-  },
-  teamSize: 2
-}
+  id: "h000-2",
+  teamSize: 2,
+  queue: {},
+};
+
+const league3s = {
+  id: "h000-3",
+  teamSize: 3,
+  queue: {},
+};
 
 module.exports = {
-  league2s
+  league1s,
+  league2s,
+  league3s,
 }

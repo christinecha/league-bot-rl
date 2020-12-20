@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@LeagueBot queue <league> 1`] = `
+Array [
+  "cha",
+]
+`;
+
+exports[`@LeagueBot queue <league> 2`] = `
+Array [
+  "cha",
+]
+`;
+
+exports[`@LeagueBot queue <league> 3`] = `
+Array [
+  "cha",
+]
+`;

@@ -97,7 +97,12 @@ const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
     const league = await leagues.get(leagueId)
 
     if (!shouldQueue) {
-      if (!opts.hideMessage) await context.channel.send(`You have been removed from the queue.`)
+      if (!opts.hideMessage) {
+        await context.channel.send(
+          messages.LEAVE_QUEUE({ userId: context.author.id, teamSize })
+        )
+      }
+
       return
     }
 
@@ -136,7 +141,9 @@ const onUnqueue = async (leagueName, context) => {
     }))
 
     await Promise.all(promises)
-    await context.channel.send(`You have been removed from all queues.`)
+    await context.channel.send(
+      messages.LEAVE_QUEUE({ userId: context.author.id })
+    )
     return
   }
 

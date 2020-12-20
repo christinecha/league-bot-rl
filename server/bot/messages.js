@@ -1,6 +1,14 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
 
+const LEAVE_QUEUE = ({ userId, teamSize }) => {
+  if (teamSize) {
+    return `<@!${userId}> has been removed from the ${teamSize}s queue.`
+  }
+
+  return `<@!${userId}> has been removed from all queues.`
+}
+
 const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
   return new Discord.MessageEmbed()
     .setColor('#0099ff')
@@ -9,7 +17,7 @@ const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
         name: `We've got a ${teamSize}s match!`,
         value: `${playerIds.map(id => `<@!${id}>`).join(' ')}
 
-        Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
+Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 `
       },
     )
@@ -17,17 +25,14 @@ const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
 
 const CREATE_MATCH = (match) => {
   const { players, teamSize, mode } = match
-  const team1 = Object.keys(players).filter(p => players[p].team === 1)
-  const team2 = Object.keys(players).filter(p => players[p].team === 2)
+  const team1 = Object.keys(players).sort().filter(p => players[p].team === 1)
+  const team2 = Object.keys(players).sort().filter(p => players[p].team === 2)
   const { key } = parseMatchId(match.id)
 
   return new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle(`${teamSize}s Match`)
-    // .setURL('https://discord.js.org/')
-    // .setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
     .setDescription(`Match ID: ${key}`)
-    // .setThumbnail('https://i.imgur.com/wSTFkRM.png')
     .addFields(
       { name: 'Team 1', value: team1.map(id => `<@!${id}>`).join(' ') },
       { name: 'Team 2', value: team2.map(id => `<@!${id}>`).join(' ') },
@@ -78,6 +83,7 @@ const HELP = () => {
 }
 
 module.exports = {
+  LEAVE_QUEUE,
   GET_MATCH_MODE,
   CREATE_MATCH,
   QUEUE,

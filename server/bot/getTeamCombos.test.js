@@ -1,4 +1,3 @@
-const leagues = require("../data/leagues");
 const { getTeamCombos } = require("./getTeamCombos");
 
 test("get 3s combos", async (done) => {

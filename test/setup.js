@@ -10,10 +10,13 @@ getLeagueStats.mockResolvedValue({})
 jest.mock('discord.js')
 
 Discord.Client = jest.fn(() => {
-  return {
+  const self = {
+    users: {},
+    callbacks: {},
+    callbacksOnce: {},
     login: () => { },
     guilds: {
-      fetch: jest.fn((guildId) => Promise.resolve({
+      fetch: (guildId) => Promise.resolve({
         id: guildId,
         members: {
           fetch: (userId) => Promise.resolve({
@@ -21,12 +24,30 @@ Discord.Client = jest.fn(() => {
               id: userId,
               avatarURL: () => ''
             },
-            roles: {}
+            roles: self.users[userId] ? {
+              cache: self.users[userId].roles
+            } : {}
           })
         }
-      }))
+      })
+    },
+    trigger: function (evt, data) {
+      if (!this.callbacks[evt]) return Promise.resolve()
+      const promises = this.callbacks[evt].map(cb => cb(data))
+      return Promise.all(promises)
+    },
+    on: function (evt, callback) {
+      this.callbacks[evt] = this.callbacks[evt] || []
+      this.callbacks[evt].push(callback)
+    },
+    /* TODO: THESE SHOULD GET REMOVED... */
+    once: function (evt, callback) {
+      this.callbacksOnce[evt] = this.callbacksOnce[evt] || []
+      this.callbacksOnce[evt].push(callback)
     }
   }
+
+  return self
 })
 
 Discord.MessageEmbed = jest.fn(() => {

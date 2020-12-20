@@ -34,6 +34,8 @@ TODO:
 - Add a roast command to the bot
 - Add a place for people to submit insults/compliments, etc.
 - Why are tests so slow when streaming???
+- fix tests to use actual discord messages
+- Cancel match
 
 league
 - teamSize
