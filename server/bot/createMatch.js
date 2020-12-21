@@ -49,10 +49,13 @@ const createMatch = async ({ leagueId, playerIds, mode = MATCH_MODE.AUTO, teamSi
       const score = user => {
         const ratio = stats[user.id] ? stats[user.id].ratio : 0.5
         if (!user.rank) return ratio
-        return (user.rank + ratio) / (13 + 1)
+        return (user.rank / 13) + ratio
       }
 
-      const ordered = users.sort((a, b) => score(a) > score(b) ? 1 : -1)
+      const ordered = users.sort((a, b) => {
+        return score(a) > score(b) ? 1 : -1
+      })
+
       ordered.forEach((user, i) => {
         players[user.id] = { team: BALANCE[teamSize][i] }
       })

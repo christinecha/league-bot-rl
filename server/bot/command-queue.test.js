@@ -7,8 +7,9 @@ const { discord } = require("../data/util/discord");
 const ERRORS = require("./constants/ERRORS");
 const { league1s, league2s, league3s } = require("../../test/league");
 const { getLeagueStats } = require("../getLeagueStats");
-const { getGuildUser } = require("../getGuildUser");
 const BOT_ID = process.env.BOT_ID;
+
+jest.mock("../getLeagueStats");
 
 const getQueueMessage = (regex) => {
   return expect.objectContaining({
@@ -372,30 +373,57 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 test("@LeagueBot queue 2s [auto]", async (done) => {
   const users = ["hoody", "duke", "canada", "cha"];
 
+  // Use RL ranks to determine balanced teams
   discord.users = {
-    [users[0]]: { roles: ['SSL'] },
-    [users[1]]: { roles: ['GC'] },
-    [users[2]]: { roles: ['Champ'] },
-    [users[3]]: { roles: ['Gold'] },
+    [users[0]]: { roles: [{ name: 'SSL' }] },
+    [users[1]]: { roles: [{ name: 'GC' }] },
+    [users[2]]: { roles: [{ name: 'Champ' }] },
+    [users[3]]: { roles: [{ name: 'Gold' }] },
   }
 
-  const matchId = `${league2s.id}-1`;
+  let matchId = `${league2s.id}-1`;
 
   await discord.trigger("message", msg(users[0], `<@!${BOT_ID}> queue 2s`));
   await discord.trigger("message", msg(users[1], `<@!${BOT_ID}> queue 2s`));
   await discord.trigger("message", msg(users[2], `<@!${BOT_ID}> queue 2s`));
   await discord.trigger("message", msg(users[3], `<@!${BOT_ID}> queue 2s`));
 
-  // Bot should react with the options first!
-  expect(react).toHaveBeenCalledTimes(2);
-
-  const match = await matches.get(matchId);
-  const players = Object.keys(match.players).sort();
-  const team1 = players.filter((p) => match.players[p].team === 1);
-  const team2 = players.filter((p) => match.players[p].team === 2);
+  let match = await matches.get(matchId);
+  let players = Object.keys(match.players).sort();
+  let team1 = players.filter((p) => match.players[p].team === 1);
+  let team2 = players.filter((p) => match.players[p].team === 2);
 
   expect(team1).toStrictEqual([users[3], users[0]]);
   expect(team2).toStrictEqual([users[2], users[1]]);
+
+  // Same RL rank? Use win ratio to determine teams.
+  discord.users = {
+    [users[0]]: { roles: [{ name: 'Gold' }] },
+    [users[1]]: { roles: [{ name: 'Gold' }] },
+    [users[2]]: { roles: [{ name: 'Gold' }] },
+    [users[3]]: { roles: [{ name: 'Gold' }] },
+  }
+
+  getLeagueStats.mockResolvedValue({
+    [users[0]]: { ratio: 1 },
+    [users[1]]: { ratio: 0.5 },
+    [users[2]]: { ratio: 0.2 },
+    [users[3]]: { ratio: 0.6 },
+  });
+
+  await discord.trigger("message", msg(users[0], `<@!${BOT_ID}> queue 2s`));
+  await discord.trigger("message", msg(users[1], `<@!${BOT_ID}> queue 2s`));
+  await discord.trigger("message", msg(users[2], `<@!${BOT_ID}> queue 2s`));
+  await discord.trigger("message", msg(users[3], `<@!${BOT_ID}> queue 2s`));
+
+  matchId = `${league2s.id}-2`;
+  match = await matches.get(matchId);
+  players = Object.keys(match.players).sort();
+  team1 = players.filter((p) => match.players[p].team === 1);
+  team2 = players.filter((p) => match.players[p].team === 2);
+
+  expect(team1).toStrictEqual([users[2], users[0]]);
+  expect(team2).toStrictEqual([users[3], users[1]]);
 
   done();
 });
