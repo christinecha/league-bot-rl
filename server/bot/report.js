@@ -1,5 +1,6 @@
 const matches = require('../data/matches')
 const { formMatchId } = require('../data/matchId')
+const { getInsult, getCompliment } = require('../getCommentary')
 const ERRORS = require('./constants/ERRORS')
 
 const getWinner = (match, userId, didWin) => {
@@ -11,37 +12,6 @@ const getWinner = (match, userId, didWin) => {
 const getRandom = (arr) => {
   const rand = Math.floor(Math.random() * arr.length)
   return arr[rand]
-}
-
-const getInsult = ({ userId, teamSize }) => {
-  const insults = [
-    `Was <@!${userId}> auditioning for Hamlet? Because that was one tragic performance.`,
-    `Tough luck, <@!${userId}>! ${teamSize - 1}v${teamSize + 1} is pretty hard.`,
-    `<@!${userId}> - remember: ball goes in the other team's net.`,
-    `<@!${userId}> bot confirmed??`,
-    `<@!${userId}> sus.`,
-    `Some questionable shots there, <@!${userId}>.`,
-    `Did you forget to turn your monitor on, <@!${userId}>?`,
-    `You're not supposed to fake *every* ball, <@!${userId}>.`,
-    `<@!${userId}> is definitely mafia.`,
-    `<@!${userId}> - we're not playing golf. The *HIGHER* score wins.`
-  ]
-
-  return getRandom(insults)
-}
-
-const getCompliment = ({ userId }) => {
-  const compliments = [
-    `<@!${userId}> was absolutely CRACKED today!`,
-    `Nothing gets past <@!${userId}>!`,
-    `<@!${userId}> - next stop: RLCS.`,
-    `See you at the top of the leaderboard, <@!${userId}>.`,
-    `And <@!${userId}> wasn't even trying.`,
-    `And that's why <@!${userId}> = the best.`,
-    `<@!${userId}> is a legend!!`,
-  ]
-
-  return getRandom(compliments)
 }
 
 const getCommentary = (match) => {

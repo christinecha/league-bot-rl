@@ -36,7 +36,11 @@ TODO:
 - Why are tests so slow when streaming???
 - fix tests to use actual discord messages
 - Cancel match
-- "You there?" feature
+- ~"You there?" feature~
+- Get rid of the silly dates! It's duplicated
+- ~If channel Id, don't require @leaguebot~
+- @leaguebot reset
+- if wrong channel, provide a hint & way to set! (set-channel)
 
 league
 - teamSize
