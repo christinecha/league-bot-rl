@@ -30,12 +30,13 @@ A bot that lets you run simultaneous 1s, 2s, and 3s leagues in your Discord chan
 #### Random Notes
 TODO:
 - Requeue: Add everyone who was in the last match back to the queue
-- Add a hint to the default responder
-- Add a roast command to the bot
+- ~Add a hint to the default responder~
+- ~Add a roast command to the bot~
 - Add a place for people to submit insults/compliments, etc.
 - Why are tests so slow when streaming???
 - fix tests to use actual discord messages
 - Cancel match
+- "You there?" feature
 
 league
 - teamSize

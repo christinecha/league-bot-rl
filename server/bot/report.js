@@ -19,10 +19,12 @@ const getInsult = ({ userId, teamSize }) => {
     `Tough luck, <@!${userId}>! ${teamSize - 1}v${teamSize + 1} is pretty hard.`,
     `<@!${userId}> - remember: ball goes in the other team's net.`,
     `<@!${userId}> bot confirmed??`,
+    `<@!${userId}> sus.`,
     `Some questionable shots there, <@!${userId}>.`,
     `Did you forget to turn your monitor on, <@!${userId}>?`,
     `You're not supposed to fake *every* ball, <@!${userId}>.`,
     `<@!${userId}> is definitely mafia.`,
+    `<@!${userId}> - we're not playing golf. The *HIGHER* score wins.`
   ]
 
   return getRandom(insults)

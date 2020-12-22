@@ -106,6 +106,6 @@ discord.on('message', async message => {
       console.log(err)
     }
   } else {
-    message.channel.send('Sorry, I didn\'t understand that command.')
+    message.channel.send('Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.')
   }
 })
