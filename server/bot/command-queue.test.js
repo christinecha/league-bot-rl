@@ -59,7 +59,7 @@ beforeEach(async (done) => {
     content,
     author: { id: userId },
     guild: { id: "h000" },
-    channel: { send },
+    channel: { send, id: '55' },
   });
 
   await leagues.create(league1s);
@@ -128,6 +128,8 @@ test("@LeagueBot queue 1s", async (done) => {
 
   // When enough users queue for a match:
   const match = await matches.get(matchId);
+  const m = await matches.search({ rules: [] })
+  console.log(m)
 
   // Match should be created in the database
   expect(match).toStrictEqual(

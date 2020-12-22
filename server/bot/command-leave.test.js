@@ -31,7 +31,7 @@ beforeEach(async (done) => {
     content,
     author: { id: userId },
     guild: { id: "h000" },
-    channel: { send },
+    channel: { send, id: '55' },
   });
 
   const queue = {};

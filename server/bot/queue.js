@@ -7,7 +7,8 @@ const { admin } = require('../data/util/firebase')
 const { getTeamSize } = require('./util')
 const FieldValue = admin.firestore.FieldValue
 
-const updateQueue = async (leagueId, userId, shouldQueue) => {
+const updateQueue = async (leagueId, context, shouldQueue) => {
+  const userId = context.author.id
   const league = await leagues.get(leagueId)
   if (!league) throw (ERRORS.NO_SUCH_LEAGUE)
 
@@ -18,7 +19,7 @@ const updateQueue = async (leagueId, userId, shouldQueue) => {
 
   const newValue = shouldQueue ? Date.now() : FieldValue.delete()
   const update = { [`queue.${userId}`]: newValue }
-  await leagues.update({ id: leagueId, ...update })
+  await leagues.update({ id: leagueId, ...update, channelId: context.channel.id })
 
   const newLeague = {
     ...league,
@@ -93,7 +94,7 @@ const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
   try {
     const teamSize = getTeamSize(leagueName)
     leagueId = `${context.guild.id}-${teamSize}`
-    await updateQueue(leagueId, context.author.id, shouldQueue)
+    await updateQueue(leagueId, context, shouldQueue)
     const league = await leagues.get(leagueId)
 
     if (!shouldQueue) {

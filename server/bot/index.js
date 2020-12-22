@@ -66,7 +66,7 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.WIN]: onReportWin,
   [COMMANDS.LOSS]: onReportLoss,
   [COMMANDS.LEADERBOARD]: (teamSize, context) => {
-    context.channel.send(`https://www.leaguebotrl.com/?guildId=${context.guild.id}&teamSize=${teamSize}`)
+    context.channel.send(`https://www.leaguebotrl.com/?guildId=${context.guild.id}${teamSize ? `&teamSize=${teamSize}` : ''}`)
   },
   [COMMANDS.HELP]: (_, context) => {
     context.channel.send(messages.HELP())
@@ -89,23 +89,34 @@ const MESSAGE_ACTIONS = {
 }
 
 discord.on('message', async message => {
+  let shortcut = false
   const parts = message.content.split(/\s+/)
   console.log('Message received!', message.guild.id, message.content, parts)
 
-  if (!parts[0].match(BOT_ID)) return
+  if (!parts[0].match(BOT_ID)) {
+    parts.unshift(BOT_ID)
+    parts[1] = parts[1].split('!')[1]
+    shortcut = true
+  }
 
   const [_, command, arg] = parts
   const context = message
 
   const action = ALIAS[command] || command
 
-  if (action && MESSAGE_ACTIONS[action]) {
+  if (shortcut) {
+    const channelId = `${message.channel.id}`
+    const found = await leagues.search({ rules: [['channelId', '==', channelId]] })
+    if (!found.length) return
+  }
+
+  if (action && typeof MESSAGE_ACTIONS[action] === 'function') {
     try {
       await MESSAGE_ACTIONS[action](arg, context)
     } catch (err) {
       console.log(err)
     }
-  } else {
+  } else if (!shortcut) {
     message.channel.send('Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.')
   }
 })
