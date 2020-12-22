@@ -49,9 +49,7 @@ const cleanQueue = async () => {
 
     const clean = async () => {
       const channel = await discord.channels.fetch(league.channelId)
-      const message = await channel.send(`Still there? ${stalePlayers.map(p => `<@!${p}>`).join(' ')}
-  
-React with any emoji to stay in the queue.`)
+      const message = await channel.send(`Still there? ${stalePlayers.map(p => `<@!${p}>`).join(' ')} React with any emoji to stay in the queue.`)
 
       message.react('🌞')
       const dead = await getDeadPlayers(message, stalePlayers)
