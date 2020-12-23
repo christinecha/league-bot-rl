@@ -1,5 +1,5 @@
 const ERRORS = {
-  INVALID_TEAM_SIZE: `Team size is invalid. Choose 1, 2, or 3.`,
+  INVALID_TEAM_SIZE: `Team size is invalid. Choose 1, 2, 3, or 4.`,
   NO_SUCH_LEAGUE: `The requested league does not exist in this server.`,
 
   MATCH_INVALID: 'Invalid match id.',

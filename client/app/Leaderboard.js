@@ -75,6 +75,7 @@ export const Leaderboard = () => {
       <LeagueTab onSelect={setSize} teamSize={1} active={size === 1} />
       <LeagueTab onSelect={setSize} teamSize={2} active={size === 2} />
       <LeagueTab onSelect={setSize} teamSize={3} active={size === 3} />
+      <LeagueTab onSelect={setSize} teamSize={4} active={size === 4} />
       <br />
       <br />
       <League teamSize={size} guildId={guildId} />
