@@ -14,6 +14,7 @@ const MATCH_MODE = {
 const BALANCE = {
   2: { 0: 1, 1: 2, 2: 2, 3: 1 },
   3: { 0: 1, 1: 2, 2: 1, 3: 2, 4: 2, 5: 1 },
+  4: { 0: 1, 1: 2, 2: 1, 3: 2, 4: 2, 5: 1, 6: 2, 7: 1, },
 }
 
 const createMatch = async ({ leagueId, playerIds, mode = MATCH_MODE.AUTO, teamSize }) => {
