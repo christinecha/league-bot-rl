@@ -50,7 +50,7 @@ const NotFound = () => {
 }
 
 export const Leaderboard = () => {
-  const initialSize = [1, 2, 3].find(t => t === parseInt(teamSize)) || 3
+  const initialSize = [1, 2, 3, 4].find(t => t === parseInt(teamSize)) || 3
   const [size, setSize] = useState(initialSize)
   const [loading, setLoading] = useState(true)
   const [guild, setGuild] = useState()
