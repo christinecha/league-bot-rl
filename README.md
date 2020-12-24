@@ -41,6 +41,8 @@ TODO:
 - ~If channel Id, don't require @leaguebot~
 - @leaguebot reset
 - if wrong channel, provide a hint & way to set! (set-channel)
+- !bubbles - qs for 1,2,3 - does not leave until you manually do it
+- make 4s league 
 
 league
 - teamSize

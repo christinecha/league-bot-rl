@@ -2,6 +2,7 @@ const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const { onQueue, onUnqueue, onClear } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
+const { onBubbles } = require('./bubbles')
 const { onRoast } = require('./roast')
 const { onStatus } = require('./status')
 const messages = require('./messages')
@@ -24,7 +25,9 @@ const COMMANDS = {
   HELP: 'help',
   TEST: 'test',
   CLEAR: 'clear',
-  ROAST: 'roast'
+  ROAST: 'roast',
+  /* SECRET COMMANDS */
+  BUBBLES: 'bubbles',
 }
 
 const ALIAS = {
@@ -86,6 +89,7 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.CLEAR]: onClear,
   [COMMANDS.STATUS]: onStatus,
   [COMMANDS.ROAST]: onRoast,
+  [COMMANDS.BUBBLES]: onBubbles
 }
 
 discord.on('message', async message => {

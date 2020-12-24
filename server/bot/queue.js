@@ -18,19 +18,16 @@ const updateQueue = async (leagueId, context, shouldQueue) => {
   if (!shouldQueue && !queue[userId]) throw (ERRORS.QUEUE_NO_SUCH_USER)
 
   const newValue = shouldQueue ? Date.now() : FieldValue.delete()
-  const update = { [`queue.${userId}`]: newValue }
-  await leagues.update({ id: leagueId, ...update, channelId: context.channel.id })
-
-  const newLeague = {
-    ...league,
-    queue: {
-      ...queue,
-      [userId]: newValue
-    }
-  }
-
-  if (!shouldQueue) delete newLeague.queue[userId]
-  return newLeague
+  const queueUpdate = { [`queue.${userId}`]: newValue }
+  const doNotKickUpdate = !shouldQueue
+    ? { [`doNotKick.${userId}`]: false }
+    : {}
+  await leagues.update({
+    id: leagueId,
+    ...queueUpdate,
+    channelId: context.channel.id,
+    ...doNotKickUpdate,
+  })
 }
 
 const MATCH_MODE = {

@@ -39,9 +39,11 @@ const cleanQueue = async () => {
 
     const queue = league.queue || {}
     const players = Object.keys(queue)
+    const doNotKick = league.doNotKick || {}
 
     const stalePlayers = players.filter(playerId => {
       const timestamp = queue[playerId]
+      if (doNotKick[playerId]) return false
       return (Date.now() - timestamp) >= hourMs
     })
 
