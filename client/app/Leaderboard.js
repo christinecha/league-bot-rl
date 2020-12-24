@@ -51,6 +51,7 @@ const NotFound = () => {
 
 export const Leaderboard = () => {
   const initialSize = [1, 2, 3, 4].find(t => t === parseInt(teamSize)) || 3
+  const [show4s, setShow4s] = useState(false)
   const [size, setSize] = useState(initialSize)
   const [loading, setLoading] = useState(true)
   const [guild, setGuild] = useState()
@@ -61,21 +62,51 @@ export const Leaderboard = () => {
       .finally(() => setLoading(false))
   }, [setGuild])
 
+  const set4s = () => {
+    if (!show4s) setSize(4)
+    else setSize(initialSize)
+    setShow4s(!show4s)
+  }
+
   if (!loading && !guild) return <NotFound />
   if (!guild) return <Loading />
 
   return (
     <div>
-      <h1 className={css`
-        text-transform: uppercase;
+      <section className={css`
+        display: flex;
       `}>
-        {guild.name} Leaderboard
-      </h1>
+        <h1 className={css`
+          flex: 1;
+          text-transform: uppercase;
+        `}>
+          {guild.name} Leaderboard
+        </h1>
+        <span
+          className={css`
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+          `}
+          onClick={set4s}
+        >
+          {show4s ? '👻' : '🏆'}
+        </span>
+      </section>
 
-      <LeagueTab onSelect={setSize} teamSize={1} active={size === 1} />
-      <LeagueTab onSelect={setSize} teamSize={2} active={size === 2} />
-      <LeagueTab onSelect={setSize} teamSize={3} active={size === 3} />
-      <LeagueTab onSelect={setSize} teamSize={4} active={size === 4} />
+      {!show4s && (
+        <>
+          <LeagueTab onSelect={setSize} teamSize={1} active={size === 1} />
+          <LeagueTab onSelect={setSize} teamSize={2} active={size === 2} />
+          <LeagueTab onSelect={setSize} teamSize={3} active={size === 3} />
+        </>
+      )}
+
+      {show4s && (
+        <LeagueTab onSelect={setSize} teamSize={4} active={size === 4} />
+      )}
+
       <br />
       <br />
       <League teamSize={size} guildId={guildId} />

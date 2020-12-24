@@ -31,7 +31,11 @@ const getDeadPlayers = (message, stalePlayers) => {
 }
 
 const cleanQueue = async () => {
-  const allLeagues = await leagues.search({ rules: [] })
+  const allLeagues = await leagues.search({
+    rules: [
+      ["teamSize", "<", 4]
+    ]
+  })
 
   await Promise.all(allLeagues.map(league => {
     // No channel id? No message for you!
@@ -47,7 +51,10 @@ const cleanQueue = async () => {
       return (Date.now() - timestamp) >= hourMs
     })
 
-    if (stalePlayers.length < 1) return Promise.resolve()
+    if (stalePlayers.length < 1) {
+      console.log('Nobody stale.')
+      return Promise.resolve()
+    }
 
     const clean = async () => {
       const channel = await discord.channels.fetch(league.channelId)
