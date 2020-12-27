@@ -4,6 +4,7 @@ const { onQueue, onUnqueue, onClear } = require('./queue')
 const { onReportWin, onReportLoss } = require('./report')
 const { onBubbles } = require('./bubbles')
 const { onRoast } = require('./roast')
+const { onCancel } = require('./cancel')
 const { onStatus } = require('./status')
 const messages = require('./messages')
 const { getTeamSize, getLeagueId } = require('./util')
@@ -26,6 +27,7 @@ const COMMANDS = {
   TEST: 'test',
   CLEAR: 'clear',
   ROAST: 'roast',
+  CANCEL: 'cancel',
   /* SECRET COMMANDS */
   BUBBLES: 'bubbles',
 }
@@ -89,7 +91,10 @@ const MESSAGE_ACTIONS = {
   [COMMANDS.CLEAR]: onClear,
   [COMMANDS.STATUS]: onStatus,
   [COMMANDS.ROAST]: onRoast,
-  [COMMANDS.BUBBLES]: onBubbles
+  [COMMANDS.CANCEL]: onCancel,
+
+  /* SECRET */
+  [COMMANDS.BUBBLES]: onBubbles,
 }
 
 discord.on('message', async message => {
