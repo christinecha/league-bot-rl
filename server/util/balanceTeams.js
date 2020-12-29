@@ -14,7 +14,12 @@ const balanceTeams = users => {
   const teams = { 1: [], 2: [] }
 
   ordered.forEach(user => {
-    const team = scoreTeam(teams[1]) <= scoreTeam(teams[2]) ? 1 : 2
+    let team = scoreTeam(teams[1]) <= scoreTeam(teams[2]) ? 1 : 2
+
+    // Max capacity reached!
+    if (teams[1].length === users.length / 2) team = 2
+    if (teams[2].length === users.length / 2) team = 1
+
     teams[team].push(user)
   })
 
