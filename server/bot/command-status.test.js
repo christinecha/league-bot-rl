@@ -21,7 +21,7 @@ const queue2 = {
 
 const queue3 = {}
 
-const expectQueueMessage = msg =>
+const expectQueueMessage = (msg) =>
   expect.objectContaining({
     fields: [
       expect.objectContaining({
@@ -30,7 +30,7 @@ const expectQueueMessage = msg =>
     ],
   })
 
-beforeAll(async done => {
+beforeAll(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -38,7 +38,7 @@ beforeAll(async done => {
   done()
 })
 
-beforeEach(async done => {
+beforeEach(async (done) => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -53,14 +53,14 @@ beforeEach(async done => {
   done()
 })
 
-afterEach(async done => {
+afterEach(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
   done()
 })
 
-test('@LeagueBot status <teamSize>', async done => {
+test('@LeagueBot status <teamSize>', async (done) => {
   const user1 = 'average-joe'
 
   // Leagues' statuses should be sent.
@@ -85,7 +85,7 @@ test('@LeagueBot status <teamSize>', async done => {
   done()
 })
 
-test('@LeagueBot status', async done => {
+test('@LeagueBot status', async (done) => {
   const user1 = 'average-joe'
 
   // All leagues' statuses should be sent.

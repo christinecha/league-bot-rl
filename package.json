@@ -6,7 +6,7 @@
   "author": "Christine Cha <hello@christinecha.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node ./server/index.js",
+    "start": "NODE_ENV=production node ./server/index.js",
     "build": "webpack",
     "backup:prod": "gcloud firestore export gs://discord-league-bot.appspot.com",
     "dev": "yarn run dev:client & yarn run dev:server",

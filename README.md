@@ -56,9 +56,14 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 ```
 yarn install
-yarn start
 
-# open localhost:4242 for the client app
+# DEV MODE
+yarn run dev
+open http://localhost:4242 (client app)
+
+# PRODUCTION MODE
+yarn run build && yarn start
+
 ```
 
 6. To run tests locally, you'll need to [install Firebase Emulators](https://firebase.google.com/docs/rules/emulator-setup). Then:
@@ -68,5 +73,5 @@ yarn start
 firebase emulators:start
 
 # In another window
-yarn start
+yarn run test
 ```

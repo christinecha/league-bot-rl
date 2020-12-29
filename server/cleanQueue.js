@@ -6,7 +6,7 @@ const FieldValue = admin.firestore.FieldValue
 const hourMs = 1000 * 60 * 60
 
 const getDeadPlayers = (message, stalePlayers) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     let count = 0
     const dead = stalePlayers.slice()
 
@@ -36,7 +36,7 @@ const cleanQueue = async () => {
   })
 
   await Promise.all(
-    allLeagues.map(league => {
+    allLeagues.map((league) => {
       // No channel id? No message for you!
       if (!league.channelId) return Promise.resolve()
 
@@ -44,7 +44,7 @@ const cleanQueue = async () => {
       const players = Object.keys(queue)
       const doNotKick = league.doNotKick || {}
 
-      const stalePlayers = players.filter(playerId => {
+      const stalePlayers = players.filter((playerId) => {
         const timestamp = queue[playerId]
         if (doNotKick[playerId]) return false
         return Date.now() - timestamp >= hourMs
@@ -71,7 +71,7 @@ const cleanQueue = async () => {
         }
 
         const updates = {}
-        dead.forEach(d => {
+        dead.forEach((d) => {
           updates[`queue.${d}`] = FieldValue.delete()
         })
 

@@ -8,6 +8,11 @@ const { onCancel } = require('./cancel')
 const { onStatus } = require('./status')
 const { onNew } = require('./new')
 
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://www.leaguebotrl.com'
+    : 'http://localhost:4242'
+
 const CALLBACKS = {
   [COMMAND_NAME.BUBBLES]: onBubbles,
   [COMMAND_NAME.CANCEL]: onCancel,
@@ -17,7 +22,7 @@ const CALLBACKS = {
   },
   [COMMAND_NAME.LEADERBOARD]: (teamSize, context) => {
     context.channel.send(
-      `https://www.leaguebotrl.com/?guildId=${context.guild.id}${
+      `${BASE_URL}/?guildId=${context.guild.id}${
         teamSize ? `&teamSize=${teamSize}` : ''
       }`
     )

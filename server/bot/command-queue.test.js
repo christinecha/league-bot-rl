@@ -7,7 +7,7 @@ const { discord } = require('../data/util/discord')
 const ERRORS = require('../constants/ERRORS')
 const { league1s, league2s, league3s } = require('../../test/league')
 const { getLeagueStats } = require('../util/getLeagueStats')
-const { usersToString } = require('../util')
+const { usersToString, getTeams } = require('../util')
 const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
@@ -142,13 +142,12 @@ test('@LeagueBot queue 1s', async done => {
   )
 
   const players = Object.keys(match.players)
-  const team1 = players.filter(p => match.players[p].team === 1)
-  const team2 = players.filter(p => match.players[p].team === 2)
+  const teams = getTeams(match.players)
 
   // Match details are correct
   expect(players.length).toBe(2)
-  expect(team1.length).toBe(1)
-  expect(team2.length).toBe(1)
+  expect(teams[1].length).toBe(1)
+  expect(teams[2].length).toBe(1)
   expect(match.teamSize).toBe(1)
 
   // Match details should be sent
@@ -156,8 +155,8 @@ test('@LeagueBot queue 1s', async done => {
     2,
     getMatchMessage({
       id: '11',
-      team1,
-      team2,
+      team1: teams[1],
+      team2: teams[2],
     })
   )
 
@@ -229,13 +228,12 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   )
 
   const players = Object.keys(match.players).sort()
-  const team1 = players.filter(p => match.players[p].team === 1)
-  const team2 = players.filter(p => match.players[p].team === 2)
+  const teams = getTeams(match.players)
 
   // Match details are correct
   expect(players.length).toBe(4)
-  expect(team1.length).toBe(2)
-  expect(team2.length).toBe(2)
+  expect(teams[1].length).toBe(2)
+  expect(teams[2].length).toBe(2)
   expect(match.teamSize).toBe(2)
 
   // Match details should be sent
@@ -243,8 +241,8 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
     5,
     getMatchMessage({
       id: '21',
-      team1,
-      team2,
+      team1: teams[1],
+      team2: teams[2],
     })
   )
 
@@ -255,13 +253,13 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   await discord.trigger('message', msg(users[3], `<@!${BOT_ID}> queue 2s`))
 
   const match2 = await matches.get(matchId)
-  const players2 = Object.keys(match.players).sort()
+  const teams2 = getTeams(match2.players)
 
   expect(send).toHaveBeenCalledWith(
     getMatchMessage({
       id: '22',
-      team1: players2.filter(p => match2.players[p].team === 1),
-      team2: players2.filter(p => match2.players[p].team === 2),
+      team1: teams2[1],
+      team2: teams2[2],
     })
   )
 
@@ -327,13 +325,12 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   )
 
   const players = Object.keys(match.players).sort()
-  const team1 = players.filter(p => match.players[p].team === 1)
-  const team2 = players.filter(p => match.players[p].team === 2)
+  const teams = getTeams(match.players)
 
   // Match details are correct
   expect(players.length).toBe(6)
-  expect(team1.length).toBe(3)
-  expect(team2.length).toBe(3)
+  expect(teams[1].length).toBe(3)
+  expect(teams[2].length).toBe(3)
   expect(match.teamSize).toBe(3)
 
   // Match details should be sent
@@ -341,8 +338,8 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
     7,
     getMatchMessage({
       id: '31',
-      team1,
-      team2,
+      team1: teams[1],
+      team2: teams[2],
     })
   )
 
@@ -355,13 +352,13 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   await discord.trigger('message', msg(users[5], `<@!${BOT_ID}> queue 3s`))
 
   const match2 = await matches.get(matchId)
-  const players2 = Object.keys(match.players).sort()
+  const teams2 = getTeams(match2.players)
 
   expect(send).toHaveBeenCalledWith(
     getMatchMessage({
       id: '32',
-      team1: players2.filter(p => match2.players[p].team === 1),
-      team2: players2.filter(p => match2.players[p].team === 2),
+      team1: teams2[1],
+      team2: teams2[2],
     })
   )
 
@@ -387,12 +384,10 @@ test('@LeagueBot queue 2s [auto]', async done => {
   await discord.trigger('message', msg(users[3], `<@!${BOT_ID}> queue 2s`))
 
   let match = await matches.get(matchId)
-  let players = Object.keys(match.players).sort()
-  let team1 = players.filter(p => match.players[p].team === 1)
-  let team2 = players.filter(p => match.players[p].team === 2)
+  let teams = getTeams(match.players)
 
-  expect(team1).toStrictEqual([users[3], users[0]])
-  expect(team2).toStrictEqual([users[2], users[1]])
+  expect(teams[1]).toStrictEqual([users[3], users[0]])
+  expect(teams[2]).toStrictEqual([users[2], users[1]])
 
   // Same RL rank? Use win ratio to determine teams.
   discord.users = {
@@ -416,12 +411,10 @@ test('@LeagueBot queue 2s [auto]', async done => {
 
   matchId = `${league2s.id}-2`
   match = await matches.get(matchId)
-  players = Object.keys(match.players).sort()
-  team1 = players.filter(p => match.players[p].team === 1)
-  team2 = players.filter(p => match.players[p].team === 2)
+  teams = getTeams(match.players)
 
-  expect(team1).toStrictEqual([users[2], users[0]])
-  expect(team2).toStrictEqual([users[3], users[1]])
+  expect(teams[1]).toStrictEqual([users[2], users[0]])
+  expect(teams[2]).toStrictEqual([users[3], users[1]])
 
   done()
 })

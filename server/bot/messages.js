@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
 const { getCommandsMarkdown } = require('../../shared/getCommandsMarkdown')
-const { usersToString, queueToString } = require('../util')
+const { usersToString, queueToString, getTeams } = require('../util')
 
 const COLOR_PRIMARY = '#4c33ff'
 
@@ -25,12 +25,7 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 
 const CREATE_MATCH = match => {
   const { players, teamSize, mode } = match
-  const team1 = Object.keys(players)
-    .sort()
-    .filter(p => players[p].team === 1)
-  const team2 = Object.keys(players)
-    .sort()
-    .filter(p => players[p].team === 2)
+  const teams = getTeams(players)
   const { key } = parseMatchId(match.id)
 
   return new Discord.MessageEmbed()
@@ -38,8 +33,8 @@ const CREATE_MATCH = match => {
     .setTitle(`${teamSize}s Match`)
     .setDescription(`Match ID: ${key}`)
     .addFields(
-      { name: 'Team 1', value: usersToString(team1) },
-      { name: 'Team 2', value: usersToString(team2) }
+      { name: 'Team 1', value: usersToString(teams[1]) },
+      { name: 'Team 2', value: usersToString(teams[2]) }
     )
     .setTimestamp()
     .setFooter(

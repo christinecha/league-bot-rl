@@ -4,7 +4,7 @@ const ERRORS = require('../constants/ERRORS')
 const { generateMatchId } = require('../data/matchId')
 const { getLeagueStats } = require('../util/getLeagueStats')
 const { getGuildUser } = require('../util/getGuildUser')
-const { getTeamCombos } = require('./getTeamCombos')
+const { getTeamCombos } = require('../util/getTeamCombos')
 
 const MATCH_MODE = {
   RANDOM: 'random',

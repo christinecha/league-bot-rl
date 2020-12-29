@@ -26,7 +26,10 @@ app.post('/api/matches', async (req, res) => {
 
   try {
     const results = await matches.search({
-      rules: [['teamSize', '==', teamSize], ['league', '==', league]],
+      rules: [
+        ['teamSize', '==', teamSize],
+        ['league', '==', league],
+      ],
     })
 
     res.send(results)

@@ -1,5 +1,6 @@
 const matches = require('../data/matches')
 const { formMatchId } = require('../data/matchId')
+const { getTeams } = require('../util')
 const { getInsult, getCompliment } = require('../util/getCommentary')
 const ERRORS = require('../constants/ERRORS')
 
@@ -15,18 +16,15 @@ const getRandom = arr => {
 }
 
 const getCommentary = match => {
+  const teams = getTeams(match.players)
+  const loser = match.winner === 1 ? 2 : 1
+
   if (Math.random() > 0.5) {
-    const losers = Object.keys(match.players).filter(
-      p => match.players[p].team !== match.winner
-    )
-    const target = getRandom(losers)
+    const target = getRandom(teams[loser])
     return getInsult({ userId: target, teamSize: match.teamSize })
   }
 
-  const winners = Object.keys(match.players).filter(
-    p => match.players[p].team === match.winner
-  )
-  const target = getRandom(winners)
+  const target = getRandom(teams[match.winner])
   return getCompliment({ userId: target, teamSize: match.teamSize })
 }
 

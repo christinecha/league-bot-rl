@@ -23,9 +23,18 @@ const queueToString = queue =>
     .map(p => `<@!${p}>`)
     .join(' ')
 
+const getTeams = players => {
+  const playerIds = Object.keys(players)
+  const team1 = playerIds.sort().filter(p => players[p].team === 1)
+  const team2 = playerIds.sort().filter(p => players[p].team === 2)
+
+  return { 1: team1, 2: team2 }
+}
+
 module.exports = {
   getTeamSize,
   getLeagueId,
   usersToString,
   queueToString,
+  getTeams,
 }

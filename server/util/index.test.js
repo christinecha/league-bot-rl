@@ -1,5 +1,11 @@
 const ERRORS = require('../constants/ERRORS')
-const { getTeamSize, getLeagueId, usersToString, queueToString } = require('.')
+const {
+  getTeamSize,
+  getTeams,
+  getLeagueId,
+  usersToString,
+  queueToString,
+} = require('.')
 
 test('getTeamSize', () => {
   // Expected
@@ -55,4 +61,27 @@ test('queueToString', () => {
   expect(queueToString(queue)).toMatchInlineSnapshot(
     `"<@!fart> <@!bart> <@!art>"`
   )
+})
+
+test('getTeams', () => {
+  const players = {
+    art: { team: 1 },
+    fart: { team: 1 },
+    wart: { team: 2 },
+    bart: { team: 2 },
+  }
+
+  // Expected
+  expect(getTeams(players)).toMatchInlineSnapshot(`
+    Object {
+      "1": Array [
+        "art",
+        "fart",
+      ],
+      "2": Array [
+        "bart",
+        "wart",
+      ],
+    }
+  `)
 })
