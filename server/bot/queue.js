@@ -55,7 +55,7 @@ const getMatchMode = async ({ message, playerIds }) => {
       if (selected) modes[selected] += 1
 
       const official = Object.keys(modes).find(
-        k => modes[k] >= playerIds.length * 0.5
+        (k) => modes[k] >= playerIds.length * 0.5
       )
       if (!official) return
 
@@ -71,7 +71,7 @@ const getMatchMode = async ({ message, playerIds }) => {
   })
 }
 
-const getMatchPlayers = async leagueId => {
+const getMatchPlayers = async (leagueId) => {
   const league = await leagues.get(leagueId)
   const { queue, teamSize } = league
 
@@ -81,7 +81,7 @@ const getMatchPlayers = async leagueId => {
   // Remove match players from queue.
   const queueUpdates = {}
   queuedPlayers.forEach(
-    id => (queueUpdates[`queue.${id}`] = FieldValue.delete())
+    (id) => (queueUpdates[`queue.${id}`] = FieldValue.delete())
   )
   await leagues.update({ id: league.id, ...queueUpdates })
   return queuedPlayers
@@ -139,8 +139,8 @@ const onQueue = async (leagueName, context) => {
 const onUnqueue = async (leagueName, context) => {
   if (!leagueName) {
     const promises = TEAM_SIZES.map(
-      size =>
-        new Promise(resolve => {
+      (size) =>
+        new Promise((resolve) => {
           onUpdateQueue(size, false, context, { hideMessage: true }).finally(
             resolve
           )
