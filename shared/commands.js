@@ -1,58 +1,87 @@
+const COMMAND_NAME = {
+  QUEUE: 'QUEUE',
+  STATUS: 'STATUS',
+  LEAVE: 'LEAVE',
+  NEW: 'NEW',
+  WIN: 'WIN',
+  LOSS: 'LOSS',
+  LEADERBOARD: 'LEADERBOARD',
+  HELP: 'HELP',
+  CLEAR: 'CLEAR',
+  CANCEL: 'CANCEL',
+  ROAST: 'ROAST',
+  BUBBLES: 'BUBBLES',
+}
+
 const COMMANDS = {
-  QUEUE: {
+  [COMMAND_NAME.QUEUE]: {
     command: 'queue',
     aliases: ['q'],
     argument: 'league',
     description: 'Join the queue for a specific league',
   },
-  STATUS: {
+  [COMMAND_NAME.STATUS]: {
     command: 'status',
     aliases: ['s'],
     argument: '[league]',
     description: 'Show the current queue(s)',
   },
-  LEAVE: {
+  [COMMAND_NAME.LEAVE]: {
     command: 'leave',
     aliases: ['l'],
     argument: '[league]',
     description: 'Leave the queue for a specific league, or all if unspecified',
   },
-  NEW: {
+  [COMMAND_NAME.NEW]: {
     command: 'new',
     aliases: ['n'],
     argument: 'teamSize',
     description: 'Initialize a new league for a specific team size.',
   },
-  WIN: {
+  [COMMAND_NAME.WIN]: {
     command: 'win',
     aliases: ['won'],
     argument: 'matchId',
     description: 'Report that you won this match.',
   },
-  LOSS: {
+  [COMMAND_NAME.LOSS]: {
     command: 'loss',
     aliases: ['lose', 'lost'],
     argument: 'matchId',
     description: 'Report that you lost this match.',
   },
-  LEADERBOARD: {
+  [COMMAND_NAME.LEADERBOARD]: {
     command: 'leaderboard',
     aliases: [],
     argument: '[league]',
     description: 'Show me the leaderboard!',
   },
-  HELP: {
+  [COMMAND_NAME.HELP]: {
     command: 'help',
     aliases: ['h'],
     argument: '',
     description: 'Show me all the commands.',
   },
-  CLEAR: {
+  [COMMAND_NAME.CLEAR]: {
     command: 'clear',
     aliases: ['c'],
     argument: 'league',
     description: 'Clear the queue for a specific league.',
   },
+  [COMMAND_NAME.CANCEL]: {
+    command: 'cancel',
+    argument: 'matchId',
+    description: 'Cancel a match.',
+  },
+  [COMMAND_NAME.ROAST]: {
+    isHidden: true,
+    command: 'roast',
+    argument: '@user',
+  },
+  [COMMAND_NAME.BUBBLES]: {
+    isHidden: true,
+    command: 'bubbles',
+  },
 }
 
-module.exports = { COMMANDS }
+module.exports = { COMMANDS, COMMAND_NAME }
