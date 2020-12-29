@@ -20,8 +20,12 @@ const getInsult = ({ userId, teamSize }) => {
 
   if (teamSize !== undefined) {
     insults = insults.concat([
-      `Tough luck, <@!${userId}>! ${teamSize - 1}v${teamSize + 1} is pretty hard.`,
-      `It's supposed to be a ${teamSize}v${teamSize}, <@!${userId}>, not a ${teamSize - 1}v${teamSize + 1}.`
+      `Tough luck, <@!${userId}>! ${teamSize - 1}v${
+        teamSize + 1
+      } is pretty hard.`,
+      `It's supposed to be a ${teamSize}v${teamSize}, <@!${userId}>, not a ${
+        teamSize - 1
+      }v${teamSize + 1}.`,
     ])
   }
 
@@ -45,5 +49,5 @@ const getCompliment = ({ userId }) => {
 
 module.exports = {
   getInsult,
-  getCompliment
+  getCompliment,
 }

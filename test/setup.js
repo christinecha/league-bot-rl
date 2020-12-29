@@ -14,26 +14,30 @@ Discord.Client = jest.fn(() => {
     users: {},
     callbacks: {},
     callbacksOnce: {},
-    login: () => { },
+    login: () => {},
     guilds: {
-      fetch: (guildId) => Promise.resolve({
-        id: guildId,
-        members: {
-          fetch: (userId) => Promise.resolve({
-            user: {
-              id: userId,
-              avatarURL: () => ''
-            },
-            roles: self.users[userId] ? {
-              cache: self.users[userId].roles
-            } : {}
-          })
-        }
-      })
+      fetch: (guildId) =>
+        Promise.resolve({
+          id: guildId,
+          members: {
+            fetch: (userId) =>
+              Promise.resolve({
+                user: {
+                  id: userId,
+                  avatarURL: () => '',
+                },
+                roles: self.users[userId]
+                  ? {
+                      cache: self.users[userId].roles,
+                    }
+                  : {},
+              }),
+          },
+        }),
     },
     trigger: function (evt, data) {
       if (!this.callbacks[evt]) return Promise.resolve()
-      const promises = this.callbacks[evt].map(cb => cb(data))
+      const promises = this.callbacks[evt].map((cb) => cb(data))
       return Promise.all(promises)
     },
     on: function (evt, callback) {
@@ -44,7 +48,7 @@ Discord.Client = jest.fn(() => {
     once: function (evt, callback) {
       this.callbacksOnce[evt] = this.callbacksOnce[evt] || []
       this.callbacksOnce[evt].push(callback)
-    }
+    },
   }
 
   return self
@@ -53,8 +57,12 @@ Discord.Client = jest.fn(() => {
 Discord.MessageEmbed = jest.fn(() => {
   return {
     fields: [],
-    setColor: function () { return this },
-    setTimestamp: function () { return this },
+    setColor: function () {
+      return this
+    },
+    setTimestamp: function () {
+      return this
+    },
     setTitle: function (data) {
       this.title = data
       return this
@@ -64,7 +72,7 @@ Discord.MessageEmbed = jest.fn(() => {
       return this
     },
     addFields: function (...args) {
-      args.forEach(arg => {
+      args.forEach((arg) => {
         this.fields.push(arg)
       })
       return this

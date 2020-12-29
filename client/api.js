@@ -1,43 +1,39 @@
 import axios from 'axios'
 
-export const getMatches = ({ teamSize, league }) => (
+export const getMatches = ({ teamSize, league }) =>
   axios({
     method: 'POST',
     url: '/api/matches',
     data: {
       teamSize,
-      league
-    }
+      league,
+    },
   })
-)
 
-export const getStats = ({ leagueId }) => (
+export const getStats = ({ leagueId }) =>
   axios({
     method: 'POST',
     url: '/api/stats',
     data: {
-      leagueId
-    }
+      leagueId,
+    },
   })
-)
 
-export const getGuildUser = ({ userId, guildId }) => (
+export const getGuildUser = ({ userId, guildId }) =>
   axios({
     method: 'POST',
     url: '/api/guild-user',
     data: {
       userId,
-      guildId
-    }
+      guildId,
+    },
   })
-)
 
-export const getGuild = ({ guildId }) => (
+export const getGuild = ({ guildId }) =>
   axios({
     method: 'POST',
     url: '/api/guild',
     data: {
-      id: guildId
-    }
+      id: guildId,
+    },
   })
-)

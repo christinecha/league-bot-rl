@@ -4,7 +4,7 @@ const PUBLIC_DIR = path.resolve(__dirname, 'client/public')
 
 module.exports = {
   entry: {
-    "index.js": path.resolve(__dirname, 'client/index.js')
+    'index.js': path.resolve(__dirname, 'client/index.js'),
   },
   mode: process.env.NODE_ENV,
   devServer: {
@@ -14,9 +14,9 @@ module.exports = {
     historyApiFallback: true,
     proxy: {
       '/api/*': {
-        target: 'http://localhost:3333'
-      }
-    }
+        target: 'http://localhost:3333',
+      },
+    },
   },
   output: {
     path: path.resolve(PUBLIC_DIR),
@@ -28,17 +28,12 @@ module.exports = {
       {
         test: /\.js?$/,
         exclude: /node_modules/,
-        use: [
-          { loader: 'babel-loader' }
-        ],
+        use: [{ loader: 'babel-loader' }],
       },
       {
         test: /\.css?$/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' }
-        ],
-      }
-    ]
+        use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+      },
+    ],
   },
 }

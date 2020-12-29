@@ -23,62 +23,71 @@ const getDeadPlayers = (message, stalePlayers) => {
     }
 
     const tenMinutes = 1000 * 60 * 10
-    message.awaitReactions(filter, { time: tenMinutes })
-      .then(() => {
-        resolve(dead)
-      })
+    message.awaitReactions(filter, { time: tenMinutes }).then(() => {
+      resolve(dead)
+    })
   })
 }
 
 const cleanQueue = async () => {
   const allLeagues = await leagues.search({
-    rules: [
-      ["teamSize", "<", 4]
-    ]
+    rules: [['teamSize', '<', 4]],
   })
 
-  await Promise.all(allLeagues.map(league => {
-    // No channel id? No message for you!
-    if (!league.channelId) return Promise.resolve()
+  await Promise.all(
+    allLeagues.map((league) => {
+      // No channel id? No message for you!
+      if (!league.channelId) return Promise.resolve()
 
-    const queue = league.queue || {}
-    const players = Object.keys(queue)
-    const doNotKick = league.doNotKick || {}
+      const queue = league.queue || {}
+      const players = Object.keys(queue)
+      const doNotKick = league.doNotKick || {}
 
-    const stalePlayers = players.filter(playerId => {
-      const timestamp = queue[playerId]
-      if (doNotKick[playerId]) return false
-      return (Date.now() - timestamp) >= hourMs
-    })
-
-    if (stalePlayers.length < 1) {
-      console.log('Nobody stale.')
-      return Promise.resolve()
-    }
-
-    const clean = async () => {
-      const channel = await discord.channels.fetch(league.channelId)
-      const message = await channel.send(`Still queueing for ${league.teamSize}s, ${stalePlayers.map(p => `<@!${p}>`).join(' ')}? React with any emoji to stay in the queue.`)
-
-      message.react('🌞')
-      const dead = await getDeadPlayers(message, stalePlayers)
-      if (!dead.length) {
-        console.log('Nobody dead.')
-        return
-      }
-
-      const updates = {}
-      dead.forEach(d => {
-        updates[`queue.${d}`] = FieldValue.delete()
+      const stalePlayers = players.filter((playerId) => {
+        const timestamp = queue[playerId]
+        if (doNotKick[playerId]) return false
+        return Date.now() - timestamp >= hourMs
       })
 
-      await leagues.update({ id: league.id, ...updates })
-      const verb = dead.length > 1 ? 'have' : 'has'
-      await channel.send(`${dead.map(p => `<@!${p}>`).join(' ')} ${verb} been removed from the ${league.teamSize}s queue.`)
-    }
+      if (stalePlayers.length < 1) {
+        console.log('Nobody stale.')
+        return Promise.resolve()
+      }
 
-    return clean()
-  }))
+      const clean = async () => {
+        const channel = await discord.channels.fetch(league.channelId)
+        const message = await channel.send(
+          `Still queueing for ${league.teamSize}s, ${stalePlayers
+            .map((p) => `<@!${p}>`)
+            .join(' ')}? React with any emoji to stay in the queue.`
+        )
+
+        message.react('🌞')
+        const dead = await getDeadPlayers(message, stalePlayers)
+        if (!dead.length) {
+          console.log('Nobody dead.')
+          return
+        }
+
+        const updates = {}
+        dead.forEach((d) => {
+          updates[`queue.${d}`] = FieldValue.delete()
+        })
+
+        await leagues.update({ id: league.id, ...updates })
+        const verb = dead.length > 1 ? 'have' : 'has'
+        await channel.send(
+          `${dead
+            .map((p) => `<@!${p}>`)
+            .join(' ')} ${verb} been removed from the ${
+            league.teamSize
+          }s queue.`
+        )
+      }
+
+      return clean()
+    })
+  )
 }
 
 module.exports = cleanQueue

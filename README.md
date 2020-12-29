@@ -43,3 +43,4 @@ TODO:
 - if wrong channel, provide a hint & way to set! (set-channel)
 - ~!bubbles - qs for 1,2,3 - does not leave until you manually do it~
 - ~make 4s league~
+- If you get a match for another playlist, it should remove you from other lists

@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(PUBLIC_DIR, 'index.html'));
+  res.sendFile(path.resolve(PUBLIC_DIR, 'index.html'))
 })
 
 app.post('/api/matches', async (req, res) => {
@@ -29,7 +29,7 @@ app.post('/api/matches', async (req, res) => {
       rules: [
         ['teamSize', '==', teamSize],
         ['league', '==', league],
-      ]
+      ],
     })
 
     res.send(results)
