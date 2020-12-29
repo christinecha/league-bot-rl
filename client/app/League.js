@@ -1,19 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { getMatches, getGuildUser, getStats } from '../api';
+import { getGuildUser, getStats } from '../api'
 import { useTable, useSortBy } from 'react-table'
 import styled from '@emotion/styled'
 import { css } from '@emotion/css'
-
-const RANK_ROLES = [
-  'Bronze',
-  'Gold',
-  'Silver',
-  'Platinum',
-  'Diamond',
-  'Champion',
-  'Grand Champion',
-  'Supersonic Legend',
-]
 
 const DiscordUser = ({ userId, guildId }) => {
   const [user, setUser] = useState({})
@@ -25,10 +14,12 @@ const DiscordUser = ({ userId, guildId }) => {
   const imgSrc = user.avatarURL || ''
 
   return (
-    <div className={css`
-      display: flex;
-      align-items: center;
-    `}>
+    <div
+      className={css`
+        display: flex;
+        align-items: center;
+      `}
+    >
       <img
         src={imgSrc}
         alt={`Avatar for user ${user.username || userId}`}
@@ -39,7 +30,8 @@ const DiscordUser = ({ userId, guildId }) => {
           display: ${imgSrc ? 'inline' : 'none'};
         `}
       />
-      {user.username || userId}{'  '}
+      {user.username || userId}
+      {'  '}
       {/* {rank && rank.name} */}
     </div>
   )
@@ -60,7 +52,7 @@ const Styles = styled.div`
     }
 
     th {
-      background: rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.3);
       color: white;
       text-transform: uppercase;
       font-size: 14px;
@@ -89,12 +81,15 @@ const Table = ({ columns, data }) => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({
-    columns,
-    data,
-    initialState: { sortBy: [{ id: 'place' }] },
-    disableSortRemove: true,
-  }, useSortBy)
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { sortBy: [{ id: 'place' }] },
+      disableSortRemove: true,
+    },
+    useSortBy
+  )
 
   return (
     <table {...getTableProps()}>
@@ -105,11 +100,7 @@ const Table = ({ columns, data }) => {
               <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                 {column.render('Header')}
                 <span>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? ' ↓'
-                      : ' ↑'
-                    : ''}
+                  {column.isSorted ? (column.isSortedDesc ? ' ↓' : ' ↑') : ''}
                 </span>
               </th>
             ))}
@@ -147,12 +138,12 @@ const League = ({ teamSize, guildId }) => {
       {
         Header: '#',
         accessor: 'place',
-        id: 'place'
+        id: 'place',
       },
       {
         Header: 'Player',
         accessor: 'id',
-        Cell: ({ value }) => <DiscordUser userId={value} guildId={guildId} />
+        Cell: ({ value }) => <DiscordUser userId={value} guildId={guildId} />,
       },
       {
         Header: 'Stats',
@@ -172,7 +163,7 @@ const League = ({ teamSize, guildId }) => {
           {
             Header: 'Win %',
             accessor: 'ratio',
-            Cell: ({ value }) => `${(value * 100).toFixed(1)}%`
+            Cell: ({ value }) => `${(value * 100).toFixed(1)}%`,
           },
         ],
       },

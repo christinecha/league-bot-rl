@@ -5,6 +5,7 @@ const { generateMatchId } = require('../data/matchId')
 const { getLeagueStats } = require('../util/getLeagueStats')
 const { getGuildUser } = require('../util/getGuildUser')
 const { getTeamCombos } = require('../util/getTeamCombos')
+const { balanceTeams } = require('../util/balanceTeams')
 
 const MATCH_MODE = {
   RANDOM: 'random',
@@ -52,19 +53,16 @@ const createMatch = async ({
         queue.map(id => getGuildUser({ userId: id, guildId }))
       )
 
-      const score = user => {
-        const ratio = stats[user.id] ? stats[user.id].ratio : 0.5
-        if (!user.rank) return ratio
-        return user.rank / 13 + ratio
-      }
+      const teams = balanceTeams(
+        users.map(u => ({
+          id: u.id,
+          ratio: stats[u.id] ? stats[u.id].ratio : 0.5,
+          rank: u.rank,
+        }))
+      )
 
-      const ordered = users.sort((a, b) => {
-        return score(a) > score(b) ? 1 : -1
-      })
-
-      ordered.forEach((user, i) => {
-        players[user.id] = { team: BALANCE[teamSize][i] }
-      })
+      teams[1].forEach(p => (players[p.id] = { team: 1 }))
+      teams[2].forEach(p => (players[p.id] = { team: 2 }))
     }
 
     const matchId = await generateMatchId({ leagueId })
