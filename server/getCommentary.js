@@ -1,4 +1,4 @@
-const getRandom = arr => {
+const getRandom = (arr) => {
   const rand = Math.floor(Math.random() * arr.length)
   return arr[rand]
 }
@@ -22,8 +22,9 @@ const getInsult = ({ userId, teamSize }) => {
   if (teamSize !== undefined) {
     insults = insults.concat([
       `Tough luck, <@!${userId}>! 1v${teamSize * 2 - 1} is pretty hard.`,
-      `It's supposed to be a ${teamSize}v${teamSize}, <@!${userId}>, not a ${teamSize -
-        1}v${teamSize + 1}.`,
+      `It's supposed to be a ${teamSize}v${teamSize}, <@!${userId}>, not a ${
+        teamSize - 1
+      }v${teamSize + 1}.`,
     ])
   }
 

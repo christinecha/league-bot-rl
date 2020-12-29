@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
-const { COMMANDS } = require('../../shared/commands')
+const { getCommandsMarkdown } = require('../../shared/getCommandsMarkdown')
 
 const LEAVE_QUEUE = ({ userId, teamSize }) => {
   if (teamSize) {
@@ -59,16 +59,6 @@ const QUEUE = league => {
 }
 
 const HELP = () => {
-  const commands = Object.values(COMMANDS)
-    .filter(c => !c.isHidden)
-    .sort((a, b) => (a.command > b.command ? 1 : -1))
-    .map(c => {
-      const aliases =
-        c.aliases && c.aliases.length ? ` | ${c.aliases.join(' | ')}` : ''
-
-      const args = c.argument ? ` <${c.argument}>` : ''
-      return `- \`@LeagueBot ${c.command}${aliases}${args}\` - ${c.description}`
-    })
   return new Discord.MessageEmbed().setColor('#0099ff').addFields(
     {
       name: 'Variables',
@@ -79,7 +69,7 @@ const HELP = () => {
     },
     {
       name: 'Commands',
-      value: commands,
+      value: getCommandsMarkdown(),
     },
     {
       name: 'Advanced',

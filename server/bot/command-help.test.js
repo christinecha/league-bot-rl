@@ -1,15 +1,13 @@
 // Start mock server!
 require('./index')
 const firebase = require('@firebase/rules-unit-testing')
-const leagues = require('../data/leagues')
 const { discord } = require('../data/util/discord')
-const ERRORS = require('./constants/ERRORS')
-const { league1s, league2s, league3s } = require('../../test/league')
+const { getCommandsMarkdown } = require('../../shared/getCommandsMarkdown')
 const BOT_ID = process.env.BOT_ID
 
-let send, msg, react
+let send, msg
 
-beforeAll(async (done) => {
+beforeAll(async done => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -17,7 +15,7 @@ beforeAll(async (done) => {
   done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async done => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -29,12 +27,16 @@ beforeEach(async (done) => {
   done()
 })
 
-afterEach(async (done) => {
+afterEach(async done => {
   done()
 })
 
-test('@LeagueBot help', async (done) => {
+test('@LeagueBot help', async done => {
+  const commandsMarkdown = getCommandsMarkdown()
   await discord.trigger('message', msg('flips', `<@!${BOT_ID}> help`))
+
+  // Commands
+  expect(commandsMarkdown).toMatchSnapshot()
 
   // Confirmations should be sent.
   expect(send).toHaveBeenCalledWith(
@@ -45,6 +47,7 @@ test('@LeagueBot help', async (done) => {
         }),
         expect.objectContaining({
           name: 'Commands',
+          value: commandsMarkdown,
         }),
       ]),
     })
