@@ -3,7 +3,7 @@ const RL_RANKS = require('../constants/RL_RANKS')
 const scoreUser = user => {
   const winRatio = user.ratio ? user.ratio : 0.5
   const rankRatio = user.rank ? user.rank / RL_RANKS['SSL'] : 0.5
-  return rankRatio + winRatio
+  return (rankRatio + winRatio) / 2
 }
 
 const scoreTeam = arr => arr.reduce((s, user) => s + scoreUser(user), 0)
