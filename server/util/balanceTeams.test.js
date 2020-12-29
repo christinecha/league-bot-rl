@@ -51,18 +51,22 @@ test('balanceTeams - by rank & ratio', () => {
     { id: 'steeler', rank: RL_RANKS['Champ'], ratio: 0.9 },
     { id: 'hoody', rank: RL_RANKS['GC'], ratio: 0.1 },
     { id: 'flips', rank: RL_RANKS['Diamond'], ratio: 0.9 },
+    { id: 'cha', rank: RL_RANKS['Plat'], ratio: 0.4 },
+    { id: 'cheese', rank: RL_RANKS['Diamond'], ratio: 0.7 },
   ]
   const teams = balanceTeams(users)
   expect(teams[1].map((t) => t.id)).toMatchInlineSnapshot(`
     Array [
       "steeler",
-      "space",
+      "hoody",
+      "cha",
     ]
   `)
   expect(teams[2].map((t) => t.id)).toMatchInlineSnapshot(`
     Array [
       "flips",
-      "hoody",
+      "cheese",
+      "space",
     ]
   `)
 })
