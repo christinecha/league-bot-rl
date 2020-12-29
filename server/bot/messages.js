@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
+const { COMMANDS } = require('../../shared/commands')
 
 const LEAVE_QUEUE = ({ userId, teamSize }) => {
   if (teamSize) {
@@ -10,23 +11,23 @@ const LEAVE_QUEUE = ({ userId, teamSize }) => {
 }
 
 const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
-  return new Discord.MessageEmbed()
-    .setColor('#0099ff')
-    .addFields(
-      {
-        name: `We've got a ${teamSize}s match!`,
-        value: `${playerIds.map(id => `<@!${id}>`).join(' ')}
+  return new Discord.MessageEmbed().setColor('#0099ff').addFields({
+    name: `We've got a ${teamSize}s match!`,
+    value: `${playerIds.map(id => `<@!${id}>`).join(' ')}
 
 Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
-`
-      },
-    )
+`,
+  })
 }
 
-const CREATE_MATCH = (match) => {
+const CREATE_MATCH = match => {
   const { players, teamSize, mode } = match
-  const team1 = Object.keys(players).sort().filter(p => players[p].team === 1)
-  const team2 = Object.keys(players).sort().filter(p => players[p].team === 2)
+  const team1 = Object.keys(players)
+    .sort()
+    .filter(p => players[p].team === 1)
+  const team2 = Object.keys(players)
+    .sort()
+    .filter(p => players[p].team === 2)
   const { key } = parseMatchId(match.id)
 
   return new Discord.MessageEmbed()
@@ -35,13 +36,15 @@ const CREATE_MATCH = (match) => {
     .setDescription(`Match ID: ${key}`)
     .addFields(
       { name: 'Team 1', value: team1.map(id => `<@!${id}>`).join(' ') },
-      { name: 'Team 2', value: team2.map(id => `<@!${id}>`).join(' ') },
+      { name: 'Team 2', value: team2.map(id => `<@!${id}>`).join(' ') }
     )
     .setTimestamp()
-    .setFooter(`Teams were ${mode === 'auto' ? 'auto-balanced' : 'selected randomly'}`);
+    .setFooter(
+      `Teams were ${mode === 'auto' ? 'auto-balanced' : 'selected randomly'}`
+    )
 }
 
-const QUEUE = (league) => {
+const QUEUE = league => {
   const { queue, teamSize } = league
   const players = Object.keys(queue).sort((a, b) => queue[a] - queue[b])
 
@@ -51,39 +54,40 @@ const QUEUE = (league) => {
 
   return new Discord.MessageEmbed()
     .setColor('#0099ff')
-    .addFields(
-      { name: `${teamSize}s League Queue`, value: queueList },
-    )
+    .addFields({ name: `${teamSize}s League Queue`, value: queueList })
     .setTimestamp()
 }
 
 const HELP = () => {
-  return new Discord.MessageEmbed()
-    .setColor('#0099ff')
-    .addFields(
-      {
-        name: 'Variables', value: `
-- \`league-name\` - Either "1s", "2s", or "3s".
-- \`match-id\` - The "id" specified in a created match.
-      `},
-      {
-        name: 'Commands', value: `
-- \`@LeagueBot new | n [league-name]\` - Create new league
-- \`@LeagueBot queue | q [league-name]\` - Join queue for a league
-- \`@LeagueBot leave | l\` - Leave all league queues
-- \`@LeagueBot leave | l [league-name]\` - Leave queue for a league
-- \`@LeagueBot status | s\` - Show the queues of all leagues
-- \`@LeagueBot status | s [league-name]\` - Show the queue for a league
-- \`@LeagueBot clear [league-name]\` - Clear the queue for a league
-- \`@LeagueBot leaderboard [league-name]\` - Show leaderboard for a league
-- \`@LeagueBot win | won [match-id]\` - Report match as a win for your team!
-- \`@LeagueBot lose | loss | lost [match-id]\` - Report match as a loss. :(
-      `},
-      {
-        name: 'Advanced', value: `
+  const commands = Object.values(COMMANDS)
+    .filter(c => !c.isHidden)
+    .sort((a, b) => (a.command > b.command ? 1 : -1))
+    .map(c => {
+      const aliases =
+        c.aliases && c.aliases.length ? ` | ${c.aliases.join(' | ')}` : ''
+
+      const args = c.argument ? ` <${c.argument}>` : ''
+      return `- \`@LeagueBot ${c.command}${aliases}${args}\` - ${c.description}`
+    })
+  return new Discord.MessageEmbed().setColor('#0099ff').addFields(
+    {
+      name: 'Variables',
+      value: `
+- \`league\` - Either "1s", "2s", or "3s".
+- \`matchId\` - The "id" specified in a created match.
+      `,
+    },
+    {
+      name: 'Commands',
+      value: commands,
+    },
+    {
+      name: 'Advanced',
+      value: `
 - Mentioning \`@LeagueBot\` is optional in the channel that has most recently been queued in. As a shortcut in this channel, you can use a \`!\` prefix instead, like \`!leave 2s\`, \`!q 1\` or \`!leaderboard\`
-      `},
-    )
+      `,
+    }
+  )
 }
 
 module.exports = {
@@ -91,5 +95,5 @@ module.exports = {
   GET_MATCH_MODE,
   CREATE_MATCH,
   QUEUE,
-  HELP
+  HELP,
 }
