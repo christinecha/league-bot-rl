@@ -2,6 +2,8 @@
 
 A bot that lets you run simultaneous 1s, 2s, and 3s leagues in your Discord channel. Specifically geared toward Rocket League for now, but has the potential to be generalized.
 
+![League Bot Discord Profile](https://leaguebotrl.com/assets/league-bot-profile.png)
+
 ---
 
 ### Usage

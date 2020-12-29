@@ -12,7 +12,7 @@ const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
 
-const getQueueMessage = regex => {
+const getQueueMessage = (regex) => {
   return expect.objectContaining({
     fields: [
       expect.objectContaining({
@@ -40,7 +40,7 @@ const getMatchMessage = ({ id, team1, team2 }) => {
 
 let send, msg, react
 
-beforeAll(async done => {
+beforeAll(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -48,7 +48,7 @@ beforeAll(async done => {
   done()
 })
 
-beforeEach(async done => {
+beforeEach(async (done) => {
   react = jest.fn()
   send = jest.fn(() =>
     Promise.resolve({
@@ -69,14 +69,14 @@ beforeEach(async done => {
   done()
 })
 
-afterEach(async done => {
+afterEach(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
   done()
 })
 
-test('@LeagueBot queue <league>', async done => {
+test('@LeagueBot queue <league>', async (done) => {
   const user1 = 'cha'
 
   const before = Date.now()
@@ -111,7 +111,7 @@ test('@LeagueBot queue <league>', async done => {
   done()
 })
 
-test('@LeagueBot queue 1s', async done => {
+test('@LeagueBot queue 1s', async (done) => {
   const user1 = 'cha'
   const user2 = 'flips'
   const user3 = 'bubbles'
@@ -175,7 +175,7 @@ test('@LeagueBot queue 1s', async done => {
   done()
 })
 
-test('@LeagueBot queue 2s', async done => {
+test('@LeagueBot queue 2s', async (done) => {
   const users = ['space', 'canada', 'pugs', 'dewberry']
   const matchId = `${league2s.id}-1`
 
@@ -266,7 +266,7 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   done()
 })
 
-test('@LeagueBot queue 3s', async done => {
+test('@LeagueBot queue 3s', async (done) => {
   const users = ['stardust', 'quantum', 'pickle', 'quart', 'cheese', 'ginge']
   const matchId = `${league3s.id}-1`
 
@@ -365,7 +365,7 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   done()
 })
 
-test('@LeagueBot queue 2s [auto]', async done => {
+test('@LeagueBot queue 2s [auto]', async (done) => {
   const users = ['hoody', 'duke', 'canada', 'cha']
 
   // Use RL ranks to determine balanced teams
