@@ -43,7 +43,7 @@ const CREATE_MATCH = (match) => {
 
 const QUEUE = (league) => {
   const { queue, teamSize } = league
-  const players = Object.keys(queue)
+  const players = Object.keys(queue).sort((a, b) => queue[a] - queue[b])
 
   const queueList = players.length
     ? players.map(id => `<@!${id}>`).join(' ')

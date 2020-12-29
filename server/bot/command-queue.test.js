@@ -92,7 +92,7 @@ test("@LeagueBot queue <league>", async (done) => {
 
   // The correct user is queued, at an accurate time
   allLeagues.forEach((league, i) => {
-    expect(Object.keys(league.queue)).toMatchSnapshot();
+    expect(Object.keys(league.queue)).toStrictEqual([user1]);
     expect(league.queue[user1]).toBeLessThanOrEqual(after);
     expect(league.queue[user1]).toBeGreaterThanOrEqual(before);
     expect(send).toHaveBeenNthCalledWith(

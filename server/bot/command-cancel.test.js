@@ -50,10 +50,12 @@ test("@LeagueBot cancel <matchId>", async (done) => {
   const match1 = await matches.get(match1s.id);
   const match2 = await matches.get(match2s.id);
 
-  // The same user may not queue again.
+  // The unreported match should be deleted, and a confirmation sent.
   expect(match1).toBeFalsy();
-  expect(match2).toBeTruthy();
   expect(send).toHaveBeenNthCalledWith(1, `Match #${match1Key} was canceled.`);
+
+  // The reported match should not be deleted, and an error sent.
+  expect(match2).toBeTruthy();
   expect(send).toHaveBeenNthCalledWith(2, ERRORS.MATCH_UNCANCELABLE);
 
   done();

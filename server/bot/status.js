@@ -5,11 +5,11 @@ const { getTeamSize, getLeagueId } = require('./util')
 
 const onStatus = async (leagueName, context) => {
   if (!leagueName) {
-    TEAM_SIZES.forEach(async size => {
+    for (let size of TEAM_SIZES) {
       const id = getLeagueId(size, context)
       const league = await leagues.get(id)
-      if (league) context.channel.send(messages.QUEUE(league))
-    })
+      if (league) await context.channel.send(messages.QUEUE(league))
+    }
 
     return
   }
@@ -19,13 +19,13 @@ const onStatus = async (leagueName, context) => {
   try {
     teamSize = getTeamSize(leagueName)
   } catch (err) {
-    context.channel.send(err)
+    await context.channel.send(err)
     return
   }
 
   const id = getLeagueId(teamSize, context)
   const league = await leagues.get(id)
-  context.channel.send(messages.QUEUE(league))
+  await context.channel.send(messages.QUEUE(league))
 }
 
 module.exports = { onStatus }
