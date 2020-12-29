@@ -6,7 +6,7 @@ const BOT_ID = process.env.BOT_ID
 
 let send, msg
 
-beforeAll(async done => {
+beforeAll(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -14,7 +14,7 @@ beforeAll(async done => {
   done()
 })
 
-beforeEach(async done => {
+beforeEach(async (done) => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -26,14 +26,14 @@ beforeEach(async done => {
   done()
 })
 
-afterEach(async done => {
+afterEach(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
   done()
 })
 
-test('@LeagueBot <invalid-command>', async done => {
+test('@LeagueBot <invalid-command>', async (done) => {
   await discord.trigger(
     'message',
     msg('cha', `<@!${BOT_ID}> fadfljadf adflkjadklfj`)
@@ -46,7 +46,7 @@ test('@LeagueBot <invalid-command>', async done => {
   done()
 })
 
-test('<unrelated-message>', async done => {
+test('<unrelated-message>', async (done) => {
   await discord.trigger('message', msg('cha', `adfadf fadfljadf adflkjadklfj`))
   expect(send).not.toHaveBeenCalled()
 

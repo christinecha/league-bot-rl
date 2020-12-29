@@ -9,7 +9,7 @@ const BOT_ID = process.env.BOT_ID
 const guildId = 'h000'
 let send, msg
 
-beforeAll(async done => {
+beforeAll(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -17,7 +17,7 @@ beforeAll(async done => {
   done()
 })
 
-beforeEach(async done => {
+beforeEach(async (done) => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -28,14 +28,14 @@ beforeEach(async done => {
   done()
 })
 
-afterEach(async done => {
+afterEach(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
   done()
 })
 
-test('@LeagueBot new <teamSize>', async done => {
+test('@LeagueBot new <teamSize>', async (done) => {
   const user1 = 'average-joe'
   const teamSizes = [1, 2, 3]
 

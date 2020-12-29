@@ -10,7 +10,7 @@ const BOT_ID = process.env.BOT_ID
 let send, msg, react
 const users = ['suhan', 'tandk', 'caudex']
 
-beforeAll(async done => {
+beforeAll(async (done) => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -18,7 +18,7 @@ beforeAll(async done => {
   done()
 })
 
-beforeEach(async done => {
+beforeEach(async (done) => {
   react = jest.fn()
   send = jest.fn(() =>
     Promise.resolve({
@@ -42,14 +42,14 @@ beforeEach(async done => {
   done()
 })
 
-afterEach(async done => {
+afterEach(async (done) => {
   await leagues.delete(league1s.id)
   await leagues.delete(league2s.id)
   await leagues.delete(league3s.id)
   done()
 })
 
-test('@LeagueBot clear <league>', async done => {
+test('@LeagueBot clear <league>', async (done) => {
   await discord.trigger('message', msg(users[0], `<@!${BOT_ID}> clear 1s`))
   await discord.trigger('message', msg(users[0], `<@!${BOT_ID}> clear 2s`))
   await discord.trigger('message', msg(users[0], `<@!${BOT_ID}> clear 3s`))
@@ -71,7 +71,7 @@ test('@LeagueBot clear <league>', async done => {
   done()
 })
 
-test('@LeagueBot clear', async done => {
+test('@LeagueBot clear', async (done) => {
   // No team size specified? No clear for you.
   await discord.trigger('message', msg(users[0], `<@!${BOT_ID}> clear`))
   expect(send).toHaveBeenNthCalledWith(1, ERRORS.INVALID_TEAM_SIZE)
