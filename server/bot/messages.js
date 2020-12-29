@@ -1,6 +1,9 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
 const { getCommandsMarkdown } = require('../../shared/getCommandsMarkdown')
+const { usersToString, queueToString } = require('../util')
+
+const COLOR_PRIMARY = '#4c33ff'
 
 const LEAVE_QUEUE = ({ userId, teamSize }) => {
   if (teamSize) {
@@ -11,9 +14,9 @@ const LEAVE_QUEUE = ({ userId, teamSize }) => {
 }
 
 const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
-  return new Discord.MessageEmbed().setColor('#0099ff').addFields({
+  return new Discord.MessageEmbed().setColor(COLOR_PRIMARY).addFields({
     name: `We've got a ${teamSize}s match!`,
-    value: `${playerIds.map(id => `<@!${id}>`).join(' ')}
+    value: `${usersToString(playerIds)}
 
 Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 `,
@@ -31,12 +34,12 @@ const CREATE_MATCH = match => {
   const { key } = parseMatchId(match.id)
 
   return new Discord.MessageEmbed()
-    .setColor('#0099ff')
+    .setColor(COLOR_PRIMARY)
     .setTitle(`${teamSize}s Match`)
     .setDescription(`Match ID: ${key}`)
     .addFields(
-      { name: 'Team 1', value: team1.map(id => `<@!${id}>`).join(' ') },
-      { name: 'Team 2', value: team2.map(id => `<@!${id}>`).join(' ') }
+      { name: 'Team 1', value: usersToString(team1) },
+      { name: 'Team 2', value: usersToString(team2) }
     )
     .setTimestamp()
     .setFooter(
@@ -46,20 +49,19 @@ const CREATE_MATCH = match => {
 
 const QUEUE = league => {
   const { queue, teamSize } = league
-  const players = Object.keys(queue).sort((a, b) => queue[a] - queue[b])
 
-  const queueList = players.length
-    ? players.map(id => `<@!${id}>`).join(' ')
+  const queueList = Object.keys(queue).length
+    ? queueToString(queue)
     : 'No one in the queue.'
 
   return new Discord.MessageEmbed()
-    .setColor('#0099ff')
+    .setColor(COLOR_PRIMARY)
     .addFields({ name: `${teamSize}s League Queue`, value: queueList })
     .setTimestamp()
 }
 
 const HELP = () => {
-  return new Discord.MessageEmbed().setColor('#0099ff').addFields(
+  return new Discord.MessageEmbed().setColor(COLOR_PRIMARY).addFields(
     {
       name: 'Variables',
       value: `

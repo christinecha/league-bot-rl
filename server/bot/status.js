@@ -1,7 +1,7 @@
 const leagues = require('../data/leagues')
-const TEAM_SIZES = require('./constants/TEAM_SIZES')
+const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const messages = require('./messages')
-const { getTeamSize, getLeagueId } = require('./util')
+const { getTeamSize, getLeagueId } = require('../util')
 
 const onStatus = async (leagueName, context) => {
   if (!leagueName) {

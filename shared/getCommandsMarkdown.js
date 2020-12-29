@@ -2,9 +2,9 @@ const { COMMANDS } = require('./commands')
 
 const getCommandsMarkdown = () =>
   Object.values(COMMANDS)
-    .filter(c => !c.isHidden)
+    .filter((c) => !c.isHidden)
     .sort((a, b) => (a.command > b.command ? 1 : -1))
-    .map(c => {
+    .map((c) => {
       const aliases =
         c.aliases && c.aliases.length ? ` | ${c.aliases.join(' | ')}` : ''
 

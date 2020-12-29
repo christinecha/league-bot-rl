@@ -2,9 +2,9 @@ require('dotenv').config()
 require('regenerator-runtime/runtime')
 
 const Discord = require('discord.js')
-const { getLeagueStats } = require('../server/getLeagueStats')
+const { getLeagueStats } = require('../server/util/getLeagueStats')
 
-jest.mock('../server/getLeagueStats')
+jest.mock('../server/util/getLeagueStats')
 getLeagueStats.mockResolvedValue({})
 
 jest.mock('discord.js')
@@ -16,11 +16,11 @@ Discord.Client = jest.fn(() => {
     callbacksOnce: {},
     login: () => {},
     guilds: {
-      fetch: (guildId) =>
+      fetch: guildId =>
         Promise.resolve({
           id: guildId,
           members: {
-            fetch: (userId) =>
+            fetch: userId =>
               Promise.resolve({
                 user: {
                   id: userId,
@@ -35,17 +35,17 @@ Discord.Client = jest.fn(() => {
           },
         }),
     },
-    trigger: function (evt, data) {
+    trigger: function(evt, data) {
       if (!this.callbacks[evt]) return Promise.resolve()
-      const promises = this.callbacks[evt].map((cb) => cb(data))
+      const promises = this.callbacks[evt].map(cb => cb(data))
       return Promise.all(promises)
     },
-    on: function (evt, callback) {
+    on: function(evt, callback) {
       this.callbacks[evt] = this.callbacks[evt] || []
       this.callbacks[evt].push(callback)
     },
     /* TODO: THESE SHOULD GET REMOVED... */
-    once: function (evt, callback) {
+    once: function(evt, callback) {
       this.callbacksOnce[evt] = this.callbacksOnce[evt] || []
       this.callbacksOnce[evt].push(callback)
     },
@@ -57,27 +57,27 @@ Discord.Client = jest.fn(() => {
 Discord.MessageEmbed = jest.fn(() => {
   return {
     fields: [],
-    setColor: function () {
+    setColor: function() {
       return this
     },
-    setTimestamp: function () {
+    setTimestamp: function() {
       return this
     },
-    setTitle: function (data) {
+    setTitle: function(data) {
       this.title = data
       return this
     },
-    setDescription: function (data) {
+    setDescription: function(data) {
       this.description = data
       return this
     },
-    addFields: function (...args) {
-      args.forEach((arg) => {
+    addFields: function(...args) {
+      args.forEach(arg => {
         this.fields.push(arg)
       })
       return this
     },
-    setFooter: function (data) {
+    setFooter: function(data) {
       this.footer = data
       return this
     },

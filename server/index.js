@@ -6,8 +6,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const matches = require('./data/matches')
 const { discord } = require('./data/util/discord')
-const { getLeagueStatsOrdered } = require('./getLeagueStats')
-const { getGuildUser } = require('./getGuildUser')
+const { getLeagueStatsOrdered } = require('./util/getLeagueStats')
+const { getGuildUser } = require('./util/getGuildUser')
 const app = express()
 const port = process.env.PORT || 3333
 
@@ -26,10 +26,7 @@ app.post('/api/matches', async (req, res) => {
 
   try {
     const results = await matches.search({
-      rules: [
-        ['teamSize', '==', teamSize],
-        ['league', '==', league],
-      ],
+      rules: [['teamSize', '==', teamSize], ['league', '==', league]],
     })
 
     res.send(results)

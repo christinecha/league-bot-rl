@@ -1,5 +1,5 @@
 const leagues = require('../data/leagues')
-const { getTeamSize, getLeagueId } = require('./util')
+const { getTeamSize, getLeagueId } = require('../util')
 
 const onNew = async (leagueName, context) => {
   let teamSize

@@ -4,14 +4,15 @@ const firebase = require('@firebase/rules-unit-testing')
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
 const { discord } = require('../data/util/discord')
-const ERRORS = require('./constants/ERRORS')
+const ERRORS = require('../constants/ERRORS')
 const { league1s, league2s, league3s } = require('../../test/league')
-const { getLeagueStats } = require('../getLeagueStats')
+const { getLeagueStats } = require('../util/getLeagueStats')
+const { usersToString } = require('../util')
 const BOT_ID = process.env.BOT_ID
 
-jest.mock('../getLeagueStats')
+jest.mock('../util/getLeagueStats')
 
-const getQueueMessage = (regex) => {
+const getQueueMessage = regex => {
   return expect.objectContaining({
     fields: [
       expect.objectContaining({
@@ -27,11 +28,11 @@ const getMatchMessage = ({ id, team1, team2 }) => {
     fields: [
       {
         name: 'Team 1',
-        value: team1.map((t) => `<@!${t}>`).join(' '),
+        value: usersToString(team1),
       },
       {
         name: 'Team 2',
-        value: team2.map((t) => `<@!${t}>`).join(' '),
+        value: usersToString(team2),
       },
     ],
   })
@@ -39,7 +40,7 @@ const getMatchMessage = ({ id, team1, team2 }) => {
 
 let send, msg, react
 
-beforeAll(async (done) => {
+beforeAll(async done => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
@@ -47,7 +48,7 @@ beforeAll(async (done) => {
   done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async done => {
   react = jest.fn()
   send = jest.fn(() =>
     Promise.resolve({
@@ -68,14 +69,14 @@ beforeEach(async (done) => {
   done()
 })
 
-afterEach(async (done) => {
+afterEach(async done => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
   done()
 })
 
-test('@LeagueBot queue <league>', async (done) => {
+test('@LeagueBot queue <league>', async done => {
   const user1 = 'cha'
 
   const before = Date.now()
@@ -110,7 +111,7 @@ test('@LeagueBot queue <league>', async (done) => {
   done()
 })
 
-test('@LeagueBot queue 1s', async (done) => {
+test('@LeagueBot queue 1s', async done => {
   const user1 = 'cha'
   const user2 = 'flips'
   const user3 = 'bubbles'
@@ -141,8 +142,8 @@ test('@LeagueBot queue 1s', async (done) => {
   )
 
   const players = Object.keys(match.players)
-  const team1 = players.filter((p) => match.players[p].team === 1)
-  const team2 = players.filter((p) => match.players[p].team === 2)
+  const team1 = players.filter(p => match.players[p].team === 1)
+  const team2 = players.filter(p => match.players[p].team === 2)
 
   // Match details are correct
   expect(players.length).toBe(2)
@@ -175,7 +176,7 @@ test('@LeagueBot queue 1s', async (done) => {
   done()
 })
 
-test('@LeagueBot queue 2s', async (done) => {
+test('@LeagueBot queue 2s', async done => {
   const users = ['space', 'canada', 'pugs', 'dewberry']
   const matchId = `${league2s.id}-1`
 
@@ -199,7 +200,7 @@ test('@LeagueBot queue 2s', async (done) => {
       fields: expect.arrayContaining([
         expect.objectContaining({
           name: `We've got a 2s match!`,
-          value: `${users.map((id) => `<@!${id}>`).join(' ')}
+          value: `${usersToString(users)}
 
 Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 `,
@@ -228,8 +229,8 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   )
 
   const players = Object.keys(match.players).sort()
-  const team1 = players.filter((p) => match.players[p].team === 1)
-  const team2 = players.filter((p) => match.players[p].team === 2)
+  const team1 = players.filter(p => match.players[p].team === 1)
+  const team2 = players.filter(p => match.players[p].team === 2)
 
   // Match details are correct
   expect(players.length).toBe(4)
@@ -259,15 +260,15 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   expect(send).toHaveBeenCalledWith(
     getMatchMessage({
       id: '22',
-      team1: players2.filter((p) => match2.players[p].team === 1),
-      team2: players2.filter((p) => match2.players[p].team === 2),
+      team1: players2.filter(p => match2.players[p].team === 1),
+      team2: players2.filter(p => match2.players[p].team === 2),
     })
   )
 
   done()
 })
 
-test('@LeagueBot queue 3s', async (done) => {
+test('@LeagueBot queue 3s', async done => {
   const users = ['stardust', 'quantum', 'pickle', 'quart', 'cheese', 'ginge']
   const matchId = `${league3s.id}-1`
 
@@ -295,7 +296,7 @@ test('@LeagueBot queue 3s', async (done) => {
       fields: expect.arrayContaining([
         expect.objectContaining({
           name: `We've got a 3s match!`,
-          value: `${users.map((id) => `<@!${id}>`).join(' ')}
+          value: `${usersToString(users)}
 
 Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 `,
@@ -326,8 +327,8 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   )
 
   const players = Object.keys(match.players).sort()
-  const team1 = players.filter((p) => match.players[p].team === 1)
-  const team2 = players.filter((p) => match.players[p].team === 2)
+  const team1 = players.filter(p => match.players[p].team === 1)
+  const team2 = players.filter(p => match.players[p].team === 2)
 
   // Match details are correct
   expect(players.length).toBe(6)
@@ -359,15 +360,15 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   expect(send).toHaveBeenCalledWith(
     getMatchMessage({
       id: '32',
-      team1: players2.filter((p) => match2.players[p].team === 1),
-      team2: players2.filter((p) => match2.players[p].team === 2),
+      team1: players2.filter(p => match2.players[p].team === 1),
+      team2: players2.filter(p => match2.players[p].team === 2),
     })
   )
 
   done()
 })
 
-test('@LeagueBot queue 2s [auto]', async (done) => {
+test('@LeagueBot queue 2s [auto]', async done => {
   const users = ['hoody', 'duke', 'canada', 'cha']
 
   // Use RL ranks to determine balanced teams
@@ -387,8 +388,8 @@ test('@LeagueBot queue 2s [auto]', async (done) => {
 
   let match = await matches.get(matchId)
   let players = Object.keys(match.players).sort()
-  let team1 = players.filter((p) => match.players[p].team === 1)
-  let team2 = players.filter((p) => match.players[p].team === 2)
+  let team1 = players.filter(p => match.players[p].team === 1)
+  let team2 = players.filter(p => match.players[p].team === 2)
 
   expect(team1).toStrictEqual([users[3], users[0]])
   expect(team2).toStrictEqual([users[2], users[1]])
@@ -416,8 +417,8 @@ test('@LeagueBot queue 2s [auto]', async (done) => {
   matchId = `${league2s.id}-2`
   match = await matches.get(matchId)
   players = Object.keys(match.players).sort()
-  team1 = players.filter((p) => match.players[p].team === 1)
-  team2 = players.filter((p) => match.players[p].team === 2)
+  team1 = players.filter(p => match.players[p].team === 1)
+  team2 = players.filter(p => match.players[p].team === 2)
 
   expect(team1).toStrictEqual([users[2], users[0]])
   expect(team2).toStrictEqual([users[3], users[1]])

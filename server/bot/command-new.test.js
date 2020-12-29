@@ -1,6 +1,6 @@
 // Start mock server!
 require('./index')
-const ERRORS = require('./constants/ERRORS')
+const ERRORS = require('../constants/ERRORS')
 const firebase = require('@firebase/rules-unit-testing')
 const leagues = require('../data/leagues')
 const { discord } = require('../data/util/discord')

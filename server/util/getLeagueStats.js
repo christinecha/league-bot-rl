@@ -1,14 +1,14 @@
-const _matches = require('./data/matches')
+const _matches = require('../data/matches')
 
-const getLeagueStats = async (leagueId) => {
+const getLeagueStats = async leagueId => {
   const matches = await _matches.search({
     rules: [['league', '==', leagueId]],
   })
 
   const players = {}
 
-  matches.forEach((m) => {
-    Object.keys(m.players).forEach((playerId) => {
+  matches.forEach(m => {
+    Object.keys(m.players).forEach(playerId => {
       if (!m.winner) return
 
       players[playerId] = players[playerId] || { win: 0, loss: 0 }
@@ -18,7 +18,7 @@ const getLeagueStats = async (leagueId) => {
     })
   })
 
-  Object.keys(players).forEach((id) => {
+  Object.keys(players).forEach(id => {
     const { win, loss } = players[id]
     players[id] = {
       id,
@@ -32,7 +32,7 @@ const getLeagueStats = async (leagueId) => {
   return players
 }
 
-const getLeagueStatsOrdered = async (leagueId) => {
+const getLeagueStatsOrdered = async leagueId => {
   const stats = await getLeagueStats(leagueId)
 
   let place = 1

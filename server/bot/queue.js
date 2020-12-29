@@ -1,27 +1,25 @@
 const leagues = require('../data/leagues')
 const createMatch = require('./createMatch')
 const messages = require('./messages')
-const ERRORS = require('./constants/ERRORS')
-const TEAM_SIZES = require('./constants/TEAM_SIZES')
+const ERRORS = require('../constants/ERRORS')
+const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const { admin } = require('../data/util/firebase')
-const { getTeamSize } = require('./util')
+const { getTeamSize } = require('../util')
 const FieldValue = admin.firestore.FieldValue
 
 const updateQueue = async (leagueId, context, shouldQueue) => {
   const userId = context.author.id
   const league = await leagues.get(leagueId)
-  if (!league) throw (ERRORS.NO_SUCH_LEAGUE)
+  if (!league) throw ERRORS.NO_SUCH_LEAGUE
 
   const queue = league.queue || {}
 
-  if (shouldQueue && queue[userId]) throw (ERRORS.QUEUE_DUPLICATE_USER)
-  if (!shouldQueue && !queue[userId]) throw (ERRORS.QUEUE_NO_SUCH_USER)
+  if (shouldQueue && queue[userId]) throw ERRORS.QUEUE_DUPLICATE_USER
+  if (!shouldQueue && !queue[userId]) throw ERRORS.QUEUE_NO_SUCH_USER
 
   const newValue = shouldQueue ? Date.now() : FieldValue.delete()
   const queueUpdate = { [`queue.${userId}`]: newValue }
-  const doNotKickUpdate = !shouldQueue
-    ? { [`doNotKick.${userId}`]: false }
-    : {}
+  const doNotKickUpdate = !shouldQueue ? { [`doNotKick.${userId}`]: false } : {}
   await leagues.update({
     id: leagueId,
     ...queueUpdate,
@@ -32,12 +30,12 @@ const updateQueue = async (leagueId, context, shouldQueue) => {
 
 const MATCH_MODE = {
   AUTO: 'auto',
-  RANDOM: 'random'
+  RANDOM: 'random',
 }
 
 const MODE_EMOTE = {
   '🤖': MATCH_MODE.AUTO,
-  '👻': MATCH_MODE.RANDOM
+  '👻': MATCH_MODE.RANDOM,
 }
 
 const getMatchMode = async ({ message, playerIds }) => {
@@ -47,7 +45,7 @@ const getMatchMode = async ({ message, playerIds }) => {
 
     const modes = {
       [MATCH_MODE.AUTO]: 0,
-      [MATCH_MODE.RANDOM]: 0
+      [MATCH_MODE.RANDOM]: 0,
     }
 
     const filter = (reaction, user) => {
@@ -56,22 +54,24 @@ const getMatchMode = async ({ message, playerIds }) => {
       const selected = MODE_EMOTE[reaction.emoji.name]
       if (selected) modes[selected] += 1
 
-      const official = Object.keys(modes).find(k => modes[k] >= playerIds.length * 0.5)
+      const official = Object.keys(modes).find(
+        k => modes[k] >= playerIds.length * 0.5
+      )
       if (!official) return
 
       resolve(official)
     }
 
     const twoMinutes = 1000 * 60 * 2
-    message.awaitReactions(filter, { time: twoMinutes })
-      .then(() => {
-        if (modes[MATCH_MODE.AUTO] >= modes[MATCH_MODE.RANDOM]) resolve(MATCH_MODE.AUTO)
-        resolve(MATCH_MODE.RANDOM)
-      })
+    message.awaitReactions(filter, { time: twoMinutes }).then(() => {
+      if (modes[MATCH_MODE.AUTO] >= modes[MATCH_MODE.RANDOM])
+        resolve(MATCH_MODE.AUTO)
+      resolve(MATCH_MODE.RANDOM)
+    })
   })
 }
 
-const getMatchPlayers = async (leagueId) => {
+const getMatchPlayers = async leagueId => {
   const league = await leagues.get(leagueId)
   const { queue, teamSize } = league
 
@@ -80,7 +80,9 @@ const getMatchPlayers = async (leagueId) => {
 
   // Remove match players from queue.
   const queueUpdates = {}
-  queuedPlayers.forEach(id => queueUpdates[`queue.${id}`] = FieldValue.delete())
+  queuedPlayers.forEach(
+    id => (queueUpdates[`queue.${id}`] = FieldValue.delete())
+  )
   await leagues.update({ id: league.id, ...queueUpdates })
   return queuedPlayers
 }
@@ -115,7 +117,9 @@ const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
     let mode = MATCH_MODE.RANDOM
 
     if (teamSize > 1) {
-      const message = await context.channel.send(messages.GET_MATCH_MODE({ playerIds, teamSize }))
+      const message = await context.channel.send(
+        messages.GET_MATCH_MODE({ playerIds, teamSize })
+      )
       mode = await getMatchMode({ message, playerIds })
     }
 
@@ -134,9 +138,14 @@ const onQueue = async (leagueName, context) => {
 
 const onUnqueue = async (leagueName, context) => {
   if (!leagueName) {
-    const promises = TEAM_SIZES.map(size => new Promise((resolve) => {
-      onUpdateQueue(size, false, context, { hideMessage: true }).finally(resolve)
-    }))
+    const promises = TEAM_SIZES.map(
+      size =>
+        new Promise(resolve => {
+          onUpdateQueue(size, false, context, { hideMessage: true }).finally(
+            resolve
+          )
+        })
+    )
 
     await Promise.all(promises)
     await context.channel.send(
@@ -166,5 +175,5 @@ module.exports = {
   updateQueue,
   onQueue,
   onUnqueue,
-  onClear
+  onClear,
 }

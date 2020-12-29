@@ -4,7 +4,7 @@ const firebase = require('@firebase/rules-unit-testing')
 const matches = require('../data/matches')
 const { discord } = require('../data/util/discord')
 const { parseMatchId } = require('../data/matchId')
-const ERRORS = require('./constants/ERRORS')
+const ERRORS = require('../constants/ERRORS')
 const { match1s } = require('../../test/match')
 const BOT_ID = process.env.BOT_ID
 

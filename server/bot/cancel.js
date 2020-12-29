@@ -1,6 +1,6 @@
 const matches = require('../data/matches')
 const { formMatchId } = require('../data/matchId')
-const ERRORS = require('./constants/ERRORS')
+const ERRORS = require('../constants/ERRORS')
 
 const onCancel = async (matchKey, context) => {
   if (!matchKey) {

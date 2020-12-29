@@ -1,4 +1,4 @@
-const { discord } = require('./data/util/discord')
+const { discord } = require('../data/util/discord')
 
 const RANK_ROLES = {
   Bronze: 0,
@@ -31,7 +31,7 @@ const getGuildUser = async ({ userId, guildId }) => {
   }
 
   const roles = user.roles.cache || []
-  const rankRole = roles.find((r) => RANK_ROLES[r.name])
+  const rankRole = roles.find(r => RANK_ROLES[r.name])
   const rank = rankRole ? RANK_ROLES[rankRole.name] : undefined
 
   return {
