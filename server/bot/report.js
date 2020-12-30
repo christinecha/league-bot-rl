@@ -10,12 +10,12 @@ const getWinner = (match, userId, didWin) => {
   return team === 1 ? 2 : 1
 }
 
-const getRandom = arr => {
+const getRandom = (arr) => {
   const rand = Math.floor(Math.random() * arr.length)
   return arr[rand]
 }
 
-const getCommentary = match => {
+const getCommentary = (match) => {
   const teams = getTeams(match.players)
   const loser = match.winner === 1 ? 2 : 1
 
@@ -44,6 +44,11 @@ const report = async ({ matchKey, userId, guildId, didWin }) => {
 }
 
 const onReport = async (matchKey, didWin, context) => {
+  if (!matchKey) {
+    context.channel.send(ERRORS.MATCH_INVALID)
+    return
+  }
+
   const userId = context.author.id
   let match
 

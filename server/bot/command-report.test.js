@@ -99,3 +99,9 @@ test('@LeagueBot loss <matchId>', async (done) => {
 
   done()
 })
+
+test('@LeagueBot loss/win - invalid', async (done) => {
+  await discord.trigger('message', msg('bub', `<@!${BOT_ID}> loss`))
+  expect(send).toHaveBeenCalledWith(ERRORS.MATCH_INVALID)
+  done()
+})
