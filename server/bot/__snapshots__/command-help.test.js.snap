@@ -2,13 +2,13 @@
 
 exports[`@LeagueBot help 1`] = `
 "- \`@LeagueBot cancel <matchId>\` - Cancel a match.
-- \`@LeagueBot clear | c <league>\` - Clear the queue for a specific league.
+- \`@LeagueBot clear | c <teamSize>\` - Clear the queue for a specific league.
 - \`@LeagueBot help | h\` - Show me all the commands.
-- \`@LeagueBot leaderboard <[league]>\` - Show me the leaderboard!
-- \`@LeagueBot leave | l <[league]>\` - Leave the queue for a specific league, or all if unspecified
+- \`@LeagueBot leaderboard <[teamSize]>\` - Show me the leaderboard!
+- \`@LeagueBot leave | l <[teamSize]>\` - Leave the queue for one or all leagues.
 - \`@LeagueBot loss | lose | lost <matchId>\` - Report that you lost this match.
-- \`@LeagueBot new | n <teamSize>\` - Initialize a new league for a specific team size.
-- \`@LeagueBot queue | q <league>\` - Join the queue for a specific league
-- \`@LeagueBot status | s <[league]>\` - Show the current queue(s)
+- \`@LeagueBot new | n <teamSize>\` - Start a new league for a specific team size.
+- \`@LeagueBot queue | q <teamSize>\` - Join the queue for a specific league.
+- \`@LeagueBot status | s <[teamSize]>\` - Show the current queue(s).
 - \`@LeagueBot win | won <matchId>\` - Report that you won this match."
 `;

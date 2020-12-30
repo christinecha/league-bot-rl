@@ -4,39 +4,37 @@ A bot that lets you run simultaneous 1s, 2s, and 3s leagues in your Discord chan
 
 ![League Bot Discord Profile](https://www.leaguebotrl.com/assets/league-bot-profile.png)
 
+If you'd like to help support the development and maintenance of this project, you can [become a Github Sponsor](https://github.com/sponsors/christinecha).
+
 ---
 
 ### Usage
 
 Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203658&scope=bot) to add the bot to your Discord server, or visit www.leaguebotrl.com for more information. If you're interested in running this project locally, development instructions are below.
 
+### Variables
+
+- `matchId` - The unique match ID.
+- `teamSize` - 1, 2, or 3.
+
 ### Commands
 
 - `@LeagueBot cancel <matchId>` - Cancel a match.
-- `@LeagueBot clear | c <league>` - Clear the queue for a specific league.
+- `@LeagueBot clear | c <teamSize>` - Clear the queue for a specific league.
 - `@LeagueBot help | h` - Show me all the commands.
-- `@LeagueBot leaderboard <[league]>` - Show me the leaderboard!
-- `@LeagueBot leave | l <[league]>` - Leave the queue for a specific league, or all if unspecified
+- `@LeagueBot leaderboard <[teamSize]>` - Show me the leaderboard!
+- `@LeagueBot leave | l <[teamSize]>` - Leave the queue for one or all leagues.
 - `@LeagueBot loss | lose | lost <matchId>` - Report that you lost this match.
-- `@LeagueBot new | n <teamSize>` - Initialize a new league for a specific team size.
-- `@LeagueBot queue | q <league>` - Join the queue for a specific league
-- `@LeagueBot status | s <[league]>` - Show the current queue(s)
+- `@LeagueBot new | n <teamSize>` - Start a new league for a specific team size.
+- `@LeagueBot queue | q <teamSize>` - Join the queue for a specific league.
+- `@LeagueBot status | s <[teamSize]>` - Show the current queue(s).
 - `@LeagueBot win | won <matchId>` - Report that you won this match.
 
-### Variables
+### Advanced
 
-- `league`: currently either "1s", "2s", or "3s"
+- Mentioning `@LeagueBot` is optional in the channel that has most recently been queued in. As a shortcut in this channel, you can use a `!` prefix instead, like `!leave 2s`, `!q 1` or `!leaderboard`
 
-### Mod-Only Commands
-
-- `@LeagueBot new [league-name]` - Create new league with specified name and team size
-- `@LeagueBot reset [league-name]` - End league with specified name
-- `@LeagueBot delete [league-name]` - Delete league with specified name (forever!)
-
-### Scope Limitations
-
-- Initially, there can only be one simultaneous league of each team-size.
-- Initially will use 3 hard-coded `league-name`s. "1s", "2s", and "3s".
+---
 
 ### Feature/Bug Backlog
 
@@ -47,6 +45,7 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - ✨ **Mod-Only Commands.** Designate some commands to be mod-only.
 - ✨ **Set-Channel.** Command to manually set a channel where the ! shortcut will work. Possibly mod-only?
 - 🐛 **Prune queues on match creation.** If you get a match for one league, it should remove all those players from the other leagues' queues.
+- ✨ **Recently Viewed Servers.** Save leaderboard server ids in local storage so that they're easily accessible from the homepage.
 
 ### Development
 

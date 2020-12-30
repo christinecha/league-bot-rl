@@ -2,6 +2,8 @@ const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
 const { getCommandsMarkdown } = require('../../shared/getCommandsMarkdown')
 const { usersToString, queueToString, getTeams } = require('../util')
+const { getVariablesMarkdown } = require('../../shared/getVariablesMarkdown')
+const { getAdvancedMarkdown } = require('../../shared/getAdvancedMarkdown')
 
 const COLOR_PRIMARY = '#4c33ff'
 
@@ -23,7 +25,7 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   })
 }
 
-const CREATE_MATCH = match => {
+const CREATE_MATCH = (match) => {
   const { players, teamSize, mode } = match
   const teams = getTeams(players)
   const { key } = parseMatchId(match.id)
@@ -42,7 +44,7 @@ const CREATE_MATCH = match => {
     )
 }
 
-const QUEUE = league => {
+const QUEUE = (league) => {
   const { queue, teamSize } = league
 
   const queueList = Object.keys(queue).length
@@ -59,10 +61,7 @@ const HELP = () => {
   return new Discord.MessageEmbed().setColor(COLOR_PRIMARY).addFields(
     {
       name: 'Variables',
-      value: `
-- \`league\` - Either "1s", "2s", or "3s".
-- \`matchId\` - The "id" specified in a created match.
-      `,
+      value: getVariablesMarkdown(),
     },
     {
       name: 'Commands',
@@ -70,9 +69,7 @@ const HELP = () => {
     },
     {
       name: 'Advanced',
-      value: `
-- Mentioning \`@LeagueBot\` is optional in the channel that has most recently been queued in. As a shortcut in this channel, you can use a \`!\` prefix instead, like \`!leave 2s\`, \`!q 1\` or \`!leaderboard\`
-      `,
+      value: getAdvancedMarkdown(),
     }
   )
 }
