@@ -2,7 +2,10 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import styled from '@emotion/styled'
 import { css } from '@emotion/css'
-import { getCommandsMarkdown } from '../../shared/getCommandsMarkdown'
+import {
+  getCommandsMarkdown,
+  getModCommandsMarkdown,
+} from '../../shared/getCommandsMarkdown'
 import COLORS from '../../shared/COLORS'
 import { getAdvancedMarkdown } from '../../shared/getAdvancedMarkdown'
 import { getVariablesMarkdown } from '../../shared/getVariablesMarkdown'
@@ -143,6 +146,9 @@ ${getVariablesMarkdown()}
 &nbsp;  
 ### Commands
 ${getCommandsMarkdown()}  
+&nbsp;  
+### Mod-Only Commands
+${getModCommandsMarkdown()}  
 &nbsp;  
 ### Advanced
 ${getAdvancedMarkdown()}

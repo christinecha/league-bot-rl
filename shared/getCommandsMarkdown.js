@@ -1,8 +1,9 @@
 const { COMMANDS } = require('./commands')
 
-const getCommandsMarkdown = () =>
+const getCommandsMarkdown = (mod = false) =>
   Object.values(COMMANDS)
     .filter((c) => !c.isHidden)
+    .filter((c) => (mod ? c.modOnly : !c.modOnly))
     .sort((a, b) => (a.command > b.command ? 1 : -1))
     .map((c) => {
       const aliases =
@@ -13,6 +14,9 @@ const getCommandsMarkdown = () =>
     })
     .join('\n')
 
+const getModCommandsMarkdown = () => getCommandsMarkdown(true)
+
 module.exports = {
   getCommandsMarkdown,
+  getModCommandsMarkdown,
 }

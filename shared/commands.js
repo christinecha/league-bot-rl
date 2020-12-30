@@ -102,7 +102,7 @@ const COMMANDS = {
     isHidden: true,
     modOnly: true,
     argument: VARIABLE_NAME.USER,
-    description: "Give a user access to LeagueBot's mod-only commands.",
+    description: 'Give a user mod access to LeagueBot.',
   },
   [COMMAND_NAME.ROAST]: {
     isHidden: true,
