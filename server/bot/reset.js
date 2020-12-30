@@ -17,7 +17,7 @@ const onReset = async (str, context) => {
         timeLimit: 1000 * 60 * 2,
       })
     } catch (err) {
-      await context.channel.send('League was not reset')
+      await context.channel.send(`${teamSize}s League was not reset.`)
       return
     }
 
