@@ -132,6 +132,8 @@ export const Home = () => {
         </div>
       </div>
 
+      <div data-row="6"></div>
+
       <div data-row>
         <div data-col="12">
           <StyledMarkdown>
