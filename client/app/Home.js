@@ -45,12 +45,6 @@ const StyledMarkdown = styled.div`
   h3 {
     margin-bottom: 0.6rem;
   }
-
-  code {
-    background: ${COLORS.GRAY_LIGHT};
-    padding: 0 5px;
-    border-radius: 3px;
-  }
 `
 
 const StyledLink = styled.a`
@@ -120,6 +114,23 @@ export const Home = () => {
         </div>
       </div>
       <div data-row="10"></div>
+
+      <div data-row>
+        <div data-col="12">
+          <h3>Getting Started:</h3>
+          <ul>
+            <li>Add the bot to your server using the button above.</li>
+            <li>
+              In any channel, send a message with <code>@LeagueBot new X</code>{' '}
+              once for each league you want to add (replace X with the team size
+              - 1, 2, or 3).
+            </li>
+            <li>
+              All set! Send <code>@LeagueBot queue X</code> to queue up.
+            </li>
+          </ul>
+        </div>
+      </div>
 
       <div data-row>
         <div data-col="12">

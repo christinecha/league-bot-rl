@@ -54,6 +54,11 @@ const App = () => {
             background: inherit;
             cursor: pointer;
           }
+          code {
+            background: ${COLORS.GRAY_LIGHT};
+            padding: 0 5px;
+            border-radius: 3px;
+          }
         `}
       />
 
