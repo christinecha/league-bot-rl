@@ -159,6 +159,13 @@ ${getAdvancedMarkdown()}
             or just drop by my Twitch stream.
             <br />
             <br />- Cha ✌️
+            <br />
+            <br />
+            P.S. Special shout out to{' '}
+            <a href="twitch.tv/hoodyhooo" target="_blank">
+              HoodyHooo
+            </a>{' '}
+            for giving me a community to build this for!
           </p>
           <br />
           <div
