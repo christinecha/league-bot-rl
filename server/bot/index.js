@@ -1,5 +1,6 @@
 const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
+const guilds = require('../data/guilds')
 const { COMMANDS, COMMAND_NAME } = require('../../shared/commands')
 const { CALLBACKS } = require('./callbacks')
 
@@ -9,7 +10,7 @@ discord.once('ready', () => {
   console.log('[bot] listening')
 })
 
-discord.on('message', async message => {
+discord.on('message', async (message) => {
   let shortcut = false
   const parts = message.content.split(/\s+/)
   console.log('Message received!', message.guild.id, message.content, parts)
@@ -22,7 +23,7 @@ discord.on('message', async message => {
 
   const [_, _command, arg] = parts
   const context = message
-  const command = Object.keys(COMMAND_NAME).find(name => {
+  const command = Object.keys(COMMAND_NAME).find((name) => {
     const config = COMMANDS[name]
     const match = (_command || '').toLowerCase()
     return (
@@ -40,6 +41,16 @@ discord.on('message', async message => {
     return
   }
 
+  if (COMMANDS[command].modOnly) {
+    const guildMember = await context.guild.members.fetch(message.author.id)
+    const isAdmin = guildMember.hasPermission(['ADMINISTRATOR'])
+
+    if (!isAdmin) {
+      message.channel.send('You must be a LeagueBot mod to use this command.')
+      return
+    }
+  }
+
   if (shortcut) {
     const channelId = `${message.channel.id}`
     const found = await leagues.search({
@@ -49,6 +60,12 @@ discord.on('message', async message => {
   }
 
   try {
+    await guilds.create({
+      id: message.guild.id,
+      name: message.guild.name,
+      ownerID: message.guild.ownerID,
+      lastUpdate: Date.now(),
+    })
     await CALLBACKS[command](arg, context)
   } catch (err) {
     console.log(err)

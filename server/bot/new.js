@@ -26,11 +26,6 @@ const onNew = async (leagueName, context) => {
     id,
     teamSize,
     name: `${teamSize}s`,
-    guild: {
-      id: context.guild.id,
-      name: context.guild.name,
-      ownerID: context.guild.ownerID,
-    },
   })
 }
 

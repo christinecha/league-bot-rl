@@ -11,6 +11,7 @@ const COMMAND_NAME = {
   CANCEL: 'CANCEL',
   ROAST: 'ROAST',
   BUBBLES: 'BUBBLES',
+  MOD: 'MOD',
 }
 
 const VARIABLE_NAME = {
@@ -95,6 +96,13 @@ const COMMANDS = {
     command: 'cancel',
     argument: VARIABLE_NAME.MATCH_ID,
     description: 'Cancel a match.',
+  },
+  [COMMAND_NAME.MOD]: {
+    command: 'mod',
+    isHidden: true,
+    modOnly: true,
+    argument: VARIABLE_NAME.USER,
+    description: "Give a user access to LeagueBot's mod-only commands.",
   },
   [COMMAND_NAME.ROAST]: {
     isHidden: true,

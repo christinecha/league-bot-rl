@@ -6,6 +6,7 @@ const { onBubbles } = require('./bubbles')
 const { onRoast } = require('./roast')
 const { onCancel } = require('./cancel')
 const { onStatus } = require('./status')
+const { onMod } = require('./mod')
 const { onNew } = require('./new')
 
 const BASE_URL =
@@ -34,6 +35,7 @@ const CALLBACKS = {
   [COMMAND_NAME.ROAST]: onRoast,
   [COMMAND_NAME.STATUS]: onStatus,
   [COMMAND_NAME.WIN]: onReportWin,
+  [COMMAND_NAME.MOD]: onMod,
 }
 
 module.exports = {
