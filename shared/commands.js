@@ -13,6 +13,7 @@ const COMMAND_NAME = {
   BUBBLES: 'BUBBLES',
   MOD: 'MOD',
   RESET: 'RESET',
+  VOID_MATCH: 'VOID_MATCH',
 }
 
 const VARIABLE_NAME = {
@@ -110,6 +111,12 @@ const COMMANDS = {
     modOnly: true,
     argument: VARIABLE_NAME.USER,
     description: 'Give a user mod access to LeagueBot.',
+  },
+  [COMMAND_NAME.VOID_MATCH]: {
+    command: 'void',
+    modOnly: true,
+    argument: VARIABLE_NAME.MATCH_ID,
+    description: 'Erase a match from history.',
   },
   [COMMAND_NAME.ROAST]: {
     isHidden: true,

@@ -2,7 +2,7 @@ const ERRORS = {
   INVALID_TEAM_SIZE: `Team size is invalid. Choose 1, 2, or 3.`,
   NO_SUCH_LEAGUE: `The requested league does not exist in this server.`,
 
-  MATCH_INVALID: 'Invalid match id.',
+  MATCH_INVALID: 'No match with this ID exists.',
   MATCH_NO_SUCH_USER: 'User was not in the specified match.',
   MATCH_DUPLICATE_REPORT: 'This match has already been reported.',
   MATCH_CREATION_ERROR: 'Error generating new match.',

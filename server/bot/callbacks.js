@@ -9,6 +9,7 @@ const { onStatus } = require('./status')
 const { onMod } = require('./mod')
 const { onNew } = require('./new')
 const { onReset } = require('./reset')
+const { onVoidMatch } = require('./void-match')
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
@@ -38,6 +39,7 @@ const CALLBACKS = {
   [COMMAND_NAME.WIN]: onReportWin,
   [COMMAND_NAME.MOD]: onMod,
   [COMMAND_NAME.RESET]: onReset,
+  [COMMAND_NAME.VOID_MATCH]: onVoidMatch,
 }
 
 module.exports = {
