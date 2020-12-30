@@ -1,5 +1,6 @@
 const match1s = {
   id: 'h000-1-1',
+  league: 'h000-1',
   teamSize: 1,
   players: {
     jhan: { team: 1 },
@@ -9,6 +10,7 @@ const match1s = {
 
 const match2s = {
   id: 'h000-2-1',
+  league: 'h000-2',
   teamSize: 2,
   players: {
     jhan: { team: 1 },
@@ -20,6 +22,7 @@ const match2s = {
 
 const match3s = {
   id: 'h000-3-1',
+  league: 'h000-3',
   teamSize: 3,
   players: {
     jhan: { team: 1 },

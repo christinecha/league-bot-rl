@@ -12,6 +12,7 @@ const COMMAND_NAME = {
   ROAST: 'ROAST',
   BUBBLES: 'BUBBLES',
   MOD: 'MOD',
+  RESET: 'RESET',
 }
 
 const VARIABLE_NAME = {
@@ -96,6 +97,12 @@ const COMMANDS = {
     command: 'cancel',
     argument: VARIABLE_NAME.MATCH_ID,
     description: 'Cancel a match.',
+  },
+  [COMMAND_NAME.RESET]: {
+    command: 'reset',
+    modOnly: true,
+    argument: VARIABLE_NAME.TEAM_SIZE,
+    description: 'Reset the leaderboard for a specific league.',
   },
   [COMMAND_NAME.MOD]: {
     command: 'mod',

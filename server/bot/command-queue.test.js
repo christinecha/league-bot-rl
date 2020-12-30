@@ -12,6 +12,7 @@ const { guild } = require('../../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
+getLeagueStats.mockResolvedValue({})
 
 const getQueueMessage = (regex) => {
   return expect.objectContaining({

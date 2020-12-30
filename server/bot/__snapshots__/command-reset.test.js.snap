@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@LeagueBot reset <teamSize> 1`] = `
+Object {
+  "jhan": Object {
+    "id": "jhan",
+    "loss": 5,
+    "points": -5,
+    "ratio": 0,
+    "win": 0,
+  },
+  "partial_cloud": Object {
+    "id": "partial_cloud",
+    "loss": 0,
+    "points": 5,
+    "ratio": 1,
+    "win": 5,
+  },
+  "pugslypuggleton": Object {
+    "id": "pugslypuggleton",
+    "loss": 0,
+    "points": 5,
+    "ratio": 1,
+    "win": 5,
+  },
+  "space": Object {
+    "id": "space",
+    "loss": 5,
+    "points": -5,
+    "ratio": 0,
+    "win": 0,
+  },
+}
+`;

@@ -2,10 +2,6 @@ require('dotenv').config()
 require('regenerator-runtime/runtime')
 
 const Discord = require('discord.js')
-const { getLeagueStats } = require('../server/util/getLeagueStats')
-
-jest.mock('../server/util/getLeagueStats')
-getLeagueStats.mockResolvedValue({})
 
 jest.mock('discord.js')
 
@@ -19,6 +15,8 @@ Discord.Client = jest.fn(() => {
       fetch: (guildId) =>
         Promise.resolve({
           id: guildId,
+          name: 'h000',
+          ownerID: '12355',
           members: {
             fetch: (userId) =>
               Promise.resolve({
@@ -26,6 +24,11 @@ Discord.Client = jest.fn(() => {
                   id: userId,
                   avatarURL: () => '',
                 },
+                hasPermission: (arr) =>
+                  arr.some((a) => {
+                    const perms = self.users[userId].permissions || []
+                    return perms.includes(a)
+                  }),
                 roles: self.users[userId]
                   ? {
                       cache: self.users[userId].roles,

@@ -30,6 +30,10 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - `@LeagueBot status | s <[teamSize]>` - Show the current queue(s).
 - `@LeagueBot win | won <matchId>` - Report that you won this match.
 
+### Mod-Only Commands
+
+- `@LeagueBot reset <teamSize>` - Reset the leaderboard for a specific league.
+
 ### Advanced
 
 - Mentioning `@LeagueBot` is optional in the channel that has most recently been queued in. As a shortcut in this channel, you can use a `!` prefix instead, like `!leave 2s`, `!q 1` or `!leaderboard`

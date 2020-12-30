@@ -1,6 +1,7 @@
 const { discord } = require('../data/util/discord')
 const leagues = require('../data/leagues')
 const guilds = require('../data/guilds')
+const ERRORS = require('../constants/ERRORS')
 const { COMMANDS, COMMAND_NAME } = require('../../shared/commands')
 const { CALLBACKS } = require('./callbacks')
 
@@ -45,7 +46,7 @@ discord.on('message', async (message) => {
     const isAdmin = guildMember.hasPermission(['ADMINISTRATOR'])
 
     if (!isAdmin) {
-      message.channel.send('You must be a LeagueBot mod to use this command.')
+      message.channel.send(ERRORS.MOD_ONLY)
       return
     }
   }

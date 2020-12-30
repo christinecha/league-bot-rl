@@ -8,6 +8,7 @@ const { onCancel } = require('./cancel')
 const { onStatus } = require('./status')
 const { onMod } = require('./mod')
 const { onNew } = require('./new')
+const { onReset } = require('./reset')
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
@@ -36,6 +37,7 @@ const CALLBACKS = {
   [COMMAND_NAME.STATUS]: onStatus,
   [COMMAND_NAME.WIN]: onReportWin,
   [COMMAND_NAME.MOD]: onMod,
+  [COMMAND_NAME.RESET]: onReset,
 }
 
 module.exports = {

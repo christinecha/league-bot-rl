@@ -10,6 +10,8 @@ const ERRORS = {
 
   QUEUE_NO_SUCH_USER: 'User is not in the queue.',
   QUEUE_DUPLICATE_USER: 'User is already in the queue.',
+
+  MOD_ONLY: 'You must be a LeagueBot mod to use this command.',
 }
 
 module.exports = ERRORS
