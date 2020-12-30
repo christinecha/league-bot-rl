@@ -13,7 +13,6 @@ discord.once('ready', () => {
 discord.on('message', async (message) => {
   let shortcut = false
   const parts = message.content.split(/\s+/)
-  console.log('Message received!', message.guild.id, message.content, parts)
 
   if (!parts[0].match(BOT_ID)) {
     parts.unshift(BOT_ID)
@@ -60,6 +59,7 @@ discord.on('message', async (message) => {
   }
 
   try {
+    console.log('Command received!', command, arg)
     await guilds.create({
       id: message.guild.id,
       name: message.guild.name,
