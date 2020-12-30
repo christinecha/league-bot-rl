@@ -5,6 +5,7 @@ const leagues = require('../data/leagues')
 const { discord } = require('../data/util/discord')
 const ERRORS = require('../constants/ERRORS')
 const { league1s, league2s, league3s } = require('../../test/league')
+const { guild } = require('../../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg, react
@@ -29,7 +30,7 @@ beforeEach(async (done) => {
   msg = (userId, content) => ({
     content,
     author: { id: userId },
-    guild: { id: 'h000' },
+    guild,
     channel: { send, id: '55' },
   })
 

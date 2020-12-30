@@ -2,6 +2,7 @@
 require('./index')
 const firebase = require('@firebase/rules-unit-testing')
 const { discord } = require('../data/util/discord')
+const { guild } = require('../../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg
@@ -19,7 +20,7 @@ beforeEach(async (done) => {
   msg = (userId, content) => ({
     content,
     author: { id: userId },
-    guild: { id: 'h000' },
+    guild,
     channel: { send, id: '55' },
   })
 

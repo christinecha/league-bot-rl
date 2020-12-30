@@ -8,6 +8,7 @@ const ERRORS = require('../constants/ERRORS')
 const { league1s, league2s, league3s } = require('../../test/league')
 const { getLeagueStats } = require('../util/getLeagueStats')
 const { usersToString, getTeams } = require('../util')
+const { guild } = require('../../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
@@ -59,7 +60,7 @@ beforeEach(async (done) => {
   msg = (userId, content) => ({
     content,
     author: { id: userId },
-    guild: { id: 'h000' },
+    guild,
     channel: { send, id: '55' },
   })
 

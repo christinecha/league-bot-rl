@@ -1,4 +1,6 @@
 const ERRORS = require('../constants/ERRORS')
+const { guild } = require('../../test/guild')
+
 const {
   getTeamSize,
   getTeams,
@@ -25,7 +27,7 @@ test('getTeamSize', () => {
 })
 
 test('getLeagueId', () => {
-  const context = { guild: { id: 'h000' } }
+  const context = { guild }
 
   // Expected
   expect(getLeagueId(1, context)).toBe('h000-1')

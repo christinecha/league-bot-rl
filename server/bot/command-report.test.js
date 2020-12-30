@@ -6,6 +6,7 @@ const { discord } = require('../data/util/discord')
 const { parseMatchId } = require('../data/matchId')
 const ERRORS = require('../constants/ERRORS')
 const { match1s } = require('../../test/match')
+const { guild } = require('../../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg
@@ -23,7 +24,7 @@ beforeEach(async (done) => {
   msg = (userId, content) => ({
     content,
     author: { id: userId },
-    guild: { id: 'h000' },
+    guild,
     channel: { send, id: '55' },
   })
 

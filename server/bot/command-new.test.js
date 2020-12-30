@@ -4,9 +4,9 @@ const ERRORS = require('../constants/ERRORS')
 const firebase = require('@firebase/rules-unit-testing')
 const leagues = require('../data/leagues')
 const { discord } = require('../data/util/discord')
+const { guild } = require('../../test/guild')
 const BOT_ID = process.env.BOT_ID
 
-const guildId = 'h000'
 let send, msg
 
 beforeAll(async (done) => {
@@ -22,7 +22,7 @@ beforeEach(async (done) => {
   msg = (userId, content) => ({
     content,
     author: { id: userId },
-    guild: { id: guildId },
+    guild,
     channel: { send, id: '55' },
   })
   done()
@@ -44,9 +44,9 @@ test('@LeagueBot new <teamSize>', async (done) => {
   await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new 2s`))
   await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new 3s`))
 
-  const league1 = await leagues.get(`${guildId}-1`)
-  const league2 = await leagues.get(`${guildId}-2`)
-  const league3 = await leagues.get(`${guildId}-3`)
+  const league1 = await leagues.get(`${guild.id}-1`)
+  const league2 = await leagues.get(`${guild.id}-2`)
+  const league3 = await leagues.get(`${guild.id}-3`)
 
   for (let i in teamSizes) {
     const teamSize = teamSizes[i]

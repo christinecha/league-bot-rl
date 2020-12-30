@@ -25,6 +25,13 @@ const updateQueue = async (leagueId, context, shouldQueue) => {
     ...queueUpdate,
     channelId: context.channel.id,
     ...doNotKickUpdate,
+
+    /* TEMPORARY BACKFILL */
+    guild: {
+      id: context.guild.id,
+      name: context.guild.name,
+      ownerID: context.guild.ownerID,
+    },
   })
 }
 

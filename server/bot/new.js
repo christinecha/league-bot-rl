@@ -22,7 +22,16 @@ const onNew = async (leagueName, context) => {
   }
 
   context.channel.send(`Creating a new league with team size ${teamSize}.`)
-  await leagues.create({ id, teamSize, name: `${teamSize}s` })
+  await leagues.create({
+    id,
+    teamSize,
+    name: `${teamSize}s`,
+    guild: {
+      id: context.guild.id,
+      name: context.guild.name,
+      ownerID: context.guild.ownerID,
+    },
+  })
 }
 
 module.exports = {
