@@ -25,7 +25,7 @@ Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
   })
 }
 
-const CREATE_MATCH = (match) => {
+const MATCH_DETAILS = (match) => {
   const { players, teamSize, mode } = match
   const teams = getTeams(players)
   const { key } = parseMatchId(match.id)
@@ -77,7 +77,7 @@ const HELP = () => {
 module.exports = {
   LEAVE_QUEUE,
   GET_MATCH_MODE,
-  CREATE_MATCH,
+  MATCH_DETAILS,
   QUEUE,
   HELP,
 }

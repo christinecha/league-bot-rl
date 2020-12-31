@@ -9,6 +9,7 @@ const { league1s, league2s, league3s } = require('../../test/league')
 const { getLeagueStats } = require('../util/getLeagueStats')
 const { usersToString, getTeams } = require('../util')
 const { guild } = require('../../test/guild')
+const { getMatchMessage } = require('../../test/messages')
 const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
@@ -20,22 +21,6 @@ const getQueueMessage = (regex) => {
       expect.objectContaining({
         value: expect.stringMatching(regex),
       }),
-    ],
-  })
-}
-
-const getMatchMessage = ({ id, team1, team2 }) => {
-  return expect.objectContaining({
-    description: `Match ID: ${id}`,
-    fields: [
-      {
-        name: 'Team 1',
-        value: usersToString(team1),
-      },
-      {
-        name: 'Team 2',
-        value: usersToString(team2),
-      },
     ],
   })
 }

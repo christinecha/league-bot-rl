@@ -14,6 +14,7 @@ const COMMAND_NAME = {
   MOD: 'MOD',
   RESET: 'RESET',
   VOID_MATCH: 'VOID_MATCH',
+  FIX_MATCH: 'FIX_MATCH',
 }
 
 const VARIABLE_NAME = {
@@ -116,7 +117,13 @@ const COMMANDS = {
     command: 'void',
     modOnly: true,
     argument: VARIABLE_NAME.MATCH_ID,
-    description: 'Erase a match from history.',
+    description: 'Erase a specific match from history.',
+  },
+  [COMMAND_NAME.FIX_MATCH]: {
+    command: 'fix',
+    modOnly: true,
+    argument: VARIABLE_NAME.MATCH_ID,
+    description: 'Overwrite the results of a specific match.',
   },
   [COMMAND_NAME.ROAST]: {
     isHidden: true,

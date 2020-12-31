@@ -44,9 +44,8 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 - ✨ **Requeue | Rematch.** Requeue everyone from a specific match.
 - ✨ **Insult/Compliment Contributions.** Add a place for people to submit bot insults & compliments.
-- 🐛 **Update Discord message format.** Remove timestamps, update the color, and add some bot info.
-- ✨ **Reset.** A command to reset a leaderboard. Should be mod-only.
-- ✨ **Mod-Only Commands.** Designate some commands to be mod-only.
+- 🐛 **Update Discord message format.** Remove timestamps and add some bot info.
+- ✨ **Recent matches.** A command that lists the most recent matches played in this server.
 - ✨ **Set-Channel.** Command to manually set a channel where the ! shortcut will work. Possibly mod-only?
 - 🐛 **Prune queues on match creation.** If you get a match for one league, it should remove all those players from the other leagues' queues.
 - ✨ **Recently Viewed Servers.** Save leaderboard server ids in local storage so that they're easily accessible from the homepage.

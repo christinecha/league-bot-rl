@@ -12,6 +12,8 @@ const ERRORS = {
   QUEUE_DUPLICATE_USER: 'User is already in the queue.',
 
   MOD_ONLY: 'You must be a LeagueBot mod to use this command.',
+
+  NO_TEAM_SELECTED: 'No team was selected.',
 }
 
 module.exports = ERRORS

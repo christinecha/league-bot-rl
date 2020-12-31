@@ -124,7 +124,7 @@ const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
     }
 
     const match = await createMatch({ leagueId, playerIds, mode, teamSize })
-    await context.channel.send(messages.CREATE_MATCH(match))
+    await context.channel.send(messages.MATCH_DETAILS(match))
   } catch (err) {
     console.log('[ERROR]', err)
     if (!opts.hideMessage) await context.channel.send(err)
