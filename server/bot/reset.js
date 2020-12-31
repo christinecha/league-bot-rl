@@ -1,6 +1,11 @@
 const leagues = require('../data/leagues')
 const { getEmoteReactions } = require('../util/getEmoteReactions')
 const { getTeamSize, getLeagueId } = require('../util')
+const {
+  LEADERBOARD_NOT_RESET,
+  LEADERBOARD_RESET,
+  REACT_TO_RESET,
+} = require('./messages')
 
 const onReset = async (str, context) => {
   try {
@@ -10,13 +15,12 @@ const onReset = async (str, context) => {
     const reactions = await getEmoteReactions({
       validate: (_, user) => user.id === context.author.id,
       channel: context.channel,
-      message:
-        'Are you sure you want to reset this leaderboard? React with any emote to confirm. This action cannot be undone.',
+      message: REACT_TO_RESET(teamSize),
       initialEmotes: ['✅'],
     })
 
     if (!reactions.length) {
-      await context.channel.send(`${teamSize}s League was not reset.`)
+      await context.channel.send(LEADERBOARD_NOT_RESET(teamSize))
       return
     }
 
@@ -25,7 +29,7 @@ const onReset = async (str, context) => {
       rangeStart: Date.now(),
     })
 
-    await context.channel.send(`${teamSize}s Leaderboard was reset.`)
+    await context.channel.send(LEADERBOARD_RESET(teamSize))
   } catch (err) {
     context.channel.send(err)
   }

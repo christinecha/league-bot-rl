@@ -1,50 +1,26 @@
 // Start mock server!
 require('./index')
-const firebase = require('@firebase/rules-unit-testing')
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
-const { discord } = require('../data/util/discord')
 const { getLeagueStats } = require('../util/getLeagueStats')
+const { cleanDatabase, triggerMessage } = require('../test/util')
 const ERRORS = require('../constants/ERRORS')
 const { match2s } = require('../test/match')
 const { league2s } = require('../test/league')
+const { plebUser, adminUser } = require('../test/users')
+const {
+  LEADERBOARD_RESET,
+  LEADERBOARD_NOT_RESET,
+  REACT_TO_RESET,
+} = require('./messages')
 const BOT_ID = process.env.BOT_ID
 
-const adminId = 'cha'
-const plebId = 'noodle'
-let send, msg, react, guild
-
 beforeAll(async (done) => {
-  guild = await discord.guilds.fetch('h000')
-  discord.setUsers({
-    [adminId]: { permissions: ['ADMINISTRATOR'] },
-    [plebId]: { permissions: [] },
-  })
-
-  await firebase.clearFirestoreData({
-    projectId: process.env.GCLOUD_PROJECT,
-  })
-
+  await cleanDatabase()
   done()
 })
 
 beforeEach(async (done) => {
-  react = jest.fn()
-  send = jest.fn(() =>
-    Promise.resolve({
-      react,
-      awaitReactions: async (filter) => {
-        filter('✅', { id: adminId })
-      },
-    })
-  )
-  msg = (userId, content) => ({
-    content,
-    author: { id: userId },
-    guild,
-    channel: { send, id: '55' },
-  })
-
   await leagues.create(league2s)
   await matches.create({ ...match2s, id: `${league2s.id}-1`, winner: 2 })
   await matches.create({ ...match2s, id: `${league2s.id}-2`, winner: 2 })
@@ -55,26 +31,41 @@ beforeEach(async (done) => {
 })
 
 afterEach(async (done) => {
-  await firebase.clearFirestoreData({
-    projectId: process.env.GCLOUD_PROJECT,
-  })
+  await cleanDatabase()
   done()
 })
 
 test('@LeagueBot reset <teamSize>', async (done) => {
-  let stats = await getLeagueStats(league2s.id)
-  expect(stats).toMatchSnapshot()
+  const originalStats = await getLeagueStats(league2s.id)
+  let stats
 
-  await discord.trigger('message', msg(plebId, `<@!${BOT_ID}> reset 2`))
-  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
+  // League cannot be reset by a non-admin.
+  const m1 = await triggerMessage({
+    userId: plebUser.id,
+    content: `<@!${BOT_ID}> reset 2`,
+  })
+  expect(m1.channel.send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
+  stats = await getLeagueStats(league2s.id)
+  expect(stats).toStrictEqual(originalStats)
 
-  await discord.trigger('message', msg(adminId, `<@!${BOT_ID}> reset 2`))
-  expect(send).toHaveBeenNthCalledWith(
-    2,
-    'Are you sure you want to reset this leaderboard? React with any emote to confirm. This action cannot be undone.'
-  )
+  // League should not be reset if there's no confirmation.
+  const m2 = await triggerMessage({
+    userId: adminUser.id,
+    content: `<@!${BOT_ID}> reset 2`,
+  })
+  expect(m2.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_RESET(2))
+  expect(m2.channel.send).toHaveBeenNthCalledWith(2, LEADERBOARD_NOT_RESET(2))
+  stats = await getLeagueStats(league2s.id)
+  expect(stats).toStrictEqual(originalStats)
 
-  expect(send).toHaveBeenNthCalledWith(3, '2s Leaderboard was reset.')
+  // League should be reset if confirmed.
+  const m3 = await triggerMessage({
+    userId: adminUser.id,
+    content: `<@!${BOT_ID}> reset 2`,
+    reactions: [[{ _emoji: { name: '✅' } }, adminUser]],
+  })
+  expect(m3.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_RESET(2))
+  expect(m3.channel.send).toHaveBeenNthCalledWith(2, LEADERBOARD_RESET(2))
 
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual({})

@@ -1,84 +1,67 @@
 // Start mock server!
 require('./index')
-const firebase = require('@firebase/rules-unit-testing')
 const matches = require('../data/matches')
-const { discord } = require('../data/util/discord')
 const { parseMatchId } = require('../data/matchId')
 const ERRORS = require('../constants/ERRORS')
 const { match2s } = require('../test/match')
-const { getMatchMessage } = require('../test/messages')
-const { getTeams } = require('../util')
+const { expectMatchMessage } = require('../test/messages')
+const { cleanDatabase, triggerMessage } = require('../test/util')
+const { adminUser, plebUser } = require('../test/users')
+const { TEAM_WON, REACT_TO_OVERWRITE } = require('./messages')
 const BOT_ID = process.env.BOT_ID
 
-const adminId = 'cha'
-const plebId = 'noodle'
-let send, msg, react, guild
-
 beforeAll(async (done) => {
-  guild = await discord.guilds.fetch('h000')
-  discord.setUsers({
-    [adminId]: { permissions: ['ADMINISTRATOR'] },
-    [plebId]: { permissions: [] },
-  })
-
-  await firebase.clearFirestoreData({
-    projectId: process.env.GCLOUD_PROJECT,
-  })
-
+  await cleanDatabase()
   done()
 })
 
 beforeEach(async (done) => {
-  react = jest.fn()
-  send = jest.fn(() =>
-    Promise.resolve({
-      react,
-      awaitReactions: async (filter) => {
-        filter({ _emoji: { name: '2️⃣' } }, { id: adminId })
-      },
-    })
-  )
-  msg = (userId, content) => ({
-    content,
-    author: { id: userId },
-    guild,
-    channel: { send, id: '55' },
-  })
-
-  await matches.create(match2s)
+  await matches.create({ ...match2s, winner: 1 })
   done()
 })
 
 afterEach(async (done) => {
-  await firebase.clearFirestoreData({
-    projectId: process.env.GCLOUD_PROJECT,
-  })
+  await cleanDatabase()
   done()
 })
 
 test('@LeagueBot fix <matchId>', async (done) => {
+  let message, send
   const matchKey = parseMatchId(match2s.id).key
-  const teams = getTeams(match2s.players)
 
-  await discord.trigger('message', msg(plebId, `<@!${BOT_ID}> fix ${matchKey}`))
+  // Non-admin cannot do this.
+  message = await triggerMessage({
+    userId: plebUser.id,
+    content: `<@!${BOT_ID}> fix ${matchKey}`,
+  })
+  send = message.channel.send
   expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
 
-  await discord.trigger(
-    'message',
-    msg(adminId, `<@!${BOT_ID}> fix ${matchKey}`)
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    2,
-    'To overwrite the results of this match, react below with the correct team that won.'
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    3,
-    getMatchMessage({ id: matchKey, team1: teams[1], team2: teams[2] })
-  )
+  // Match should not be changed if there's no selection.
+  message = await triggerMessage({
+    userId: adminUser.id,
+    content: `<@!${BOT_ID}> fix ${matchKey}`,
+  })
+  send = message.channel.send
+  expect(send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
+  expect(send).toHaveBeenNthCalledWith(2, expectMatchMessage(match2s))
+  expect(send).toHaveBeenNthCalledWith(3, ERRORS.NO_TEAM_SELECTED)
 
-  expect(send).toHaveBeenNthCalledWith(4, `Team 2 won Match #${matchKey}!`)
+  match = await matches.get(match2s.id)
+  expect(match.winner).toBe(1)
 
-  const match = await matches.get(match2s.id)
+  // Admins can overwrite a match if they select a team.
+  message = await triggerMessage({
+    userId: adminUser.id,
+    content: `<@!${BOT_ID}> fix ${matchKey}`,
+    reactions: [[{ _emoji: { name: '2️⃣' } }, adminUser]],
+  })
+  send = message.channel.send
+  expect(send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
+  expect(send).toHaveBeenNthCalledWith(2, expectMatchMessage(match2s))
+  expect(send).toHaveBeenNthCalledWith(3, TEAM_WON({ winner: 2, matchKey }))
+
+  let match = await matches.get(match2s.id)
   expect(match.winner).toBe(2)
 
   done()
