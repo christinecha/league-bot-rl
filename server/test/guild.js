@@ -1,7 +1,7 @@
 const guild = {
   id: 'h000',
-  name: 'Da Hooo Crooo',
-  ownerID: '99999999',
+  name: 'Hooo Crew',
+  ownerID: '12355',
 }
 
 module.exports = { guild }

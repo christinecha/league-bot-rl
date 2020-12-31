@@ -5,8 +5,8 @@ const leagues = require('../data/leagues')
 const { discord } = require('../data/util/discord')
 const messages = require('./messages')
 const ERRORS = require('../constants/ERRORS')
-const { league1s, league2s, league3s } = require('../../test/league')
-const { guild } = require('../../test/guild')
+const { league1s, league2s, league3s } = require('../test/league')
+const { guild } = require('../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg, react

@@ -5,8 +5,8 @@ const matches = require('../data/matches')
 const { discord } = require('../data/util/discord')
 const { parseMatchId } = require('../data/matchId')
 const ERRORS = require('../constants/ERRORS')
-const { match2s } = require('../../test/match')
-const { getMatchMessage } = require('../../test/messages')
+const { match2s } = require('../test/match')
+const { getMatchMessage } = require('../test/messages')
 const { getTeams } = require('../util')
 const BOT_ID = process.env.BOT_ID
 
@@ -16,10 +16,10 @@ let send, msg, react, guild
 
 beforeAll(async (done) => {
   guild = await discord.guilds.fetch('h000')
-  discord.users = {
+  discord.setUsers({
     [adminId]: { permissions: ['ADMINISTRATOR'] },
     [plebId]: { permissions: [] },
-  }
+  })
 
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,

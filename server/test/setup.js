@@ -5,18 +5,36 @@ const Discord = require('discord.js')
 
 jest.mock('discord.js')
 
+Discord.DB = {
+  users: {},
+  guilds: {
+    h000: {
+      id: 'h000',
+      name: 'Hooo Crew',
+      ownerID: '12355',
+    },
+  },
+}
+
+Discord.Message = jest.fn(({ userId, content }) => ({
+  content,
+  author: { id: userId },
+  guild,
+  channel: { send, id: '55' },
+}))
+
 Discord.Client = jest.fn(() => {
   const self = {
-    users: {},
+    /* Not real Discord methods */
+    setUsers: (users) => (Discord.DB.users = users),
     callbacks: {},
     callbacksOnce: {},
+
     login: () => {},
     guilds: {
       fetch: (guildId) =>
         Promise.resolve({
-          id: guildId,
-          name: 'h000',
-          ownerID: '12355',
+          ...Discord.DB.guilds[guildId],
           members: {
             fetch: (userId) =>
               Promise.resolve({
@@ -26,12 +44,12 @@ Discord.Client = jest.fn(() => {
                 },
                 hasPermission: (arr) =>
                   arr.some((a) => {
-                    const perms = self.users[userId].permissions || []
+                    const perms = Discord.DB.users[userId].permissions || []
                     return perms.includes(a)
                   }),
-                roles: self.users[userId]
+                roles: Discord.DB.users[userId]
                   ? {
-                      cache: self.users[userId].roles,
+                      cache: Discord.DB.users[userId].roles,
                     }
                   : {},
               }),

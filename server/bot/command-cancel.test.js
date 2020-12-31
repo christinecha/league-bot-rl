@@ -5,8 +5,8 @@ const matches = require('../data/matches')
 const { discord } = require('../data/util/discord')
 const { parseMatchId } = require('../data/matchId')
 const ERRORS = require('../constants/ERRORS')
-const { match1s, match2s } = require('../../test/match')
-const { guild } = require('../../test/guild')
+const { match1s, match2s } = require('../test/match')
+const { guild } = require('../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg

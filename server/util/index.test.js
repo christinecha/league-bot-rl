@@ -1,5 +1,5 @@
 const ERRORS = require('../constants/ERRORS')
-const { guild } = require('../../test/guild')
+const { guild } = require('../test/guild')
 
 const {
   getTeamSize,

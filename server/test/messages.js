@@ -1,4 +1,4 @@
-const { usersToString } = require('../server/util')
+const { usersToString } = require('../util')
 
 const getMatchMessage = ({ id, team1, team2 }) => {
   return expect.objectContaining({

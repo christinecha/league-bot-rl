@@ -5,11 +5,11 @@ const leagues = require('../data/leagues')
 const matches = require('../data/matches')
 const { discord } = require('../data/util/discord')
 const ERRORS = require('../constants/ERRORS')
-const { league1s, league2s, league3s } = require('../../test/league')
+const { league1s, league2s, league3s } = require('../test/league')
 const { getLeagueStats } = require('../util/getLeagueStats')
 const { usersToString, getTeams } = require('../util')
-const { guild } = require('../../test/guild')
-const { getMatchMessage } = require('../../test/messages')
+const { guild } = require('../test/guild')
+const { getMatchMessage } = require('../test/messages')
 const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
@@ -356,12 +356,12 @@ test('@LeagueBot queue 2s [auto]', async (done) => {
   const users = ['hoody', 'duke', 'canada', 'cha']
 
   // Use RL ranks to determine balanced teams
-  discord.users = {
+  discord.setUsers({
     [users[0]]: { roles: [{ name: 'SSL' }] },
     [users[1]]: { roles: [{ name: 'GC' }] },
     [users[2]]: { roles: [{ name: 'Champ' }] },
     [users[3]]: { roles: [{ name: 'Gold' }] },
-  }
+  })
 
   let matchId = `${league2s.id}-1`
 
@@ -377,12 +377,12 @@ test('@LeagueBot queue 2s [auto]', async (done) => {
   expect(teams[2]).toStrictEqual([users[2], users[1]])
 
   // Same RL rank? Use win ratio to determine teams.
-  discord.users = {
+  discord.setUsers({
     [users[0]]: { roles: [{ name: 'Gold' }] },
     [users[1]]: { roles: [{ name: 'Gold' }] },
     [users[2]]: { roles: [{ name: 'Gold' }] },
     [users[3]]: { roles: [{ name: 'Gold' }] },
-  }
+  })
 
   getLeagueStats.mockResolvedValue({
     [users[0]]: { ratio: 1 },

@@ -54,7 +54,7 @@
   },
   "jest": {
     "setupFiles": [
-      "<rootDir>/test/setup.js"
+      "<rootDir>/server/test/setup.js"
     ],
     "testEnvironment": "node"
   }

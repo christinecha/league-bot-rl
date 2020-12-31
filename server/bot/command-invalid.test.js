@@ -2,7 +2,7 @@
 require('./index')
 const firebase = require('@firebase/rules-unit-testing')
 const { discord } = require('../data/util/discord')
-const { guild } = require('../../test/guild')
+const { guild } = require('../test/guild')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg
