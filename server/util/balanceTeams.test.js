@@ -1,98 +1,146 @@
 const { balanceTeams } = require('./balanceTeams')
-const RL_RANKS = require('../constants/RL_RANKS')
+const leagues = require('../data/leagues')
+const { cleanDatabase } = require('../test/util')
+const { getLeagueStats } = require('../util/getLeagueStats')
+const { league2s, league3s, league4s } = require('../test/league')
+const {
+  bronzeUser,
+  platUser,
+  diamondUser,
+  champUser,
+  silverUser,
+  goldUser,
+  gcUser,
+  sslUser,
+} = require('../test/users')
 
-test('balanceTeams - by rank', () => {
-  const users = [
-    { id: 'dirt', rank: RL_RANKS['Bronze'], ratio: 0.5 },
-    { id: 'hoody', rank: RL_RANKS['GC'], ratio: 0.5 },
-    { id: 'cha', rank: RL_RANKS['Plat'], ratio: 0.5 },
-    { id: 'flips', rank: RL_RANKS['Diamond'], ratio: 0.5 },
-  ]
-  const teams = balanceTeams(users)
-  expect(teams[1].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "hoody",
-      "dirt",
-    ]
-  `)
-  expect(teams[2].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "flips",
-      "cha",
-    ]
-  `)
+jest.mock('../util/getLeagueStats')
+getLeagueStats.mockResolvedValue({})
+
+beforeAll(async (done) => {
+  await cleanDatabase()
+  done()
 })
 
-test('balanceTeams - by ratio', () => {
-  const users = [
-    { id: 'cheese', rank: RL_RANKS['Plat'], ratio: 0.8 },
-    { id: 'booger', rank: RL_RANKS['Plat'], ratio: 0.6 },
-    { id: 'cha', rank: RL_RANKS['Plat'], ratio: 0.2 },
-    { id: 'space', rank: RL_RANKS['Plat'], ratio: 0.7 },
-  ]
-  const teams = balanceTeams(users)
-  expect(teams[1].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "cheese",
-      "cha",
-    ]
-  `)
-  expect(teams[2].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "space",
-      "booger",
-    ]
-  `)
+beforeEach(async (done) => {
+  await leagues.create(league2s)
+  await leagues.create(league3s)
+  await leagues.create(league4s)
+  done()
 })
 
-test('balanceTeams - by rank & ratio', () => {
-  let users = [
-    { id: 'space', rank: RL_RANKS['Diamond'], ratio: 0.2 },
-    { id: 'steeler', rank: RL_RANKS['Champ'], ratio: 0.9 },
-    { id: 'hoody', rank: RL_RANKS['GC'], ratio: 0.1 },
-    { id: 'flips', rank: RL_RANKS['Diamond'], ratio: 0.9 },
-    { id: 'cha', rank: RL_RANKS['Plat'], ratio: 0.4 },
-    { id: 'cheese', rank: RL_RANKS['Diamond'], ratio: 0.7 },
-  ]
-  let teams = balanceTeams(users)
+afterEach(async (done) => {
+  await cleanDatabase()
+  done()
+})
 
-  expect(teams[1].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "steeler",
-      "hoody",
-      "cha",
-    ]
-  `)
-  expect(teams[2].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "flips",
-      "cheese",
-      "space",
-    ]
+test('balanceTeams - by rank', async (done) => {
+  let teams
+
+  teams = await balanceTeams({
+    leagueId: league2s.id,
+    userIds: [bronzeUser.id, platUser.id, diamondUser.id, champUser.id],
+  })
+
+  expect(teams).toMatchInlineSnapshot(`
+    Object {
+      "1": Array [
+        "racoon",
+        "rookie-bot",
+      ],
+      "2": Array [
+        "flips",
+        "suhan",
+      ],
+    }
   `)
 
-  users = [
-    { id: 'space', rank: RL_RANKS['Diamond'], ratio: 0.7 },
-    { id: 'steeler', rank: RL_RANKS['Champ'], ratio: 0.9 },
-    { id: 'cha', rank: RL_RANKS['Gold'], ratio: 0.2 },
-    { id: 'flips', rank: RL_RANKS['Diamond'], ratio: 0.7 },
-    { id: 'racoon', rank: RL_RANKS['Champ'], ratio: 0.3 },
-    { id: 'cheese', rank: RL_RANKS['Diamond'], ratio: 0.2 },
-  ]
-  teams = balanceTeams(users)
+  teams = await balanceTeams({
+    leagueId: league3s.id,
+    userIds: [
+      bronzeUser.id,
+      silverUser.id,
+      goldUser.id,
+      platUser.id,
+      diamondUser.id,
+      champUser.id,
+    ],
+  })
 
-  expect(teams[1].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "steeler",
-      "racoon",
-      "cha",
-    ]
+  expect(teams).toMatchInlineSnapshot(`
+    Object {
+      "1": Array [
+        "racoon",
+        "rookie-bot",
+        "suhan",
+      ],
+      "2": Array [
+        "allstar-bot",
+        "cha",
+        "flips",
+      ],
+    }
   `)
-  expect(teams[2].map((t) => t.id)).toMatchInlineSnapshot(`
-    Array [
-      "space",
-      "flips",
-      "cheese",
-    ]
+
+  teams = await balanceTeams({
+    leagueId: league4s.id,
+    userIds: [
+      bronzeUser.id,
+      silverUser.id,
+      goldUser.id,
+      platUser.id,
+      diamondUser.id,
+      champUser.id,
+      gcUser.id,
+      sslUser.id,
+    ],
+  })
+
+  expect(teams).toMatchInlineSnapshot(`
+    Object {
+      "1": Array [
+        "cha",
+        "leth",
+        "racoon",
+        "rookie-bot",
+      ],
+      "2": Array [
+        "allstar-bot",
+        "flips",
+        "hoody",
+        "suhan",
+      ],
+    }
   `)
+
+  done()
+})
+
+test('balanceTeams - by rank & ratio', async (done) => {
+  let teams
+  getLeagueStats.mockResolvedValue({
+    [goldUser.id]: { ratio: 0.5 },
+    [platUser.id]: { ratio: 0.7 },
+    [diamondUser.id]: { ratio: 0.4 },
+    [champUser.id]: { ratio: 0.5 },
+  })
+
+  teams = await balanceTeams({
+    leagueId: league2s.id,
+    userIds: [goldUser.id, platUser.id, diamondUser.id, champUser.id],
+  })
+
+  expect(teams).toMatchInlineSnapshot(`
+    Object {
+      "1": Array [
+        "cha",
+        "racoon",
+      ],
+      "2": Array [
+        "flips",
+        "suhan",
+      ],
+    }
+  `)
+  done()
 })

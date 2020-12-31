@@ -42,21 +42,10 @@ const createMatch = async ({
     }
 
     if (mode === MATCH_MODE.AUTO) {
-      const stats = await getLeagueStats(leagueId)
-      const users = await Promise.all(
-        queue.map(id => getGuildUser({ userId: id, guildId }))
-      )
+      const teams = await balanceTeams({ leagueId, userIds: queue })
 
-      const teams = balanceTeams(
-        users.map(u => ({
-          id: u.id,
-          ratio: stats[u.id] ? stats[u.id].ratio : 0.5,
-          rank: u.rank,
-        }))
-      )
-
-      teams[1].forEach(p => (players[p.id] = { team: 1 }))
-      teams[2].forEach(p => (players[p.id] = { team: 2 }))
+      teams[1].forEach((p) => (players[p] = { team: 1 }))
+      teams[2].forEach((p) => (players[p] = { team: 2 }))
     }
 
     const matchId = await generateMatchId({ leagueId })

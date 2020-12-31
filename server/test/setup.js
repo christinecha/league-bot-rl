@@ -2,25 +2,79 @@ require('dotenv').config()
 require('regenerator-runtime/runtime')
 
 const Discord = require('discord.js')
+const users = require('./users')
 
 jest.mock('discord.js')
 
 Discord.DB = {
   users: {},
+  guildMembers: {},
   guilds: {
     h000: {
       id: 'h000',
       name: 'Hooo Crew',
       ownerID: '12355',
+      _members: {
+        ...Object.keys(users).reduce((obj, key) => {
+          const user = users[key]
+          obj[user.id] = user
+          return obj
+        }, {}),
+      },
     },
   },
 }
 
-Discord.Message = jest.fn(({ userId, content }) => ({
+Discord.Message = ({
+  userId,
   content,
-  author: { id: userId },
+  channelId = 'test',
   guild,
-  channel: { send, id: '55' },
+  reactions = [],
+}) => {
+  const react = jest.fn()
+  const send = jest.fn(() =>
+    Promise.resolve({
+      react,
+      awaitReactions: async (filter) => {
+        reactions.forEach((r) => {
+          filter(...r)
+        })
+      },
+    })
+  )
+
+  return {
+    content,
+    author: { id: userId },
+    guild,
+    channel: { send, id: channelId },
+    react,
+  }
+}
+
+Discord.Guild = jest.fn((data) => ({
+  ...data,
+  members: {
+    fetch: (id) => {
+      return Promise.resolve({
+        user: {
+          id,
+          avatarURL: () => '',
+        },
+        hasPermission: (arr) =>
+          arr.some((a) => {
+            const perms = data._members[id].permissions || []
+            return perms.includes(a)
+          }),
+        roles: data._members[id]
+          ? {
+              cache: data._members[id].roles,
+            }
+          : {},
+      })
+    },
+  },
 }))
 
 Discord.Client = jest.fn(() => {
@@ -32,29 +86,10 @@ Discord.Client = jest.fn(() => {
 
     login: () => {},
     guilds: {
-      fetch: (guildId) =>
-        Promise.resolve({
-          ...Discord.DB.guilds[guildId],
-          members: {
-            fetch: (userId) =>
-              Promise.resolve({
-                user: {
-                  id: userId,
-                  avatarURL: () => '',
-                },
-                hasPermission: (arr) =>
-                  arr.some((a) => {
-                    const perms = Discord.DB.users[userId].permissions || []
-                    return perms.includes(a)
-                  }),
-                roles: Discord.DB.users[userId]
-                  ? {
-                      cache: Discord.DB.users[userId].roles,
-                    }
-                  : {},
-              }),
-          },
-        }),
+      fetch: (guildId) => {
+        const guild = new Discord.Guild(Discord.DB.guilds[guildId])
+        return Promise.resolve(guild)
+      },
     },
     trigger: function (evt, data) {
       if (!this.callbacks[evt]) return Promise.resolve()
