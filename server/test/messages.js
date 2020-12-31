@@ -36,7 +36,21 @@ const expectMatchMessage = (match) => {
   })
 }
 
+const expectMatchVoteMessage = ({ playerIds, teamSize }) =>
+  expect.objectContaining({
+    fields: expect.arrayContaining([
+      expect.objectContaining({
+        name: `We've got a ${teamSize}s match!`,
+        value: `${usersToString(playerIds)}
+
+Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
+`,
+      }),
+    ]),
+  })
+
 module.exports = {
   getMatchMessage,
   expectMatchMessage,
+  expectMatchVoteMessage,
 }
