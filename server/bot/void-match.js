@@ -2,6 +2,7 @@ const { getEmoteReactions } = require('../util/getEmoteReactions')
 const { formMatchId } = require('../data/matchId')
 const matches = require('../data/matches')
 const ERRORS = require('../constants/ERRORS')
+const { REACT_TO_VOID, MATCH_NOT_VOIDED, MATCH_VOIDED } = require('./messages')
 
 const onVoidMatch = async (matchKey, context) => {
   try {
@@ -16,19 +17,19 @@ const onVoidMatch = async (matchKey, context) => {
     const reactions = await getEmoteReactions({
       validate: (_, user) => user.id === context.author.id,
       channel: context.channel,
-      message: `Are you sure you want to erase match ${matchKey} from history? React with any emote to confirm. This action cannot be undone.`,
+      message: REACT_TO_VOID(matchKey),
       initialEmotes: ['✅'],
     })
 
     console.log(reactions)
 
     if (!reactions.length) {
-      await context.channel.send(`Match ${matchKey} has not been voided.`)
+      await context.channel.send(MATCH_NOT_VOIDED(matchKey))
       return
     }
 
     await matches.delete(matchId)
-    await context.channel.send(`Match ${matchKey} has been voided.`)
+    await context.channel.send(MATCH_VOIDED(matchKey))
   } catch (err) {
     context.channel.send(err)
   }

@@ -26,40 +26,45 @@ afterEach(async (done) => {
 })
 
 test('@LeagueBot fix <matchId>', async (done) => {
-  let message, send
   const matchKey = parseMatchId(match2s.id).key
 
   // Non-admin cannot do this.
-  message = await triggerMessage({
+  const m1 = await triggerMessage({
     userId: plebUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
   })
-  send = message.channel.send
-  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
+  expect(m1.channel.send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
 
   // Match should not be changed if there's no selection.
-  message = await triggerMessage({
+  const m2 = await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
   })
-  send = message.channel.send
-  expect(send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
-  expect(send).toHaveBeenNthCalledWith(2, expectMatchMessage(match2s))
-  expect(send).toHaveBeenNthCalledWith(3, ERRORS.NO_TEAM_SELECTED)
+  expect(m2.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
+  expect(m2.channel.send).toHaveBeenNthCalledWith(
+    2,
+    expectMatchMessage(match2s)
+  )
+  expect(m2.channel.send).toHaveBeenNthCalledWith(3, ERRORS.NO_TEAM_SELECTED)
 
   match = await matches.get(match2s.id)
   expect(match.winner).toBe(1)
 
   // Admins can overwrite a match if they select a team.
-  message = await triggerMessage({
+  const m3 = await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
     reactions: [[{ _emoji: { name: '2️⃣' } }, adminUser]],
   })
-  send = message.channel.send
-  expect(send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
-  expect(send).toHaveBeenNthCalledWith(2, expectMatchMessage(match2s))
-  expect(send).toHaveBeenNthCalledWith(3, TEAM_WON({ winner: 2, matchKey }))
+  expect(m3.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
+  expect(m3.channel.send).toHaveBeenNthCalledWith(
+    2,
+    expectMatchMessage(match2s)
+  )
+  expect(m3.channel.send).toHaveBeenNthCalledWith(
+    3,
+    TEAM_WON({ winner: 2, matchKey })
+  )
 
   let match = await matches.get(match2s.id)
   expect(match.winner).toBe(2)

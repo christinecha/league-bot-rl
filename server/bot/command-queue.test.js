@@ -20,6 +20,7 @@ const {
   champUser,
 } = require('../test/users')
 const { triggerMessage, cleanDatabase } = require('../test/util')
+const { balanceTeams } = require('../util/balanceTeams')
 const BOT_ID = process.env.BOT_ID
 
 jest.mock('../util/getLeagueStats')
@@ -119,10 +120,10 @@ test('@LeagueBot queue 1s', async (done) => {
   expect(teams).toMatchInlineSnapshot(`
     Object {
       "1": Array [
-        "gerwin",
+        "cha",
       ],
       "2": Array [
-        "heater",
+        "suhan",
       ],
     }
   `)
@@ -165,6 +166,10 @@ test('@LeagueBot queue 2s', async (done) => {
 
     // Match should be created in the database, default "auto"
     const match = await matches.get(matchId)
+    const autoTeams = await balanceTeams({
+      leagueId: league2s.id,
+      userIds: playerIds,
+    })
     const teams = getTeams(match.players)
 
     // Match details should be correct
@@ -173,18 +178,7 @@ test('@LeagueBot queue 2s', async (done) => {
     expect(match.league).toBe(league2s.id)
     expect(match.mode).toBe('auto')
     expect(Object.keys(match.players).length).toBe(4)
-    expect(teams).toMatchInlineSnapshot(`
-      Object {
-        "1": Array [
-          "gerwin",
-          "racoon",
-        ],
-        "2": Array [
-          "flips",
-          "heater",
-        ],
-      }
-    `)
+    expect(teams).toStrictEqual(autoTeams)
 
     // Match details should be sent
     expect(msg.channel.send).toHaveBeenNthCalledWith(
@@ -206,77 +200,55 @@ test('@LeagueBot queue 3s', async (done) => {
     champUser.id,
   ]
   const matchId = `${league3s.id}-1`
-  const msgs = []
 
-  for (let playerId of playerIds) {
+  for (let _ in playerIds) {
+    const i = parseInt(_)
+    const playerId = playerIds[i]
     const msg = await triggerMessage({
       userId: playerId,
       content: `<@!${BOT_ID}> queue 3s`,
     })
-    msgs.push(msg)
-  }
 
-  // When a user queues, they should receive a message with the updated list
-  expect(msgs[0].channel.send).toHaveBeenCalledWith(
-    getQueueMessage(`<@!${bronzeUser.id}>`)
-  )
-  expect(msgs[1].channel.send).toHaveBeenCalledWith(
-    getQueueMessage(`<@!${silverUser.id}>`)
-  )
-  expect(msgs[2].channel.send).toHaveBeenCalledWith(
-    getQueueMessage(`<@!${goldUser.id}>`)
-  )
-  expect(msgs[3].channel.send).toHaveBeenCalledWith(
-    getQueueMessage(`<@!${platUser.id}>`)
-  )
-  expect(msgs[4].channel.send).toHaveBeenCalledWith(
-    getQueueMessage(`<@!${diamondUser.id}>`)
-  )
+    // When a user queues, they should receive a message with the updated list
+    if (i !== playerIds.length - 1) {
+      expect(msg.channel.send).toHaveBeenCalledWith(
+        getQueueMessage(`<@!${playerId}>`)
+      )
+      continue
+    }
 
-  // When enough users queue for a match:
-  const match = await matches.get(matchId)
+    // When enough users queue for a match:
+    // Match mode voting message should be sent
+    expect(msg.channel.send).toHaveBeenNthCalledWith(
+      1,
+      expectMatchVoteMessage({ playerIds, teamSize: 3 })
+    )
 
-  // Match mode voting message should be sent
-  expect(msgs[5].channel.send).toHaveBeenNthCalledWith(
-    1,
-    expectMatchVoteMessage({ playerIds, teamSize: 3 })
-  )
+    // Bot should react with the options first!
+    expect(msg.react).toHaveBeenCalledTimes(2)
 
-  // Bot should react with the options first!
-  expect(msgs[5].react).toHaveBeenCalledTimes(2)
-
-  // Match should be created in the database, default "auto"
-  expect(match).toStrictEqual(
-    expect.objectContaining({
-      id: matchId,
-      teamSize: 3,
-      league: league3s.id,
-      mode: 'auto',
-      players: expect.objectContaining({
-        [bronzeUser.id]: { team: expect.any(Number) },
-        [silverUser.id]: { team: expect.any(Number) },
-        [goldUser.id]: { team: expect.any(Number) },
-        [platUser.id]: { team: expect.any(Number) },
-        [diamondUser.id]: { team: expect.any(Number) },
-        [champUser.id]: { team: expect.any(Number) },
-      }),
+    // Match should be created in the database, default "auto"
+    const match = await matches.get(matchId)
+    const autoTeams = await balanceTeams({
+      leagueId: league3s.id,
+      userIds: playerIds,
     })
-  )
+    const teams = getTeams(match.players)
 
-  const players = Object.keys(match.players).sort()
-  const teams = getTeams(match.players)
+    // Match details should be correct
+    expect(match.id).toBe(matchId)
+    expect(match.teamSize).toBe(3)
+    expect(match.league).toBe(league3s.id)
+    expect(match.mode).toBe('auto')
+    expect(Object.keys(match.players).length).toBe(6)
+    expect(teams).toStrictEqual(autoTeams)
 
-  // Match details are correct
-  expect(players.length).toBe(6)
-  expect(teams[1].length).toBe(3)
-  expect(teams[2].length).toBe(3)
-  expect(match.teamSize).toBe(3)
-
-  // Match details should be sent
-  expect(msgs[5].channel.send).toHaveBeenNthCalledWith(
-    2,
-    expectMatchMessage(match)
-  )
+    // Match details should be sent
+    expect(msg.channel.send).toHaveBeenNthCalledWith(
+      2,
+      expectMatchMessage(match)
+    )
+  }
 
   done()
 })

@@ -16,8 +16,15 @@ const league3s = {
   queue: {},
 }
 
+const league4s = {
+  id: 'h000-4',
+  teamSize: 4,
+  queue: {},
+}
+
 module.exports = {
   league1s,
   league2s,
   league3s,
+  league4s,
 }

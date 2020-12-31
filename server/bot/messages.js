@@ -7,6 +7,10 @@ const { getAdvancedMarkdown } = require('../../shared/getAdvancedMarkdown')
 
 const COLOR_PRIMARY = '#4c33ff'
 
+const MATCH_VOIDED = (matchKey) => `Match ${matchKey} was voided.`
+const MATCH_NOT_VOIDED = (matchKey) => `Match ${matchKey} was not voided.`
+const REACT_TO_VOID = (matchKey) =>
+  `Are you sure you want to erase match ${matchKey} from history? React with any emote to confirm. This action cannot be undone.`
 const LEADERBOARD_NOT_RESET = (teamSize) =>
   `${teamSize}s Leaderboard was not reset.`
 const LEADERBOARD_RESET = (teamSize) => `${teamSize}s Leaderboard was reset.`
@@ -98,4 +102,7 @@ module.exports = {
   LEADERBOARD_RESET,
   LEADERBOARD_NOT_RESET,
   REACT_TO_RESET,
+  MATCH_NOT_VOIDED,
+  MATCH_VOIDED,
+  REACT_TO_VOID,
 }

@@ -1,30 +1,63 @@
 const RL_RANKS = require('../constants/RL_RANKS')
+const { getGuildUser } = require('./getGuildUser')
+const { getLeagueStats } = require('./getLeagueStats')
 
-const scoreUser = user => {
+const scoreUser = (user) => {
   const winRatio = user.ratio ? user.ratio : 0.5
   const rankRatio = user.rank ? user.rank / RL_RANKS['SSL'] : 0.5
   return (rankRatio + winRatio) / 2
 }
 
-const scoreTeam = arr => arr.reduce((s, user) => s + scoreUser(user), 0)
+const scoreTeam = (arr) => arr.reduce((s, user) => s + scoreUser(user), 0)
 
-const balanceTeams = users => {
+const balanceTeams = async ({ leagueId, userIds }) => {
+  if (userIds.length % 2 !== 0) {
+    throw 'Uneven number of players.'
+  }
+
+  const guildId = leagueId.split('-')[0]
+  const stats = await getLeagueStats(leagueId)
+  const _users = await Promise.all(
+    userIds.map((id) => getGuildUser({ userId: id, guildId }))
+  )
+
+  const users = _users.map((u) => ({
+    id: u.id,
+    ratio: stats[u.id] ? stats[u.id].ratio : 0.5,
+    rank: u.rank,
+  }))
+
   // Order from highest to lowest score
   const ordered = users.sort((a, b) => scoreUser(b) - scoreUser(a))
   const teams = { 1: [], 2: [] }
+  let left = ordered.slice()
 
-  ordered.forEach(user => {
-    let team
+  while (left.length >= 4) {
+    const best = left[left.length - 1]
+    const secondBest = left[left.length - 2]
+    const worst = left[0]
+    const secondWorst = left[1]
 
-    // Max capacity reached!
-    if (teams[1].length === users.length / 2) team = 2
-    else if (teams[2].length === users.length / 2) team = 1
-    else team = scoreTeam(teams[1]) <= scoreTeam(teams[2]) ? 1 : 2
+    left.splice(0, 2)
+    left.splice(left.length - 2, 2)
 
-    teams[team].push(user)
-  })
+    teams[1].push(best)
+    teams[1].push(worst)
+    teams[2].push(secondBest)
+    teams[2].push(secondWorst)
+  }
 
-  return teams
+  if (left.length) {
+    const worseTeam = scoreTeam(teams[1]) < scoreTeam(teams[2]) ? 1 : 2
+    const betterTeam = worseTeam === 1 ? 2 : 1
+    teams[betterTeam].push(left[0])
+    teams[worseTeam].push(left[1])
+  }
+
+  return {
+    1: teams[1].map((p) => p.id).sort(),
+    2: teams[2].map((p) => p.id).sort(),
+  }
 }
 
 module.exports = { balanceTeams }

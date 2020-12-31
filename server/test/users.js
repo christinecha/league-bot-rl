@@ -1,5 +1,5 @@
 const adminUser = {
-  id: 'cha',
+  id: 'admin',
   permissions: ['ADMINISTRATOR'],
 }
 
@@ -9,22 +9,22 @@ const plebUser = {
 }
 
 const bronzeUser = {
-  id: 'hollywood',
+  id: 'rookie-bot',
   roles: [{ name: 'Bronze' }],
 }
 
 const silverUser = {
-  id: 'space',
+  id: 'allstar-bot',
   roles: [{ name: 'Silver' }],
 }
 
 const goldUser = {
-  id: 'gerwin',
+  id: 'cha',
   roles: [{ name: 'Gold' }],
 }
 
 const platUser = {
-  id: 'heater',
+  id: 'suhan',
   roles: [{ name: 'Plat' }],
 }
 
@@ -38,6 +38,16 @@ const champUser = {
   roles: [{ name: 'Champ' }],
 }
 
+const gcUser = {
+  id: 'hoody',
+  roles: [{ name: 'Champ' }],
+}
+
+const sslUser = {
+  id: 'leth',
+  roles: [{ name: 'Champ' }],
+}
+
 module.exports = {
   adminUser,
   plebUser,
@@ -47,4 +57,6 @@ module.exports = {
   platUser,
   diamondUser,
   champUser,
+  gcUser,
+  sslUser,
 }

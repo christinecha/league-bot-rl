@@ -1,78 +1,59 @@
 // Start mock server!
 require('./index')
-const firebase = require('@firebase/rules-unit-testing')
 const matches = require('../data/matches')
-const { discord } = require('../data/util/discord')
 const { parseMatchId } = require('../data/matchId')
 const ERRORS = require('../constants/ERRORS')
 const { match2s } = require('../test/match')
+const { plebUser, adminUser } = require('../test/users')
+const { cleanDatabase, triggerMessage } = require('../test/util')
+const {
+  REACT_TO_RESET,
+  REACT_TO_VOID,
+  MATCH_NOT_VOIDED,
+  MATCH_VOIDED,
+} = require('./messages')
 const BOT_ID = process.env.BOT_ID
 
-const adminId = 'cha'
-const plebId = 'noodle'
-let send, msg, react, guild
-
 beforeAll(async (done) => {
-  guild = await discord.guilds.fetch('h000')
-  discord.setUsers({
-    [adminId]: { permissions: ['ADMINISTRATOR'] },
-    [plebId]: { permissions: [] },
-  })
-
-  await firebase.clearFirestoreData({
-    projectId: process.env.GCLOUD_PROJECT,
-  })
-
+  await cleanDatabase()
   done()
 })
 
 beforeEach(async (done) => {
-  react = jest.fn()
-  send = jest.fn(() =>
-    Promise.resolve({
-      react,
-      awaitReactions: async (filter) => {
-        filter('✅', { id: adminId })
-      },
-    })
-  )
-  msg = (userId, content) => ({
-    content,
-    author: { id: userId },
-    guild,
-    channel: { send, id: '55' },
-  })
-
   await matches.create(match2s)
   done()
 })
 
 afterEach(async (done) => {
-  await firebase.clearFirestoreData({
-    projectId: process.env.GCLOUD_PROJECT,
-  })
+  await cleanDatabase()
   done()
 })
 
 test('@LeagueBot void <matchId>', async (done) => {
   const matchKey = parseMatchId(match2s.id).key
 
-  await discord.trigger(
-    'message',
-    msg(plebId, `<@!${BOT_ID}> void ${matchKey}`)
-  )
-  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
+  const m1 = await triggerMessage({
+    userId: plebUser.id,
+    content: `<@!${BOT_ID}> void ${matchKey}`,
+  })
+  expect(m1.channel.send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
 
-  await discord.trigger(
-    'message',
-    msg(adminId, `<@!${BOT_ID}> void ${matchKey}`)
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    2,
-    `Are you sure you want to erase match ${matchKey} from history? React with any emote to confirm. This action cannot be undone.`
-  )
+  // Match should not be voided if there's no confirmation.
+  const m2 = await triggerMessage({
+    userId: adminUser.id,
+    content: `<@!${BOT_ID}> void ${matchKey}`,
+  })
+  expect(m2.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_VOID(matchKey))
+  expect(m2.channel.send).toHaveBeenNthCalledWith(2, MATCH_NOT_VOIDED(matchKey))
 
-  expect(send).toHaveBeenNthCalledWith(3, `Match ${matchKey} has been voided.`)
+  // Admins can void a match if confirmed.
+  const m3 = await triggerMessage({
+    userId: adminUser.id,
+    content: `<@!${BOT_ID}> void ${matchKey}`,
+    reactions: [[{ _emoji: { name: '✅' } }, adminUser]],
+  })
+  expect(m3.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_VOID(matchKey))
+  expect(m3.channel.send).toHaveBeenNthCalledWith(2, MATCH_VOIDED(matchKey))
 
   const match = await matches.get(match2s.id)
   expect(match).toBeFalsy()
