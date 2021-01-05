@@ -43,7 +43,7 @@ const report = async ({ matchKey, userId, guildId, didWin }) => {
   return await matches.get(matchId)
 }
 
-const onReport = async (matchKey, didWin, context) => {
+const onReport = async (context, matchKey, didWin) => {
   if (!matchKey) {
     context.channel.send(ERRORS.MATCH_INVALID)
     return
@@ -71,12 +71,12 @@ const onReport = async (matchKey, didWin, context) => {
   }
 }
 
-const onReportWin = async (matchKey, context) => {
-  return onReport(matchKey, true, context)
+const onReportWin = async (context, matchKey) => {
+  return onReport(context, matchKey, true)
 }
 
-const onReportLoss = async (matchKey, context) => {
-  return onReport(matchKey, false, context)
+const onReportLoss = async (context, matchKey) => {
+  return onReport(context, matchKey, false)
 }
 
 module.exports = {

@@ -3,12 +3,12 @@ const leagues = require('../data/leagues')
 
 const BUBBLES_ID = '362052637400498187'
 
-const onBubbles = async (_, context) => {
+const onBubbles = async (context) => {
   const guildId = context.guild.id
   const userId = context.author.id
 
   if (userId !== BUBBLES_ID) {
-    context.channel.send('You don\'t look like Bubbles.')
+    context.channel.send("You don't look like Bubbles.")
     return
   }
 
@@ -31,5 +31,5 @@ const onBubbles = async (_, context) => {
 }
 
 module.exports = {
-  onBubbles
+  onBubbles,
 }

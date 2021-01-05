@@ -6,6 +6,8 @@ const COMMAND_NAME = {
   WIN: 'WIN',
   LOSS: 'LOSS',
   LEADERBOARD: 'LEADERBOARD',
+  LEADERBOARD_START: 'LEADERBOARD_START',
+  LEADERBOARD_END: 'LEADERBOARD_END',
   HELP: 'HELP',
   CLEAR: 'CLEAR',
   CANCEL: 'CANCEL',
@@ -21,6 +23,7 @@ const VARIABLE_NAME = {
   TEAM_SIZE: 'teamSize',
   MATCH_ID: 'matchId',
   USER: '@user',
+  DATE: 'date',
 }
 
 const VARIABLES = {
@@ -36,6 +39,10 @@ const VARIABLES = {
     name: '@user',
     isHidden: true,
     description: 'An @-mentioned user.',
+  },
+  [VARIABLE_NAME.DATE]: {
+    name: 'date',
+    description: 'A date value formatted `yyyy-mm-dd`.',
   },
 }
 
@@ -83,6 +90,20 @@ const COMMANDS = {
     aliases: [],
     argument: optional(VARIABLE_NAME.TEAM_SIZE),
     description: 'Show me the leaderboard!',
+  },
+  [COMMAND_NAME.LEADERBOARD_START]: {
+    command: 'leaderboard-start',
+    aliases: ['start'],
+    modOnly: true,
+    argument: VARIABLE_NAME.DATE,
+    description: 'Set the start date of the leaderboard.',
+  },
+  [COMMAND_NAME.LEADERBOARD_END]: {
+    command: 'leaderboard-end',
+    aliases: ['end'],
+    modOnly: true,
+    argument: VARIABLE_NAME.DATE,
+    description: 'Set the end date of the leaderboard.',
   },
   [COMMAND_NAME.HELP]: {
     command: 'help',

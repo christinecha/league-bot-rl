@@ -49,6 +49,10 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - ✨ **Set-Channel.** Command to manually set a channel where the ! shortcut will work. Possibly mod-only?
 - 🐛 **Prune queues on match creation.** If you get a match for one league, it should remove all those players from the other leagues' queues.
 - ✨ **Recently Viewed Servers.** Save leaderboard server ids in local storage so that they're easily accessible from the homepage.
+- 🐛 **Cleaning queue should only kick old queuers.** If you re-queue mid-clean, for instance it should no longer kick you.
+- ✨ **Set default leaderboard range.** Use messages to set the from and to values of the leaderboard range
+- ✨ **View leaderboard with custom range.** Add query parameters to leaderboard page?
+- ✨ **Download CSV of player data.** Allow users to download leaderboard stats from website.
 
 ### Development
 

@@ -14,6 +14,9 @@ const ERRORS = {
   MOD_ONLY: 'You must be a LeagueBot mod to use this command.',
 
   NO_TEAM_SELECTED: 'No team was selected.',
+
+  DATE_MISSING: 'Must include a date (`yyyy-mm-dd`) with this command.',
+  DATE_INVALID: 'Invalid date format - use `yyyy-mm-dd`.',
 }
 
 module.exports = ERRORS

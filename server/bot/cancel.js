@@ -2,7 +2,7 @@ const matches = require('../data/matches')
 const { formMatchId } = require('../data/matchId')
 const ERRORS = require('../constants/ERRORS')
 
-const onCancel = async (matchKey, context) => {
+const onCancel = async (context, matchKey) => {
   if (!matchKey) {
     await context.channel.send(ERRORS.MATCH_INVALID)
     return
