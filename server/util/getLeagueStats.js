@@ -6,7 +6,8 @@ const getLeagueStats = async (leagueId) => {
   const matches = await _matches.search({
     rules: [
       ['league', '==', leagueId],
-      ['timestamp', '>', league.rangeStart || 0],
+      ['timestamp', '>=', league.rangeStart || 0],
+      ['timestamp', '<', league.rangeEnd || Infinity],
     ],
   })
 

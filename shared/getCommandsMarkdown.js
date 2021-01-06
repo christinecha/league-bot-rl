@@ -9,7 +9,9 @@ const getCommandsMarkdown = (mod = false) =>
       const aliases =
         c.aliases && c.aliases.length ? ` | ${c.aliases.join(' | ')}` : ''
 
-      const args = c.argument ? ` <${c.argument}>` : ''
+      const args = c.args.length
+        ? ` ${c.args.map((arg) => `<${arg}>`).join(' ')}`
+        : ''
       return `- \`@LeagueBot ${c.command}${aliases}${args}\` - ${c.description}`
     })
     .join('\n')

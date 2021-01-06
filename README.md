@@ -14,6 +14,7 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 ### Variables
 
+- `date` - A date value formatted `yyyy-mm-dd`.
 - `matchId` - The unique match ID.
 - `teamSize` - 1, 2, or 3.
 
@@ -32,7 +33,11 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 ### Mod-Only Commands
 
+- `@LeagueBot fix <matchId>` - Overwrite the results of a specific match.
+- `@LeagueBot leaderboard-end | end <teamSize> <date>` - Set the end date of the leaderboard.
+- `@LeagueBot leaderboard-start | start <teamSize> <date>` - Set the start date of the leaderboard.
 - `@LeagueBot reset <teamSize>` - Reset the leaderboard for a specific league.
+- `@LeagueBot void <matchId>` - Erase a specific match from history.
 
 ### Advanced
 

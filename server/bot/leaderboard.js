@@ -1,6 +1,7 @@
 const parse = require('date-fns/parse')
 const ERRORS = require('../constants/ERRORS')
-const { getTeamSize } = require('../util')
+const leagues = require('../data/leagues')
+const { getTeamSize, getLeagueId } = require('../util')
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
@@ -21,25 +22,49 @@ const onLeaderboard = async (context, str) => {
   )
 }
 
-const onLeaderboardStart = async (context, str, otherstr) => {
-  if (!str) {
-    await context.channel.send(ERRORS.DATE_MISSING)
-    return
+const parseArgs = (str1, str2) => {
+  const teamSize = getTeamSize(str1)
+
+  if (!str2) {
+    throw ERRORS.DATE_MISSING
   }
 
-  const date = parse(str, 'yyyy-mm-dd', Date.now())
+  const date = parse(str2, 'yyyy-mm-dd', Date.now())
   const timestamp = date.getTime()
 
   if (Number.isNaN(timestamp)) {
-    await context.channel.send(ERRORS.DATE_INVALID)
-    return
+    throw ERRORS.DATE_INVALID
   }
 
-  console.log('leaderboard start!', date, otherstr)
+  return { teamSize, timestamp }
 }
 
-const onLeaderboardEnd = async (context, str) => {
-  console.log('leaderboard end!', str)
+const onLeaderboardStart = async (context, str1, str2) => {
+  try {
+    const { teamSize, timestamp } = parseArgs(str1, str2)
+    const leagueId = getLeagueId(teamSize, context)
+
+    await leagues.update({
+      id: leagueId,
+      rangeStart: timestamp,
+    })
+  } catch (err) {
+    await context.channel.send(err)
+  }
+}
+
+const onLeaderboardEnd = async (context, str1, str2) => {
+  try {
+    const { teamSize, timestamp } = parseArgs(str1, str2)
+    const leagueId = getLeagueId(teamSize, context)
+
+    await leagues.update({
+      id: leagueId,
+      rangeEnd: timestamp,
+    })
+  } catch (err) {
+    await context.channel.send(err)
+  }
 }
 
 module.exports = { onLeaderboard, onLeaderboardStart, onLeaderboardEnd }
