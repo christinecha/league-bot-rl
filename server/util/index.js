@@ -1,8 +1,11 @@
 const ERRORS = require('../constants/ERRORS')
 
-const getTeamSize = (str) => {
+const getTeamSize = (str, requireTeam = true) => {
   const teamSize = parseInt(str)
-  if (![1, 2, 3, 4].includes(teamSize)) throw ERRORS.INVALID_TEAM_SIZE
+  if (![1, 2, 3, 4].includes(teamSize)) {
+    if (!requireTeam) return null
+    throw ERRORS.INVALID_TEAM_SIZE
+  }
   return teamSize
 }
 

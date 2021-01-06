@@ -14,6 +14,8 @@ const { onFixMatch } = require('./fix-match')
 const {
   onLeaderboardStart,
   onLeaderboardEnd,
+  onLeaderboardStartAll,
+  onLeaderboardEndAll,
   onLeaderboard,
 } = require('./leaderboard')
 
@@ -27,6 +29,9 @@ const CALLBACKS = {
   [COMMAND_NAME.LEADERBOARD]: onLeaderboard,
   [COMMAND_NAME.LEADERBOARD_START]: onLeaderboardStart,
   [COMMAND_NAME.LEADERBOARD_END]: onLeaderboardEnd,
+  [COMMAND_NAME.LEADERBOARD_START_ALL]: onLeaderboardStartAll,
+  [COMMAND_NAME.LEADERBOARD_END_ALL]: onLeaderboardEndAll,
+
   [COMMAND_NAME.LEAVE]: onUnqueue,
   [COMMAND_NAME.LOSS]: onReportLoss,
   [COMMAND_NAME.NEW]: onNew,

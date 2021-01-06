@@ -1,5 +1,6 @@
 const dateFns = require('date-fns')
 const ERRORS = require('../constants/ERRORS')
+const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const leagues = require('../data/leagues')
 const { getTeamSize, getLeagueId } = require('../util')
 const {
@@ -27,14 +28,14 @@ const onLeaderboard = async (context, str) => {
   )
 }
 
-const parseArgs = (str1, str2) => {
-  const teamSize = getTeamSize(str1)
+const parseArgs = (teamStr, dateStr, requireTeam = true) => {
+  const teamSize = getTeamSize(teamStr, requireTeam)
 
-  if (!str2) {
+  if (!dateStr) {
     throw ERRORS.DATE_MISSING
   }
 
-  const date = dateFns.parse(str2, 'yyyy-mm-dd', Date.now())
+  const date = dateFns.parse(dateStr, 'yyyy-mm-dd', Date.now())
   date.setHours(0)
   date.setMinutes(0)
   date.setSeconds(0)
@@ -54,7 +55,6 @@ const onLeaderboardStart = async (context, str1, str2) => {
     const { teamSize, timestamp, date } = parseArgs(str1, str2)
     const leagueId = getLeagueId(teamSize, context)
     const league = await leagues.get(leagueId)
-
     const clearEnd = league.rangeEnd && league.rangeEnd <= timestamp
 
     await leagues.update({
@@ -94,4 +94,30 @@ const onLeaderboardEnd = async (context, str1, str2) => {
   }
 }
 
-module.exports = { onLeaderboard, onLeaderboardStart, onLeaderboardEnd }
+const onLeaderboardStartAll = async (context, dateStr) => {
+  try {
+    for (let teamSize of [1, 2, 3, 4]) {
+      await onLeaderboardStart(context, teamSize, dateStr)
+    }
+  } catch (err) {
+    await context.channel.send(err)
+  }
+}
+
+const onLeaderboardEndAll = async (context, dateStr) => {
+  try {
+    for (let teamSize of [1, 2, 3, 4]) {
+      await onLeaderboardEnd(context, teamSize, dateStr)
+    }
+  } catch (err) {
+    await context.channel.send(err)
+  }
+}
+
+module.exports = {
+  onLeaderboard,
+  onLeaderboardStart,
+  onLeaderboardEnd,
+  onLeaderboardStartAll,
+  onLeaderboardEndAll,
+}

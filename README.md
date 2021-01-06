@@ -33,10 +33,12 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 ### Mod-Only Commands
 
+- `@LeagueBot end <teamSize> <date>` - Set the end date of the leaderboard.
+- `@LeagueBot end-all <date>` - Set the end date of the leaderboard.
 - `@LeagueBot fix <matchId>` - Overwrite the results of a specific match.
-- `@LeagueBot leaderboard-end | end <teamSize> <date>` - Set the end date of the leaderboard.
-- `@LeagueBot leaderboard-start | start <teamSize> <date>` - Set the start date of the leaderboard.
-- `@LeagueBot reset <teamSize>` - Reset the leaderboard for a specific league.
+- `@LeagueBot reset <teamSize>` - Reset the start of the leaderboard to _right now_.
+- `@LeagueBot start <teamSize> <date>` - Set the start date of the leaderboard.
+- `@LeagueBot start-all <date>` - Set the start date of the leaderboard.
 - `@LeagueBot void <matchId>` - Erase a specific match from history.
 
 ### Advanced
