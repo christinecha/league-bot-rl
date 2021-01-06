@@ -6,16 +6,32 @@ import { Global, css as globalcss } from '@emotion/react'
 import { Leaderboard } from './Leaderboard'
 import { Home } from './Home'
 import COLORS from '../../shared/COLORS'
+import * as storage from '../../shared/localStorage'
 
 const { guildId } = qs.parse(window.location.search, {
   ignoreQueryPrefix: true,
 })
 
+const guildIds = storage.getArray(storage.KEYS.SERVERS)
+
 const App = () => {
   return (
-    <main>
-      <Global
-        styles={globalcss`
+    <>
+      {/* <div data-row>
+        <div data-col="12">
+          <header>
+            <button>Recently Viewed</button>
+            <div>
+              {guildIds.map((id) => {
+                return <a href={`/?guildId=${id}`}>Guild {id}</a>
+              })}
+            </div>
+          </header>
+        </div>
+      </div> */}
+      <main>
+        <Global
+          styles={globalcss`
           body {
             background: #100e0c;
             color: white;
@@ -60,10 +76,11 @@ const App = () => {
             border-radius: 3px;
           }
         `}
-      />
+        />
 
-      {guildId ? <Leaderboard /> : <Home />}
-    </main>
+        {guildId ? <Leaderboard /> : <Home />}
+      </main>
+    </>
   )
 }
 

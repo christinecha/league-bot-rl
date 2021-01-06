@@ -3,6 +3,7 @@ import { css } from '@emotion/css'
 import qs from 'qs'
 import League from './League'
 import { getGuild } from '../api'
+import * as storage from '../../shared/localStorage'
 
 const { guildId, teamSize } = qs.parse(window.location.search, {
   ignoreQueryPrefix: true,
@@ -36,11 +37,19 @@ const LeagueTab = ({ teamSize, onSelect, active }) => {
 }
 
 const Loading = () => {
-  return <div>Loading...</div>
+  return (
+    <div data-row>
+      <div data-col="12">Loading...</div>
+    </div>
+  )
 }
 
 const NotFound = () => {
-  return <div>Leaderboard not found. :'(</div>
+  return (
+    <div data-row>
+      <div data-col="12">Leaderboard not found. :'(</div>
+    </div>
+  )
 }
 
 export const Leaderboard = () => {
@@ -52,7 +61,14 @@ export const Leaderboard = () => {
 
   useEffect(() => {
     getGuild({ guildId })
-      .then(({ data }) => setGuild(data))
+      .then(({ data }) => {
+        setGuild(data)
+
+        const guildIds = storage.getArray(storage.KEYS.SERVERS)
+        if (!guildIds.includes(guildId)) {
+          storage.setArray(storage.KEYS.SERVERS, [...guildIds, guildId])
+        }
+      })
       .finally(() => setLoading(false))
   }, [setGuild])
 

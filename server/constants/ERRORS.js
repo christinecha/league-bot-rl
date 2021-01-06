@@ -17,6 +17,8 @@ const ERRORS = {
 
   DATE_MISSING: 'Must include a date (`yyyy-mm-dd`) with this command.',
   DATE_INVALID: 'Invalid date format - use `yyyy-mm-dd`.',
+  END_MUST_BE_AFTER_START:
+    'End date must be after the start date. Update the start date with `@LeagueBot start <teamSize> <date>`.',
 }
 
 module.exports = ERRORS

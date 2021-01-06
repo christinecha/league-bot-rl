@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`@LeagueBot start <teamSize> <date> 1`] = `
+Object {
+  "jhan": Object {
+    "id": "jhan",
+    "loss": 3,
+    "points": -3,
+    "ratio": 0,
+    "win": 0,
+  },
+  "partial_cloud": Object {
+    "id": "partial_cloud",
+    "loss": 0,
+    "points": 3,
+    "ratio": 1,
+    "win": 3,
+  },
+  "pugslypuggleton": Object {
+    "id": "pugslypuggleton",
+    "loss": 0,
+    "points": 3,
+    "ratio": 1,
+    "win": 3,
+  },
+  "space": Object {
+    "id": "space",
+    "loss": 3,
+    "points": -3,
+    "ratio": 0,
+    "win": 0,
+  },
+}
+`;
+
+exports[`@LeagueBot start <teamSize> <date> 2`] = `
+Object {
+  "jhan": Object {
+    "id": "jhan",
+    "loss": 2,
+    "points": -2,
+    "ratio": 0,
+    "win": 0,
+  },
+  "partial_cloud": Object {
+    "id": "partial_cloud",
+    "loss": 0,
+    "points": 2,
+    "ratio": 1,
+    "win": 2,
+  },
+  "pugslypuggleton": Object {
+    "id": "pugslypuggleton",
+    "loss": 0,
+    "points": 2,
+    "ratio": 1,
+    "win": 2,
+  },
+  "space": Object {
+    "id": "space",
+    "loss": 2,
+    "points": -2,
+    "ratio": 0,
+    "win": 0,
+  },
+}
+`;

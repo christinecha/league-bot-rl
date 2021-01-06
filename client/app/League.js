@@ -94,9 +94,9 @@ const Table = ({ columns, data }) => {
   return (
     <table {...getTableProps()}>
       <thead>
-        {headerGroups.map(headerGroup => (
+        {headerGroups.map((headerGroup) => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map(column => (
+            {headerGroup.headers.map((column) => (
               <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                 {column.render('Header')}
                 <span>
@@ -112,7 +112,7 @@ const Table = ({ columns, data }) => {
           prepareRow(row)
           return (
             <tr {...row.getRowProps()}>
-              {row.cells.map(cell => {
+              {row.cells.map((cell) => {
                 return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
               })}
             </tr>
@@ -171,8 +171,47 @@ const League = ({ teamSize, guildId }) => {
     []
   )
 
+  const headers = [
+    'id',
+    // 'name',
+    'matches-total',
+    'matches-lost',
+    'matches-won',
+    'place',
+    'points',
+    'win-ratio',
+  ]
+  let csvContent = 'data:text/csv;charset=utf-8,'
+  csvContent += `${headers.join(',')}\n`
+
+  stats.forEach((player) => {
+    const playerStats = [
+      player.id,
+      // player.name,
+      player.loss + player.win,
+      player.loss,
+      player.win,
+      player.place,
+      player.points,
+      player.ratio,
+    ]
+    csvContent += `${playerStats.join(',')}\n`
+  })
+
+  const encodedUri = encodeURI(csvContent)
+
   return (
     <Styles>
+      <a download="Leaderboard_Stats" href={encodedUri} target="_blank">
+        <button
+          className={css`
+            border: 1px solid currentColor;
+            margin-bottom: 0.5rem;
+          `}
+        >
+          Download Stats
+        </button>
+      </a>
       <Table columns={columns} data={stats} />
     </Styles>
   )

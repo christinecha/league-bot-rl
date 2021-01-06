@@ -58,6 +58,7 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - ✨ **Set default leaderboard range.** Use messages to set the from and to values of the leaderboard range
 - ✨ **View leaderboard with custom range.** Add query parameters to leaderboard page?
 - ✨ **Download CSV of player data.** Allow users to download leaderboard stats from website.
+- 🐛 **Set timezone.** Timezone is US Eastern (-5) by default, but shouldn't have to be.
 
 ### Development
 
