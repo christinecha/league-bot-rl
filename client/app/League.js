@@ -3,14 +3,9 @@ import { getGuildUser, getStats } from '../api'
 import { useTable, useSortBy } from 'react-table'
 import styled from '@emotion/styled'
 import { css } from '@emotion/css'
+import { statsToCSV } from '../util/statsToCSV'
 
-const DiscordUser = ({ userId, guildId }) => {
-  const [user, setUser] = useState({})
-
-  useEffect(() => {
-    getGuildUser({ userId, guildId }).then(({ data }) => setUser(data))
-  }, [userId, guildId])
-
+const DiscordUser = ({ userId, data: user = {} }) => {
   const imgSrc = user.avatarURL || ''
 
   return (
@@ -123,15 +118,45 @@ const Table = ({ columns, data }) => {
   )
 }
 
+const getGuildUsers = ({ userIds, guildId }) =>
+  Promise.all(userIds.map((userId) => getGuildUser({ userId, guildId })))
+
 const League = ({ teamSize, guildId }) => {
   const [stats, setStats] = useState([])
+  const [members, setMembers] = useState({})
+  const [csv, setCSV] = useState()
+  const [loading, setLoading] = useState(true)
   const league = `${guildId}-${teamSize}`
 
   useEffect(() => {
-    getStats({ leagueId: league }).then(({ data }) => {
-      setStats(data)
-    })
+    setLoading(true)
+    getStats({ leagueId: league })
+      .then(({ data }) => {
+        setStats(data)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [teamSize])
+
+  useEffect(() => {
+    setCSV(null)
+    getGuildUsers({ userIds: stats.map((s) => s.id), guildId }).then(
+      (responses) => {
+        const _members = responses.reduce(
+          (obj, res) => ({
+            ...obj,
+            [res.data.id]: res.data,
+          }),
+          {}
+        )
+        setMembers(_members)
+
+        const _csv = statsToCSV({ stats, users: _members })
+        setCSV(_csv)
+      }
+    )
+  }, [stats])
 
   const columns = React.useMemo(
     () => [
@@ -143,7 +168,9 @@ const League = ({ teamSize, guildId }) => {
       {
         Header: 'Player',
         accessor: 'id',
-        Cell: ({ value }) => <DiscordUser userId={value} guildId={guildId} />,
+        Cell: ({ value }) => (
+          <DiscordUser userId={value} guildId={guildId} data={members[value]} />
+        ),
       },
       {
         Header: 'Stats',
@@ -168,50 +195,44 @@ const League = ({ teamSize, guildId }) => {
         ],
       },
     ],
-    []
+    [members]
   )
 
-  const headers = [
-    'id',
-    // 'name',
-    'matches-total',
-    'matches-lost',
-    'matches-won',
-    'place',
-    'points',
-    'win-ratio',
-  ]
-  let csvContent = 'data:text/csv;charset=utf-8,'
-  csvContent += `${headers.join(',')}\n`
+  if (loading) {
+    return 'Loading stats...'
+  }
 
-  stats.forEach((player) => {
-    const playerStats = [
-      player.id,
-      // player.name,
-      player.loss + player.win,
-      player.loss,
-      player.win,
-      player.place,
-      player.points,
-      player.ratio,
-    ]
-    csvContent += `${playerStats.join(',')}\n`
-  })
-
-  const encodedUri = encodeURI(csvContent)
+  if (!loading && !stats.length) {
+    return "No matches found. :'("
+  }
 
   return (
     <Styles>
-      <a download="Leaderboard_Stats" href={encodedUri} target="_blank">
+      {csv && (
+        <a download="Leaderboard_Stats" href={csv} target="_blank">
+          <button
+            className={css`
+              border: 1px solid currentColor;
+              margin-bottom: 0.5rem;
+            `}
+          >
+            Download Stats (.csv)
+          </button>
+        </a>
+      )}
+
+      {!csv && (
         <button
           className={css`
             border: 1px solid currentColor;
             margin-bottom: 0.5rem;
           `}
+          disabled
         >
-          Download Stats
+          Generating CSV...
         </button>
-      </a>
+      )}
+
       <Table columns={columns} data={stats} />
     </Styles>
   )

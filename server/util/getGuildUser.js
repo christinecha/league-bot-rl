@@ -21,7 +21,7 @@ const getGuildUser = async ({ userId, guildId }) => {
   }
 
   const roles = user.roles.cache || []
-  const rankRole = roles.find(r => RL_RANKS[r.name])
+  const rankRole = roles.find((r) => RL_RANKS[r.name])
   const rank = rankRole ? RL_RANKS[rankRole.name] : undefined
 
   return {
