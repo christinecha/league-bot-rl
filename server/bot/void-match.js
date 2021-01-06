@@ -4,7 +4,7 @@ const matches = require('../data/matches')
 const ERRORS = require('../constants/ERRORS')
 const { REACT_TO_VOID, MATCH_NOT_VOIDED, MATCH_VOIDED } = require('./messages')
 
-const onVoidMatch = async (matchKey, context) => {
+const onVoidMatch = async (context, matchKey) => {
   try {
     const matchId = formMatchId({ guildId: context.guild.id, matchKey })
     const match = await matches.get(matchId)

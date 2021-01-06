@@ -11,26 +11,27 @@ const { onNew } = require('./new')
 const { onReset } = require('./reset')
 const { onVoidMatch } = require('./void-match')
 const { onFixMatch } = require('./fix-match')
-
-const BASE_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://www.leaguebotrl.com'
-    : 'http://localhost:4242'
+const {
+  onLeaderboardStart,
+  onLeaderboardEnd,
+  onLeaderboardStartAll,
+  onLeaderboardEndAll,
+  onLeaderboard,
+} = require('./leaderboard')
 
 const CALLBACKS = {
   [COMMAND_NAME.BUBBLES]: onBubbles,
   [COMMAND_NAME.CANCEL]: onCancel,
   [COMMAND_NAME.CLEAR]: onClear,
-  [COMMAND_NAME.HELP]: (_, context) => {
+  [COMMAND_NAME.HELP]: (context) => {
     context.channel.send(messages.HELP())
   },
-  [COMMAND_NAME.LEADERBOARD]: (teamSize, context) => {
-    context.channel.send(
-      `${BASE_URL}/?guildId=${context.guild.id}${
-        teamSize ? `&teamSize=${teamSize}` : ''
-      }`
-    )
-  },
+  [COMMAND_NAME.LEADERBOARD]: onLeaderboard,
+  [COMMAND_NAME.LEADERBOARD_START]: onLeaderboardStart,
+  [COMMAND_NAME.LEADERBOARD_END]: onLeaderboardEnd,
+  [COMMAND_NAME.LEADERBOARD_START_ALL]: onLeaderboardStartAll,
+  [COMMAND_NAME.LEADERBOARD_END_ALL]: onLeaderboardEndAll,
+
   [COMMAND_NAME.LEAVE]: onUnqueue,
   [COMMAND_NAME.LOSS]: onReportLoss,
   [COMMAND_NAME.NEW]: onNew,

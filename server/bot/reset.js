@@ -7,7 +7,7 @@ const {
   REACT_TO_RESET,
 } = require('./messages')
 
-const onReset = async (str, context) => {
+const onReset = async (context, str) => {
   try {
     const teamSize = getTeamSize(str)
     const leagueId = getLeagueId(teamSize, context)

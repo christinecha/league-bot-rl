@@ -3,7 +3,7 @@ const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const messages = require('./messages')
 const { getTeamSize, getLeagueId } = require('../util')
 
-const onStatus = async (leagueName, context) => {
+const onStatus = async (context, leagueName) => {
   if (!leagueName) {
     for (let size of TEAM_SIZES) {
       const id = getLeagueId(size, context)

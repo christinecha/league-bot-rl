@@ -1,6 +1,6 @@
 const { getInsult } = require('../util/getCommentary')
 
-const onRoast = (userStr, context) => {
+const onRoast = (context, userStr) => {
   const matches = userStr.match(/<[@|!]*(\d*)>/)
   const userId = matches[1]
 

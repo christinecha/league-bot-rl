@@ -9,7 +9,7 @@ const TEAM_EMOTES = {
   2: '2️⃣',
 }
 
-const onFixMatch = async (matchKey, context) => {
+const onFixMatch = async (context, matchKey) => {
   try {
     const matchId = formMatchId({ guildId: context.guild.id, matchKey })
 

@@ -21,7 +21,7 @@ discord.on('message', async (message) => {
     shortcut = true
   }
 
-  const [_, _command, arg] = parts
+  const [_, _command, ...args] = parts
   const context = message
   const command = Object.keys(COMMAND_NAME).find((name) => {
     const config = COMMANDS[name]
@@ -60,14 +60,14 @@ discord.on('message', async (message) => {
   }
 
   try {
-    console.log('Command received!', command, arg)
+    console.log('Command received!', command, args)
     await guilds.create({
       id: message.guild.id,
       name: message.guild.name,
       ownerID: message.guild.ownerID,
       lastUpdate: Date.now(),
     })
-    await CALLBACKS[command](arg, context)
+    await CALLBACKS[command](context, ...args)
   } catch (err) {
     console.log(err)
   }

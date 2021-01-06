@@ -15,6 +15,12 @@ const LEADERBOARD_NOT_RESET = (teamSize) =>
   `${teamSize}s Leaderboard was not reset.`
 const LEADERBOARD_RESET = (teamSize) => `${teamSize}s Leaderboard was reset.`
 
+const LEADERBOARD_START = ({ teamSize, date }) =>
+  `${teamSize}s Leaderboard now starts from ${date}.`
+
+const LEADERBOARD_END = ({ teamSize, date }) =>
+  `${teamSize}s Leaderboard now ends at ${date}.`
+
 const REACT_TO_RESET = (teamSize) =>
   `Are you sure you want to reset the ${teamSize}s Leaderboard? React with an emote to confirm. This action cannot be undone.`
 
@@ -101,6 +107,10 @@ module.exports = {
   TEAM_WON,
   LEADERBOARD_RESET,
   LEADERBOARD_NOT_RESET,
+  LEADERBOARD_START,
+  LEADERBOARD_END,
+  WARNING_UPDATE_END: () =>
+    `[NOTE] The previous end date was cleared because it was earlier than the new start date. Add a new end date with \`@LeagueBot end <teamSize> <date>\`.`,
   REACT_TO_RESET,
   MATCH_NOT_VOIDED,
   MATCH_VOIDED,

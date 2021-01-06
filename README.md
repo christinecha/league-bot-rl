@@ -14,6 +14,7 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 ### Variables
 
+- `date` - A date value formatted `yyyy-mm-dd`.
 - `matchId` - The unique match ID.
 - `teamSize` - 1, 2, or 3.
 
@@ -32,7 +33,13 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 ### Mod-Only Commands
 
-- `@LeagueBot reset <teamSize>` - Reset the leaderboard for a specific league.
+- `@LeagueBot end <teamSize> <date>` - Set the end date of the leaderboard.
+- `@LeagueBot end-all <date>` - Set the end date of the leaderboard.
+- `@LeagueBot fix <matchId>` - Overwrite the results of a specific match.
+- `@LeagueBot reset <teamSize>` - Reset the start of the leaderboard to _right now_.
+- `@LeagueBot start <teamSize> <date>` - Set the start date of the leaderboard.
+- `@LeagueBot start-all <date>` - Set the start date of the leaderboard.
+- `@LeagueBot void <matchId>` - Erase a specific match from history.
 
 ### Advanced
 
@@ -49,6 +56,11 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - ✨ **Set-Channel.** Command to manually set a channel where the ! shortcut will work. Possibly mod-only?
 - 🐛 **Prune queues on match creation.** If you get a match for one league, it should remove all those players from the other leagues' queues.
 - ✨ **Recently Viewed Servers.** Save leaderboard server ids in local storage so that they're easily accessible from the homepage.
+- 🐛 **Cleaning queue should only kick old queuers.** If you re-queue mid-clean, for instance it should no longer kick you.
+- ✨ **Set default leaderboard range.** Use messages to set the from and to values of the leaderboard range
+- ✨ **View leaderboard with custom range.** Add query parameters to leaderboard page?
+- ✨ **Download CSV of player data.** Allow users to download leaderboard stats from website.
+- 🐛 **Set timezone.** Timezone is US Eastern (-5) by default, but shouldn't have to be.
 
 ### Development
 

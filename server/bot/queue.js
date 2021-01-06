@@ -7,7 +7,7 @@ const { admin } = require('../data/util/firebase')
 const { getTeamSize } = require('../util')
 const FieldValue = admin.firestore.FieldValue
 
-const updateQueue = async (leagueId, context, shouldQueue) => {
+const updateQueue = async (context, leagueId, shouldQueue) => {
   const userId = context.author.id
   const league = await leagues.get(leagueId)
   if (!league) throw ERRORS.NO_SUCH_LEAGUE
@@ -87,13 +87,13 @@ const getMatchPlayers = async (leagueId) => {
   return queuedPlayers
 }
 
-const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
+const onUpdateQueue = async (context, leagueName, shouldQueue, opts = {}) => {
   let leagueId
 
   try {
     const teamSize = getTeamSize(leagueName)
     leagueId = `${context.guild.id}-${teamSize}`
-    await updateQueue(leagueId, context, shouldQueue)
+    await updateQueue(context, leagueId, shouldQueue)
     const league = await leagues.get(leagueId)
 
     if (!shouldQueue) {
@@ -132,16 +132,16 @@ const onUpdateQueue = async (leagueName, shouldQueue, context, opts = {}) => {
   }
 }
 
-const onQueue = async (leagueName, context) => {
-  return await onUpdateQueue(leagueName, true, context)
+const onQueue = async (context, leagueName) => {
+  return await onUpdateQueue(context, leagueName, true)
 }
 
-const onUnqueue = async (leagueName, context) => {
+const onUnqueue = async (context, leagueName) => {
   if (!leagueName) {
     const promises = TEAM_SIZES.map(
       (size) =>
         new Promise((resolve) => {
-          onUpdateQueue(size, false, context, { hideMessage: true }).finally(
+          onUpdateQueue(context, size, false, { hideMessage: true }).finally(
             resolve
           )
         })
@@ -154,10 +154,10 @@ const onUnqueue = async (leagueName, context) => {
     return
   }
 
-  return await onUpdateQueue(leagueName, false, context)
+  return await onUpdateQueue(context, leagueName, false)
 }
 
-const onClear = async (leagueName, context) => {
+const onClear = async (context, leagueName) => {
   try {
     const teamSize = getTeamSize(leagueName)
     const leagueId = `${context.guild.id}-${teamSize}`
