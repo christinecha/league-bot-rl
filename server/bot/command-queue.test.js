@@ -76,12 +76,15 @@ test('@LeagueBot queue <league>', async (done) => {
     // The same user may not queue again.
     const m2 = await triggerMessage({
       userId: goldUser.id,
-      content: `<@!${BOT_ID}> queue ${league.teamSize}s`,
+      content: `<@!${BOT_ID}> queue ${teamSize}s`,
     })
 
     expect(m2.channel.send).toHaveBeenNthCalledWith(
       1,
-      ERRORS.QUEUE_DUPLICATE_USER
+      ERRORS.QUEUE_DUPLICATE_USER({
+        userId: goldUser.id,
+        teamSize: league.teamSize,
+      })
     )
   }
 

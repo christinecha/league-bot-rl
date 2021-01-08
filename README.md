@@ -59,6 +59,7 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - 🐛 **Cleaning queue should only kick old queuers.** If you re-queue mid-clean, for instance it should no longer kick you.
 - ✨ **View leaderboard with custom range.** Add query parameters to leaderboard page?
 - 🐛 **Set timezone.** Timezone is US Eastern (-5) by default, but shouldn't have to be.
+- 🐛 **League Bot updates!** League Bot should post periodic update messages in league channels to announce new features & improvements.
 
 ### Development
 

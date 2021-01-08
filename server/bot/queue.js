@@ -7,21 +7,19 @@ const { admin } = require('../data/util/firebase')
 const { getTeamSize } = require('../util')
 const FieldValue = admin.firestore.FieldValue
 
-const updateQueue = async (context, leagueId, shouldQueue) => {
+const updateQueue = async (context, league, shouldQueue) => {
   const userId = context.author.id
-  const league = await leagues.get(leagueId)
-  if (!league) throw ERRORS.NO_SUCH_LEAGUE
-
   const queue = league.queue || {}
 
-  if (shouldQueue && queue[userId]) throw ERRORS.QUEUE_DUPLICATE_USER
+  if (shouldQueue && queue[userId])
+    throw ERRORS.QUEUE_DUPLICATE_USER({ userId, teamSize: league.teamSize })
   if (!shouldQueue && !queue[userId]) throw ERRORS.QUEUE_NO_SUCH_USER
 
   const newValue = shouldQueue ? Date.now() : FieldValue.delete()
   const queueUpdate = { [`queue.${userId}`]: newValue }
   const doNotKickUpdate = !shouldQueue ? { [`doNotKick.${userId}`]: false } : {}
   await leagues.update({
-    id: leagueId,
+    id: league.id,
     ...queueUpdate,
     channelId: context.channel.id,
     ...doNotKickUpdate,
@@ -87,74 +85,76 @@ const getMatchPlayers = async (leagueId) => {
   return queuedPlayers
 }
 
-const onUpdateQueue = async (context, leagueName, shouldQueue, opts = {}) => {
+const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
   let leagueId
+  let teamSizes = []
 
-  try {
-    const teamSize = getTeamSize(leagueName)
-    leagueId = `${context.guild.id}-${teamSize}`
-    await updateQueue(context, leagueId, shouldQueue)
-    const league = await leagues.get(leagueId)
+  if (!leagueStrs.length) {
+    teamSizes = TEAM_SIZES
+  } else {
+    teamSizes = leagueStrs
+      .map((str) => getTeamSize(str, false))
+      .filter((s) => !!s)
+  }
 
-    if (!shouldQueue) {
-      if (!opts.hideMessage) {
+  console.log('hello', teamSizes)
+
+  if (!teamSizes.length) {
+    await context.channel.send(ERRORS.INVALID_TEAM_SIZE)
+    return
+  }
+
+  for (let teamSize of teamSizes) {
+    try {
+      leagueId = `${context.guild.id}-${teamSize}`
+      let league = await leagues.get(leagueId)
+
+      if (!league) {
+        throw ERRORS.NO_SUCH_LEAGUE({ teamSize })
+      }
+
+      await updateQueue(context, league, shouldQueue)
+      league = await leagues.get(leagueId)
+
+      if (!shouldQueue) {
         await context.channel.send(
           messages.LEAVE_QUEUE({ userId: context.author.id, teamSize })
         )
+        continue
       }
 
-      return
+      if (Object.keys(league.queue).length < teamSize * 2) {
+        console.log('Adding player to queue.')
+        await context.channel.send(messages.QUEUE(league))
+        continue
+      }
+
+      const playerIds = await getMatchPlayers(leagueId)
+
+      let mode = MATCH_MODE.RANDOM
+
+      if (teamSize > 1) {
+        const message = await context.channel.send(
+          messages.GET_MATCH_MODE({ playerIds, teamSize })
+        )
+        mode = await getMatchMode({ message, playerIds })
+      }
+
+      const match = await createMatch({ leagueId, playerIds, mode, teamSize })
+      await context.channel.send(messages.MATCH_DETAILS(match))
+    } catch (err) {
+      console.log('[ERROR]', err)
+      await context.channel.send(err)
     }
-
-    if (Object.keys(league.queue).length < teamSize * 2) {
-      console.log('Adding player to queue.')
-      if (!opts.hideMessage) await context.channel.send(messages.QUEUE(league))
-      return
-    }
-
-    const playerIds = await getMatchPlayers(leagueId)
-
-    let mode = MATCH_MODE.RANDOM
-
-    if (teamSize > 1) {
-      const message = await context.channel.send(
-        messages.GET_MATCH_MODE({ playerIds, teamSize })
-      )
-      mode = await getMatchMode({ message, playerIds })
-    }
-
-    const match = await createMatch({ leagueId, playerIds, mode, teamSize })
-    await context.channel.send(messages.MATCH_DETAILS(match))
-  } catch (err) {
-    console.log('[ERROR]', err)
-    if (!opts.hideMessage) await context.channel.send(err)
-    return
   }
 }
 
-const onQueue = async (context, leagueName) => {
-  return await onUpdateQueue(context, leagueName, true)
+const onQueue = async (context, ...leagueStrs) => {
+  return await onUpdateQueue(context, leagueStrs, true)
 }
 
-const onUnqueue = async (context, leagueName) => {
-  if (!leagueName) {
-    const promises = TEAM_SIZES.map(
-      (size) =>
-        new Promise((resolve) => {
-          onUpdateQueue(context, size, false, { hideMessage: true }).finally(
-            resolve
-          )
-        })
-    )
-
-    await Promise.all(promises)
-    await context.channel.send(
-      messages.LEAVE_QUEUE({ userId: context.author.id })
-    )
-    return
-  }
-
-  return await onUpdateQueue(context, leagueName, false)
+const onUnqueue = async (context, ...leagueStrs) => {
+  return await onUpdateQueue(context, leagueStrs, false)
 }
 
 const onClear = async (context, leagueName) => {

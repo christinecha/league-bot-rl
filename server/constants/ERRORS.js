@@ -1,6 +1,7 @@
 const ERRORS = {
-  INVALID_TEAM_SIZE: `Team size is invalid. Choose 1, 2, or 3.`,
-  NO_SUCH_LEAGUE: `The requested league does not exist in this server.`,
+  INVALID_TEAM_SIZE: `Team size is invalid. Must be 1, 2, or 3 (separate with spaces if using multiple).`,
+  NO_SUCH_LEAGUE: ({ teamSize }) =>
+    `A ${teamSize}s league does not exist in this server. Try \`@LeagueBot new ${teamSize}\` to create it.`,
 
   MATCH_INVALID: 'No match with this ID exists.',
   MATCH_NO_SUCH_USER: 'User was not in the specified match.',
@@ -9,7 +10,8 @@ const ERRORS = {
   MATCH_UNCANCELABLE: 'Cannot cancel a match that has already been reported.',
 
   QUEUE_NO_SUCH_USER: 'User is not in the queue.',
-  QUEUE_DUPLICATE_USER: 'User is already in the queue.',
+  QUEUE_DUPLICATE_USER: ({ userId, teamSize }) =>
+    `<@!${userId}> is already in the ${teamSize}s queue.`,
 
   MOD_ONLY: 'You must be a LeagueBot mod to use this command.',
 
