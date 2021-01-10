@@ -32,28 +32,29 @@ afterEach(async (done) => {
 test('@LeagueBot void <matchId>', async (done) => {
   const matchKey = parseMatchId(match2s.id).key
 
-  const m1 = await triggerMessage({
+  const msg = await triggerMessage({
     userId: plebUser.id,
     content: `<@!${BOT_ID}> void ${matchKey}`,
   })
-  expect(m1.channel.send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
+  const { send } = msg.channel
+  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
 
   // Match should not be voided if there's no confirmation.
-  const m2 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> void ${matchKey}`,
   })
-  expect(m2.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_VOID(matchKey))
-  expect(m2.channel.send).toHaveBeenNthCalledWith(2, MATCH_NOT_VOIDED(matchKey))
+  expect(send).toHaveBeenNthCalledWith(2, REACT_TO_VOID(matchKey))
+  expect(send).toHaveBeenNthCalledWith(3, MATCH_NOT_VOIDED(matchKey))
 
   // Admins can void a match if confirmed.
-  const m3 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> void ${matchKey}`,
     reactions: [[{ _emoji: { name: '✅' } }, adminUser]],
   })
-  expect(m3.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_VOID(matchKey))
-  expect(m3.channel.send).toHaveBeenNthCalledWith(2, MATCH_VOIDED(matchKey))
+  expect(send).toHaveBeenNthCalledWith(4, REACT_TO_VOID(matchKey))
+  expect(send).toHaveBeenNthCalledWith(5, MATCH_VOIDED(matchKey))
 
   const match = await matches.get(match2s.id)
   expect(match).toBeFalsy()

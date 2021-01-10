@@ -45,7 +45,7 @@ beforeEach(async (done) => {
     content,
     author: { id: userId },
     guild,
-    channel: { send, id: '55' },
+    channel: { send, id: 'test' },
   })
 
   await leagues.create({ ...league1s, queue: queue1 })

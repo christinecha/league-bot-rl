@@ -40,32 +40,33 @@ test('@LeagueBot reset <teamSize>', async (done) => {
   let stats
 
   // League cannot be reset by a non-admin.
-  const m1 = await triggerMessage({
+  const msg = await triggerMessage({
     userId: plebUser.id,
     content: `<@!${BOT_ID}> reset 2`,
   })
-  expect(m1.channel.send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
+  const { send } = msg.channel
+  expect(send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
   // League should not be reset if there's no confirmation.
-  const m2 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> reset 2`,
   })
-  expect(m2.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_RESET(2))
-  expect(m2.channel.send).toHaveBeenNthCalledWith(2, LEADERBOARD_NOT_RESET(2))
+  expect(send).toHaveBeenCalledWith(REACT_TO_RESET(2))
+  expect(send).toHaveBeenCalledWith(LEADERBOARD_NOT_RESET(2))
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
   // League should be reset if confirmed.
-  const m3 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> reset 2`,
     reactions: [[{ _emoji: { name: '✅' } }, adminUser]],
   })
-  expect(m3.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_RESET(2))
-  expect(m3.channel.send).toHaveBeenNthCalledWith(2, LEADERBOARD_RESET(2))
+  expect(send).toHaveBeenCalledWith(REACT_TO_RESET(2))
+  expect(send).toHaveBeenCalledWith(LEADERBOARD_RESET(2))
 
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual({})

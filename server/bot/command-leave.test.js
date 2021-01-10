@@ -32,7 +32,7 @@ beforeEach(async (done) => {
     content,
     author: { id: userId },
     guild,
-    channel: { send, id: '55' },
+    channel: { send, id: 'test' },
   })
 
   const queue = {}
@@ -59,15 +59,15 @@ test('@LeagueBot leave <league>', async (done) => {
   // Confirmations should be sent.
   expect(send).toHaveBeenNthCalledWith(
     1,
-    messages.LEAVE_QUEUE({ userId: users[0], teamSize: 1 })
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 1 })
   )
   expect(send).toHaveBeenNthCalledWith(
     2,
-    messages.LEAVE_QUEUE({ userId: users[0], teamSize: 2 })
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 2 })
   )
   expect(send).toHaveBeenNthCalledWith(
     3,
-    messages.LEAVE_QUEUE({ userId: users[0], teamSize: 3 })
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 3 })
   )
 
   let league1 = await leagues.get(league1s.id)

@@ -56,11 +56,12 @@ afterEach(async (done) => {
 test('@LeagueBot queue <league>', async (done) => {
   for (let teamSize of [1, 2, 3]) {
     const before = Date.now()
-    const m1 = await triggerMessage({
+    const msg = await triggerMessage({
       userId: goldUser.id,
       content: `<@!${BOT_ID}> queue ${teamSize}s`,
     })
     const after = Date.now()
+    const { send } = msg.channel
 
     const league = await leagues.get(`${guild.id}-${teamSize}`)
 
@@ -68,19 +69,15 @@ test('@LeagueBot queue <league>', async (done) => {
     expect(Object.keys(league.queue)).toStrictEqual([goldUser.id])
     expect(league.queue[goldUser.id]).toBeLessThanOrEqual(after)
     expect(league.queue[goldUser.id]).toBeGreaterThanOrEqual(before)
-    expect(m1.channel.send).toHaveBeenNthCalledWith(
-      1,
-      getQueueMessage(`<@!${goldUser.id}>`)
-    )
+    expect(send).toHaveBeenCalledWith(getQueueMessage(`<@!${goldUser.id}>`))
 
     // The same user may not queue again.
-    const m2 = await triggerMessage({
+    await triggerMessage({
       userId: goldUser.id,
       content: `<@!${BOT_ID}> queue ${teamSize}s`,
     })
 
-    expect(m2.channel.send).toHaveBeenNthCalledWith(
-      1,
+    expect(send).toHaveBeenCalledWith(
       ERRORS.QUEUE_DUPLICATE_USER({
         userId: goldUser.id,
         teamSize: league.teamSize,
@@ -94,20 +91,18 @@ test('@LeagueBot queue <league>', async (done) => {
 test('@LeagueBot queue 1s', async (done) => {
   const matchId = `${league1s.id}-1`
 
-  const m1 = await triggerMessage({
+  const msg = await triggerMessage({
     userId: goldUser.id,
     content: `<@!${BOT_ID}> queue 1s`,
   })
-  const m2 = await triggerMessage({
+  const { send } = msg.channel
+  await triggerMessage({
     userId: platUser.id,
     content: `<@!${BOT_ID}> queue 1s`,
   })
 
   // When a user queues, they should receive a message with the updated list
-  expect(m1.channel.send).toHaveBeenNthCalledWith(
-    1,
-    getQueueMessage(`<@!${goldUser.id}>`)
-  )
+  expect(send).toHaveBeenCalledWith(getQueueMessage(`<@!${goldUser.id}>`))
 
   // When enough users queue for a match:
   // Match should be created in the database, default "random"
@@ -132,7 +127,7 @@ test('@LeagueBot queue 1s', async (done) => {
   `)
 
   // Match details should be sent
-  expect(m2.channel.send).toHaveBeenNthCalledWith(1, expectMatchMessage(match))
+  expect(send).toHaveBeenCalledWith(expectMatchMessage(match))
 
   done()
 })
@@ -159,8 +154,7 @@ test('@LeagueBot queue 2s', async (done) => {
 
     // When enough users queue for a match:
     // Match mode voting message should be sent
-    expect(msg.channel.send).toHaveBeenNthCalledWith(
-      1,
+    expect(msg.channel.send).toHaveBeenCalledWith(
       expectMatchVoteMessage({ playerIds, teamSize: 2 })
     )
 
@@ -184,10 +178,7 @@ test('@LeagueBot queue 2s', async (done) => {
     expect(teams).toStrictEqual(autoTeams)
 
     // Match details should be sent
-    expect(msg.channel.send).toHaveBeenNthCalledWith(
-      2,
-      expectMatchMessage(match)
-    )
+    expect(msg.channel.send).toHaveBeenCalledWith(expectMatchMessage(match))
   }
 
   done()
@@ -222,13 +213,9 @@ test('@LeagueBot queue 3s', async (done) => {
 
     // When enough users queue for a match:
     // Match mode voting message should be sent
-    expect(msg.channel.send).toHaveBeenNthCalledWith(
-      1,
+    expect(msg.channel.send).toHaveBeenCalledWith(
       expectMatchVoteMessage({ playerIds, teamSize: 3 })
     )
-
-    // Bot should react with the options first!
-    expect(msg.react).toHaveBeenCalledTimes(2)
 
     // Match should be created in the database, default "auto"
     const match = await matches.get(matchId)
@@ -247,10 +234,7 @@ test('@LeagueBot queue 3s', async (done) => {
     expect(teams).toStrictEqual(autoTeams)
 
     // Match details should be sent
-    expect(msg.channel.send).toHaveBeenNthCalledWith(
-      2,
-      expectMatchMessage(match)
-    )
+    expect(msg.channel.send).toHaveBeenCalledWith(expectMatchMessage(match))
   }
 
   done()

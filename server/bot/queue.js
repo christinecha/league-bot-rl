@@ -97,8 +97,6 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
       .filter((s) => !!s)
   }
 
-  console.log('hello', teamSizes)
-
   if (!teamSizes.length) {
     await context.channel.send(ERRORS.INVALID_TEAM_SIZE)
     return
@@ -118,7 +116,10 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
 
       if (!shouldQueue) {
         await context.channel.send(
-          messages.LEAVE_QUEUE({ userId: context.author.id, teamSize })
+          messages.REMOVED_FROM_QUEUE({
+            userIds: [context.author.id],
+            teamSize,
+          })
         )
         continue
       }

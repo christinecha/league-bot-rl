@@ -29,42 +29,34 @@ test('@LeagueBot fix <matchId>', async (done) => {
   const matchKey = parseMatchId(match2s.id).key
 
   // Non-admin cannot do this.
-  const m1 = await triggerMessage({
+  const msg = await triggerMessage({
     userId: plebUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
   })
-  expect(m1.channel.send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
+  const { send } = msg.channel
+  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
 
   // Match should not be changed if there's no selection.
-  const m2 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
   })
-  expect(m2.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
-  expect(m2.channel.send).toHaveBeenNthCalledWith(
-    2,
-    expectMatchMessage(match2s)
-  )
-  expect(m2.channel.send).toHaveBeenNthCalledWith(3, ERRORS.NO_TEAM_SELECTED)
+  expect(send).toHaveBeenNthCalledWith(2, REACT_TO_OVERWRITE())
+  expect(send).toHaveBeenNthCalledWith(3, expectMatchMessage(match2s))
+  expect(send).toHaveBeenNthCalledWith(4, ERRORS.NO_TEAM_SELECTED)
 
   match = await matches.get(match2s.id)
   expect(match.winner).toBe(1)
 
   // Admins can overwrite a match if they select a team.
-  const m3 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
     reactions: [[{ _emoji: { name: '2️⃣' } }, adminUser]],
   })
-  expect(m3.channel.send).toHaveBeenNthCalledWith(1, REACT_TO_OVERWRITE())
-  expect(m3.channel.send).toHaveBeenNthCalledWith(
-    2,
-    expectMatchMessage(match2s)
-  )
-  expect(m3.channel.send).toHaveBeenNthCalledWith(
-    3,
-    TEAM_WON({ winner: 2, matchKey })
-  )
+  expect(send).toHaveBeenNthCalledWith(5, REACT_TO_OVERWRITE())
+  expect(send).toHaveBeenNthCalledWith(6, expectMatchMessage(match2s))
+  expect(send).toHaveBeenNthCalledWith(7, TEAM_WON({ winner: 2, matchKey }))
 
   let match = await matches.get(match2s.id)
   expect(match.winner).toBe(2)

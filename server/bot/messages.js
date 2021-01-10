@@ -115,4 +115,15 @@ module.exports = {
   MATCH_NOT_VOIDED,
   MATCH_VOIDED,
   REACT_TO_VOID,
+  REACT_TO_STAY_QUEUED: ({ teamSize, userIds }) =>
+    `Still queueing for ${teamSize}s, ${usersToString(
+      userIds
+    )}? React with any emoji to stay in the queue.`,
+  REMOVED_FROM_QUEUE: ({ teamSize, userIds }) => {
+    const verb = userIds.length > 1 ? 'have' : 'has'
+
+    return `${usersToString(
+      userIds
+    )} ${verb} been removed from the ${teamSize}s queue.`
+  },
 }

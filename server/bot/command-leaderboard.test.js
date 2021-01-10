@@ -54,39 +54,40 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
   let stats
 
   // League range cannot be updated by a non-admin.
-  const m1 = await triggerMessage({
+  const msg = await triggerMessage({
     userId: plebUser.id,
     content: `<@!${BOT_ID}> start 2s ${DATES.JAN_1}`,
   })
-  expect(m1.channel.send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
+  const { send } = msg.channel
+  expect(send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
   // League range should not be updated if the date is invalid.
-  const m2 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> start 2s blahblah`,
   })
-  expect(m2.channel.send).toHaveBeenCalledWith(ERRORS.DATE_INVALID)
+  expect(send).toHaveBeenCalledWith(ERRORS.DATE_INVALID)
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
   // League range should not be updated if the team size is invalid or missing.
-  const m3 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> start 44 blahblah`,
   })
-  expect(m3.channel.send).toHaveBeenCalledWith(ERRORS.INVALID_TEAM_SIZE)
+  expect(send).toHaveBeenCalledWith(ERRORS.INVALID_TEAM_SIZE)
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
   // League start should be updated if everything is valid!
-  const m4 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> start 2s ${DATES.JAN_15}`,
   })
 
-  expect(m4.channel.send).toHaveBeenCalledWith(
+  expect(send).toHaveBeenCalledWith(
     LEADERBOARD_START({
       teamSize: 2,
       date: 'Jan 15, 2020, 12:00 AM GMT-5',
@@ -97,21 +98,21 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
   expect(newStats).toMatchSnapshot()
 
   // League end should not be updated if it is earlier than the start.
-  const m5 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> end 2s ${DATES.JAN_1}`,
   })
   stats = await getLeagueStats(league2s.id)
-  expect(m5.channel.send).toHaveBeenCalledWith(ERRORS.END_MUST_BE_AFTER_START)
+  expect(send).toHaveBeenCalledWith(ERRORS.END_MUST_BE_AFTER_START)
   expect(stats).toStrictEqual(newStats)
 
   // League end should be updated!
-  const m6 = await triggerMessage({
+  await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> end 2s ${DATES.JAN_16}`,
   })
 
-  expect(m6.channel.send).toHaveBeenCalledWith(
+  expect(send).toHaveBeenCalledWith(
     LEADERBOARD_END({
       teamSize: 2,
       date: 'Jan 16, 2020, 12:00 AM GMT-5',

@@ -14,6 +14,7 @@ const triggerMessage = async (data) => {
     ...data,
     guild,
   })
+
   await discord.trigger('message', message)
   return message
 }

@@ -2,6 +2,7 @@ const { discord } = require('./data/util/discord')
 const { admin } = require('./data/util/firebase')
 const { usersToString } = require('./util')
 const leagues = require('./data/leagues')
+const { REACT_TO_STAY_QUEUED, REMOVED_FROM_QUEUE } = require('./bot/messages')
 const FieldValue = admin.firestore.FieldValue
 const hourMs = 1000 * 60 * 60
 
@@ -31,6 +32,7 @@ const getDeadPlayers = (message, stalePlayers) => {
 }
 
 const cleanQueue = async () => {
+  const timeCheck = Date.now()
   const allLeagues = await leagues.search({
     rules: [['teamSize', '<', 4]],
   })
@@ -58,13 +60,18 @@ const cleanQueue = async () => {
       const clean = async () => {
         const channel = await discord.channels.fetch(league.channelId)
         const message = await channel.send(
-          `Still queueing for ${league.teamSize}s, ${usersToString(
-            stalePlayers
-          )}? React with any emoji to stay in the queue.`
+          REACT_TO_STAY_QUEUED({
+            teamSize: league.teamSize,
+            userIds: stalePlayers,
+          })
         )
 
         message.react('🌞')
-        const dead = await getDeadPlayers(message, stalePlayers)
+        const _dead = await getDeadPlayers(message, stalePlayers)
+        const _league = await leagues.get(league.id)
+        const _queue = _league.queue || {}
+        const dead = _dead.filter((d) => _queue[d] < timeCheck)
+
         if (!dead.length) {
           console.log('Nobody dead.')
           return
@@ -76,11 +83,8 @@ const cleanQueue = async () => {
         })
 
         await leagues.update({ id: league.id, ...updates })
-        const verb = dead.length > 1 ? 'have' : 'has'
         await channel.send(
-          `${usersToString(dead)} ${verb} been removed from the ${
-            league.teamSize
-          }s queue.`
+          REMOVED_FROM_QUEUE({ teamSize: league.teamSize, userIds: dead })
         )
       }
 

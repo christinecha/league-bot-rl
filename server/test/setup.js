@@ -6,6 +6,35 @@ const users = require('./users')
 
 jest.mock('discord.js')
 
+Discord.Channel = ({ id }) => {
+  const react = jest.fn()
+  const self = {
+    reactions: [],
+    id,
+    send: jest.fn(() =>
+      Promise.resolve({
+        react,
+        awaitReactions: (filter) => {
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              self.reactions.forEach((r) => {
+                filter(...r)
+              })
+              resolve()
+            }, 10)
+          })
+        },
+      })
+    ),
+    setReactions: (r) => {
+      self.reactions = r
+    },
+    react,
+  }
+
+  return self
+}
+
 Discord.DB = {
   users: {},
   guildMembers: {},
@@ -23,6 +52,9 @@ Discord.DB = {
       },
     },
   },
+  channels: {
+    test: new Discord.Channel({ id: 'test' }),
+  },
 }
 
 Discord.Message = ({
@@ -32,24 +64,15 @@ Discord.Message = ({
   guild,
   reactions = [],
 }) => {
-  const react = jest.fn()
-  const send = jest.fn(() =>
-    Promise.resolve({
-      react,
-      awaitReactions: async (filter) => {
-        reactions.forEach((r) => {
-          filter(...r)
-        })
-      },
-    })
-  )
+  const channel = Discord.DB.channels[channelId]
+  channel.setReactions(reactions)
 
   return {
     content,
     author: { id: userId },
     guild,
-    channel: { send, id: channelId },
-    react,
+    channel,
+    react: channel.react,
   }
 }
 
@@ -83,6 +106,11 @@ Discord.Client = jest.fn(() => {
     setUsers: (users) => (Discord.DB.users = users),
     callbacks: {},
     callbacksOnce: {},
+    trigger: function (evt, data) {
+      if (!this.callbacks[evt]) return Promise.resolve()
+      const promises = this.callbacks[evt].map((cb) => cb(data))
+      return Promise.all(promises)
+    },
 
     login: () => {},
     guilds: {
@@ -91,11 +119,13 @@ Discord.Client = jest.fn(() => {
         return Promise.resolve(guild)
       },
     },
-    trigger: function (evt, data) {
-      if (!this.callbacks[evt]) return Promise.resolve()
-      const promises = this.callbacks[evt].map((cb) => cb(data))
-      return Promise.all(promises)
+    channels: {
+      fetch: (id) => {
+        const channel = Discord.DB.channels[id]
+        return Promise.resolve(channel)
+      },
     },
+
     on: function (evt, callback) {
       this.callbacks[evt] = this.callbacks[evt] || []
       this.callbacks[evt].push(callback)
