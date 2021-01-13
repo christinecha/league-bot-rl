@@ -10,6 +10,7 @@ const ERRORS = {
   MATCH_UNCANCELABLE: 'Cannot cancel a match that has already been reported.',
 
   QUEUE_NO_SUCH_USER: 'User is not in the queue.',
+  QUEUE_NOT_IN_ANY: ({ userId }) => `<@!${userId}> is not in any queues.`,
   QUEUE_DUPLICATE_USER: ({ userId, teamSize }) =>
     `<@!${userId}> is already in the ${teamSize}s queue.`,
 

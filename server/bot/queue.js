@@ -88,8 +88,10 @@ const getMatchPlayers = async (leagueId) => {
 const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
   let leagueId, ignoreErrors
   let teamSizes = []
+  let count = 0
+  const userId = context.author.id
 
-  if (!leagueStrs.length) {
+  if (!leagueStrs.length || leagueStrs[0].toLowerCase() === 'all') {
     ignoreErrors = true
     teamSizes = TEAM_SIZES
   } else {
@@ -113,6 +115,7 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
       }
 
       await updateQueue(context, league, shouldQueue)
+      count += 1
       league = await leagues.get(leagueId)
 
       if (!shouldQueue) {
@@ -152,6 +155,10 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
         console.log('[SILENT ERROR]', err)
       }
     }
+  }
+
+  if (count < 1 && ignoreErrors && !shouldQueue) {
+    await context.channel.send(ERRORS.QUEUE_NOT_IN_ANY({ userId }))
   }
 }
 
