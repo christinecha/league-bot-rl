@@ -86,10 +86,11 @@ const getMatchPlayers = async (leagueId) => {
 }
 
 const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
-  let leagueId
+  let leagueId, ignoreErrors
   let teamSizes = []
 
   if (!leagueStrs.length) {
+    ignoreErrors = true
     teamSizes = TEAM_SIZES
   } else {
     teamSizes = leagueStrs
@@ -144,8 +145,12 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
       const match = await createMatch({ leagueId, playerIds, mode, teamSize })
       await context.channel.send(messages.MATCH_DETAILS(match))
     } catch (err) {
-      console.log('[ERROR]', err)
-      await context.channel.send(err)
+      if (!ignoreErrors) {
+        console.log('[LOGGED ERROR]', err)
+        await context.channel.send(err)
+      } else {
+        console.log('[SILENT ERROR]', err)
+      }
     }
   }
 }

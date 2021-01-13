@@ -25,6 +25,7 @@ beforeEach(async (done) => {
 })
 
 afterEach(async (done) => {
+  jest.clearAllMocks()
   await cleanDatabase()
   done()
 })
@@ -83,6 +84,66 @@ test('@LeagueBot leave <league>', async (done) => {
   expect(send).toHaveBeenNthCalledWith(4, ERRORS.QUEUE_NO_SUCH_USER)
   expect(send).toHaveBeenNthCalledWith(5, ERRORS.QUEUE_NO_SUCH_USER)
   expect(send).toHaveBeenNthCalledWith(6, ERRORS.QUEUE_NO_SUCH_USER)
+
+  done()
+})
+
+test('@LeagueBot leave', async (done) => {
+  const { send } = await discord.channels.fetch('test')
+  await triggerMessage({
+    userId: users[0],
+    content: `<@!${BOT_ID}> leave`,
+  })
+
+  // Confirmations should be sent.
+  expect(send).toHaveBeenNthCalledWith(
+    1,
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 1 })
+  )
+  expect(send).toHaveBeenNthCalledWith(
+    2,
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 2 })
+  )
+  expect(send).toHaveBeenNthCalledWith(
+    3,
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 3 })
+  )
+
+  let league1 = await leagues.get(league1s.id)
+  let league2 = await leagues.get(league2s.id)
+  let league3 = await leagues.get(league3s.id)
+
+  // The user was removed from each queue
+  expect(Object.keys(league1.queue)).toStrictEqual([users[1], users[2]])
+  expect(Object.keys(league2.queue)).toStrictEqual([users[1], users[2]])
+  expect(Object.keys(league3.queue)).toStrictEqual([users[1], users[2]])
+
+  await triggerMessage({
+    userId: users[1],
+    content: `<@!${BOT_ID}> leave 1s`,
+  })
+
+  // Confirmations should only be sent for the leagues they were in.
+  expect(send).toHaveBeenNthCalledWith(
+    4,
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[1]], teamSize: 1 })
+  )
+
+  await triggerMessage({
+    userId: users[1],
+    content: `<@!${BOT_ID}> leave`,
+  })
+
+  // Confirmations should only be sent for the leagues they were in.
+  expect(send).toHaveBeenNthCalledWith(
+    5,
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[1]], teamSize: 2 })
+  )
+
+  expect(send).toHaveBeenNthCalledWith(
+    6,
+    messages.REMOVED_FROM_QUEUE({ userIds: [users[1]], teamSize: 3 })
+  )
 
   done()
 })
