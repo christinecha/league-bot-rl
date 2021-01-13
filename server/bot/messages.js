@@ -1,6 +1,9 @@
 const Discord = require('discord.js')
 const { parseMatchId } = require('../data/matchId')
-const { getCommandsMarkdown } = require('../../shared/getCommandsMarkdown')
+const {
+  getCommandsMarkdown,
+  getModCommandsMarkdown,
+} = require('../../shared/getCommandsMarkdown')
 const { usersToString, queueToString, getTeams } = require('../util')
 const { getVariablesMarkdown } = require('../../shared/getVariablesMarkdown')
 const { getAdvancedMarkdown } = require('../../shared/getAdvancedMarkdown')
@@ -89,6 +92,10 @@ const HELP = () => {
     {
       name: 'Commands',
       value: getCommandsMarkdown(),
+    },
+    {
+      name: 'Mod-Only Commands',
+      value: getModCommandsMarkdown(),
     },
     {
       name: 'Advanced',
