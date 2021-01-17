@@ -8,16 +8,16 @@ const RL_RANKS = {
 
   Diamond: 6,
 
-  Champ: 8,
-  Champion: 8,
+  Champ: 9,
+  Champion: 9,
 
-  GC: 10,
-  'Grand Champ': 10,
-  'Grand Champion': 10,
+  GC: 12,
+  'Grand Champ': 12,
+  'Grand Champion': 12,
 
-  SSL: 15,
-  'SuperSonic Legend': 15,
-  'Super Sonic Legend': 15,
+  SSL: 16,
+  'SuperSonic Legend': 16,
+  'Super Sonic Legend': 16,
 }
 
 module.exports = RL_RANKS

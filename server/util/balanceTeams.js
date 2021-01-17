@@ -3,9 +3,11 @@ const { getGuildUser } = require('./getGuildUser')
 const { getLeagueStats } = require('./getLeagueStats')
 
 const scoreUser = (user) => {
-  const winRatio = user.ratio ? user.ratio : 0.5
+  const matchesPlayed = (user.win || 0) + (user.loss || 0)
   const rankRatio = user.rank ? user.rank / RL_RANKS['SSL'] : 0.5
-  return (rankRatio + winRatio) / 2
+  const winRatio = matchesPlayed > 6 ? user.ratio : 0.5
+  /* 2:1 importance on rank:win */
+  return rankRatio * 0.66 + winRatio * 0.34
 }
 
 const scoreTeam = (arr) => arr.reduce((s, user) => s + scoreUser(user), 0)
@@ -60,4 +62,4 @@ const balanceTeams = async ({ leagueId, userIds }) => {
   }
 }
 
-module.exports = { balanceTeams }
+module.exports = { balanceTeams, scoreUser }
