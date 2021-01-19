@@ -88,6 +88,7 @@ const getMatchPlayers = async (leagueId) => {
 const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
   let leagueId, ignoreErrors
   let teamSizes = []
+  const leaguesAffected = []
   let count = 0
   const userId = context.author.id
 
@@ -119,18 +120,12 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
       league = await leagues.get(leagueId)
 
       if (!shouldQueue) {
-        await context.channel.send(
-          messages.REMOVED_FROM_QUEUE({
-            userIds: [context.author.id],
-            teamSize,
-          })
-        )
+        leaguesAffected.push(league)
         continue
       }
 
       if (Object.keys(league.queue).length < teamSize * 2) {
-        console.log('Adding player to queue.')
-        await context.channel.send(messages.QUEUE(league))
+        leaguesAffected.push(league)
         continue
       }
 
@@ -155,6 +150,12 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
         console.log('[SILENT ERROR]', err)
       }
     }
+  }
+
+  if (leaguesAffected.length) {
+    await context.channel.send(
+      messages.STATUS_MULTIPLE({ leagues: leaguesAffected })
+    )
   }
 
   if (count < 1 && ignoreErrors && !shouldQueue) {

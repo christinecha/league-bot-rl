@@ -80,7 +80,20 @@ const QUEUE = (league) => {
   return new Discord.MessageEmbed()
     .setColor(COLOR_PRIMARY)
     .addFields({ name: `${teamSize}s League Queue`, value: queueList })
-    .setTimestamp()
+}
+
+const STATUS_MULTIPLE = ({ leagues }) => {
+  const msg = new Discord.MessageEmbed().setColor(COLOR_PRIMARY)
+
+  leagues.forEach((league) => {
+    const { queue, teamSize } = league
+    const queueList = Object.keys(queue).length
+      ? queueToString(queue)
+      : 'No one in the queue.'
+    msg.addField(`${teamSize}s League Queue`, queueList)
+  })
+
+  return msg
 }
 
 const HELP = () => {
@@ -109,6 +122,7 @@ module.exports = {
   GET_MATCH_MODE,
   MATCH_DETAILS,
   QUEUE,
+  STATUS_MULTIPLE,
   HELP,
   REACT_TO_OVERWRITE,
   TEAM_WON,

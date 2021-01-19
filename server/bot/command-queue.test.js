@@ -3,6 +3,8 @@ require('./index')
 const leagues = require('../data/leagues')
 const matches = require('../data/matches')
 const ERRORS = require('../constants/ERRORS')
+const messages = require('../bot/messages')
+const { discord } = require('../data/util/discord')
 const { league1s, league2s, league3s } = require('../test/league')
 const { getLeagueStats } = require('../util/getLeagueStats')
 const { getTeams } = require('../util')
@@ -22,6 +24,7 @@ const {
 const { triggerMessage, cleanDatabase } = require('../test/util')
 const { balanceTeams } = require('../util/balanceTeams')
 const BOT_ID = process.env.BOT_ID
+const channelId = 'test'
 
 jest.mock('../util/getLeagueStats')
 getLeagueStats.mockResolvedValue({})
@@ -54,14 +57,16 @@ afterEach(async (done) => {
 })
 
 test('@LeagueBot queue <league>', async (done) => {
+  const channel = await discord.channels.fetch(channelId)
+  const { send } = channel
+
   for (let teamSize of [1, 2, 3]) {
     const before = Date.now()
-    const msg = await triggerMessage({
+    await triggerMessage({
       userId: goldUser.id,
       content: `<@!${BOT_ID}> queue ${teamSize}s`,
     })
     const after = Date.now()
-    const { send } = msg.channel
 
     const league = await leagues.get(`${guild.id}-${teamSize}`)
 
@@ -69,7 +74,11 @@ test('@LeagueBot queue <league>', async (done) => {
     expect(Object.keys(league.queue)).toStrictEqual([goldUser.id])
     expect(league.queue[goldUser.id]).toBeLessThanOrEqual(after)
     expect(league.queue[goldUser.id]).toBeGreaterThanOrEqual(before)
-    expect(send).toHaveBeenCalledWith(getQueueMessage(`<@!${goldUser.id}>`))
+
+    const statusMsg = messages.STATUS_MULTIPLE({ leagues: [league] })
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({ fields: statusMsg.fields })
+    )
 
     // The same user may not queue again.
     await triggerMessage({

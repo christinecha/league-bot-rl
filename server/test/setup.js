@@ -163,6 +163,10 @@ Discord.MessageEmbed = jest.fn(() => {
       })
       return this
     },
+    addField: function (...args) {
+      this.fields.push({ name: args[0], value: args[1] })
+      return this
+    },
     setFooter: function (data) {
       this.footer = data
       return this

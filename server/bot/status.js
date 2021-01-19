@@ -5,12 +5,17 @@ const { getTeamSize, getLeagueId } = require('../util')
 
 const onStatus = async (context, leagueName) => {
   if (!leagueName) {
+    const leaguesArr = []
+
     for (let size of TEAM_SIZES) {
       const id = getLeagueId(size, context)
       const league = await leagues.get(id)
-      if (league) await context.channel.send(messages.QUEUE(league))
+      if (league) leaguesArr.push(league)
     }
 
+    await context.channel.send(
+      messages.STATUS_MULTIPLE({ leagues: leaguesArr })
+    )
     return
   }
 

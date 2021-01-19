@@ -45,23 +45,36 @@ test('@LeagueBot leave <league>', async (done) => {
     content: `<@!${BOT_ID}> leave 3s`,
   })
 
-  // Confirmations should be sent.
-  expect(send).toHaveBeenNthCalledWith(
-    1,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 1 })
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    2,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 2 })
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    3,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 3 })
-  )
-
   let league1 = await leagues.get(league1s.id)
   let league2 = await leagues.get(league2s.id)
   let league3 = await leagues.get(league3s.id)
+
+  // Confirmations should be sent.
+  expect(send).toHaveBeenNthCalledWith(
+    1,
+    expect.objectContaining({
+      fields: messages.STATUS_MULTIPLE({
+        leagues: [league1],
+      }).fields,
+    })
+  )
+  expect(send).toHaveBeenNthCalledWith(
+    2,
+    expect.objectContaining({
+      fields: messages.STATUS_MULTIPLE({
+        leagues: [league2],
+      }).fields,
+    })
+  )
+
+  expect(send).toHaveBeenNthCalledWith(
+    3,
+    expect.objectContaining({
+      fields: messages.STATUS_MULTIPLE({
+        leagues: [league3],
+      }).fields,
+    })
+  )
 
   // The user was removed from each queue
   expect(Object.keys(league1.queue)).toStrictEqual([users[1], users[2]])
@@ -95,23 +108,17 @@ test('@LeagueBot leave', async (done) => {
     content: `<@!${BOT_ID}> leave`,
   })
 
-  // Confirmations should be sent.
-  expect(send).toHaveBeenNthCalledWith(
-    1,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 1 })
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    2,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 2 })
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    3,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 3 })
-  )
-
   let league1 = await leagues.get(league1s.id)
   let league2 = await leagues.get(league2s.id)
   let league3 = await leagues.get(league3s.id)
+
+  // Confirmations should be sent.
+  const statusMsg = messages.STATUS_MULTIPLE({
+    leagues: [league1, league2, league3],
+  })
+  expect(send).toHaveBeenCalledWith(
+    expect.objectContaining({ fields: statusMsg.fields })
+  )
 
   // The user was removed from each queue
   expect(Object.keys(league1.queue)).toStrictEqual([users[1], users[2]])
@@ -123,26 +130,23 @@ test('@LeagueBot leave', async (done) => {
     content: `<@!${BOT_ID}> leave 1s`,
   })
 
-  // Confirmations should only be sent for the leagues they were in.
-  expect(send).toHaveBeenNthCalledWith(
-    4,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[1]], teamSize: 1 })
-  )
+  jest.clearAllMocks()
 
   await triggerMessage({
     userId: users[1],
     content: `<@!${BOT_ID}> leave`,
   })
 
-  // Confirmations should only be sent for the leagues they were in.
-  expect(send).toHaveBeenNthCalledWith(
-    5,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[1]], teamSize: 2 })
-  )
+  league1 = await leagues.get(league1s.id)
+  league2 = await leagues.get(league2s.id)
+  league3 = await leagues.get(league3s.id)
 
-  expect(send).toHaveBeenNthCalledWith(
-    6,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[1]], teamSize: 3 })
+  expect(send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      fields: messages.STATUS_MULTIPLE({
+        leagues: [league2, league3],
+      }).fields,
+    })
   )
 
   done()
@@ -155,23 +159,18 @@ test('@LeagueBot leave all', async (done) => {
     content: `<@!${BOT_ID}> leave all`,
   })
 
-  // Confirmations should be sent.
-  expect(send).toHaveBeenNthCalledWith(
-    1,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 1 })
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    2,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 2 })
-  )
-  expect(send).toHaveBeenNthCalledWith(
-    3,
-    messages.REMOVED_FROM_QUEUE({ userIds: [users[0]], teamSize: 3 })
-  )
-
   let league1 = await leagues.get(league1s.id)
   let league2 = await leagues.get(league2s.id)
   let league3 = await leagues.get(league3s.id)
+
+  // Confirmations should be sent.
+  expect(send).toHaveBeenCalledWith(
+    expect.objectContaining({
+      fields: messages.STATUS_MULTIPLE({
+        leagues: [league1, league2, league3],
+      }).fields,
+    })
+  )
 
   // The user was removed from each queue
   expect(Object.keys(league1.queue)).toStrictEqual([users[1], users[2]])
@@ -183,8 +182,7 @@ test('@LeagueBot leave all', async (done) => {
     content: `<@!${BOT_ID}> leave`,
   })
 
-  expect(send).toHaveBeenNthCalledWith(
-    4,
+  expect(send).toHaveBeenCalledWith(
     ERRORS.QUEUE_NOT_IN_ANY({ userId: users[0] })
   )
 
