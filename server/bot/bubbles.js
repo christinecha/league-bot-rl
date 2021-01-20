@@ -15,9 +15,7 @@ const onBubbles = async (context) => {
   context.channel.send('Hello, Bubbles 👋')
 
   // queue to all leagues
-  await onQueue(context, '1')
-  await onQueue(context, '2')
-  await onQueue(context, '3')
+  await onQueue(context)
 
   for (let i = 1; i < 4; i++) {
     const leagueId = `${guildId}-${i}`
