@@ -9,6 +9,10 @@ const { getVariablesMarkdown } = require('../../shared/getVariablesMarkdown')
 const { getAdvancedMarkdown } = require('../../shared/getAdvancedMarkdown')
 
 const COLOR_PRIMARY = '#4c33ff'
+const BotMessage = () =>
+  new Discord.MessageEmbed()
+    .setColor(COLOR_PRIMARY)
+    .setFooter('leaguebotrl.com ✿ made by cha')
 
 const MATCH_VOIDED = (matchKey) => `Match ${matchKey} was voided.`
 const MATCH_NOT_VOIDED = (matchKey) => `Match ${matchKey} was not voided.`
@@ -42,13 +46,15 @@ const LEAVE_QUEUE = ({ userId, teamSize }) => {
 }
 
 const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
-  return new Discord.MessageEmbed().setColor(COLOR_PRIMARY).addFields({
-    name: `We've got a ${teamSize}s match!`,
-    value: `${usersToString(playerIds)}
+  return BotMessage()
+    .setColor(COLOR_PRIMARY)
+    .addFields({
+      name: `We've got a ${teamSize}s match!`,
+      value: `${usersToString(playerIds)}
 
 Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
 `,
-  })
+    })
 }
 
 const MATCH_DETAILS = (match) => {
@@ -56,7 +62,7 @@ const MATCH_DETAILS = (match) => {
   const teams = getTeams(players)
   const { key } = parseMatchId(match.id)
 
-  return new Discord.MessageEmbed()
+  return BotMessage()
     .setColor(COLOR_PRIMARY)
     .setTitle(`${teamSize}s Match`)
     .setDescription(`Match ID: ${key}`)
@@ -77,13 +83,13 @@ const QUEUE = (league) => {
     ? queueToString(queue)
     : 'No one in the queue.'
 
-  return new Discord.MessageEmbed()
+  return BotMessage()
     .setColor(COLOR_PRIMARY)
     .addFields({ name: `${teamSize}s League Queue`, value: queueList })
 }
 
 const STATUS_MULTIPLE = ({ leagues }) => {
-  const msg = new Discord.MessageEmbed().setColor(COLOR_PRIMARY)
+  const msg = BotMessage().setColor(COLOR_PRIMARY)
 
   leagues.forEach((league) => {
     const { queue, teamSize } = league
@@ -97,7 +103,7 @@ const STATUS_MULTIPLE = ({ leagues }) => {
 }
 
 const HELP = () => {
-  return new Discord.MessageEmbed().setColor(COLOR_PRIMARY).addFields(
+  return BotMessage().setColor(COLOR_PRIMARY).addFields(
     {
       name: 'Variables',
       value: getVariablesMarkdown(),
@@ -113,6 +119,11 @@ const HELP = () => {
     {
       name: 'Advanced',
       value: getAdvancedMarkdown(),
+    },
+    {
+      name: '--',
+      value:
+        'For more info, visit [leaguebotrl.com](https://www.leaguebotrl.com).',
     }
   )
 }
