@@ -65,6 +65,7 @@ const App = () => {
         />
 
         {guildId ? <Leaderboard /> : <Home />}
+        <div data-row="20" />
       </main>
     </>
   )
