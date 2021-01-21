@@ -12,7 +12,7 @@ const COLOR_PRIMARY = '#4c33ff'
 const BotMessage = () =>
   new Discord.MessageEmbed()
     .setColor(COLOR_PRIMARY)
-    .setFooter('leaguebotrl.com ✿ made by cha')
+    .setFooter('leaguebotrl.com  🌸  @madebycha')
 
 const MATCH_VOIDED = (matchKey) => `Match ${matchKey} was voided.`
 const MATCH_NOT_VOIDED = (matchKey) => `Match ${matchKey} was not voided.`
