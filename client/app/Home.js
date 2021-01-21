@@ -181,7 +181,7 @@ ${getAdvancedMarkdown()}
             <br />
             <br />
             P.S. Special shout out to{' '}
-            <a href="twitch.tv/hoodyhooo" target="_blank">
+            <a href="https://twitch.tv/hoodyhooo" target="_blank">
               Hoodyhooo
             </a>{' '}
             for giving me a community to build this for!

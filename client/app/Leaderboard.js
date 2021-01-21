@@ -63,7 +63,6 @@ export const Leaderboard = () => {
     getGuild({ guildId })
       .then(({ data }) => {
         setGuild(data)
-
         const guildIds = storage.getArray(storage.KEYS.SERVERS)
         if (!guildIds.includes(guildId)) {
           storage.setArray(storage.KEYS.SERVERS, [...guildIds, guildId])

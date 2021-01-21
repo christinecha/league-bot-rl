@@ -15,8 +15,7 @@ const { guildId } = qs.parse(window.location.search, {
 const App = () => {
   return (
     <>
-      <div data-row={5}></div>
-      {/* <Header /> */}
+      <Header />
       <main>
         <Global
           styles={globalcss`
