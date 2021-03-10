@@ -11,8 +11,8 @@ Discord.Channel = ({ id }) => {
   const self = {
     reactions: [],
     id,
-    send: jest.fn(() =>
-      Promise.resolve({
+    send: jest.fn((n) => {
+      return Promise.resolve({
         react,
         awaitReactions: (filter) => {
           return new Promise((resolve) => {
@@ -25,7 +25,7 @@ Discord.Channel = ({ id }) => {
           })
         },
       })
-    ),
+    }),
     setReactions: (r) => {
       self.reactions = r
     },

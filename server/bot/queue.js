@@ -29,21 +29,25 @@ const updateQueue = async (context, league, shouldQueue) => {
 const MATCH_MODE = {
   AUTO: 'auto',
   RANDOM: 'random',
+  CANCEL: 'cancel',
 }
 
 const MODE_EMOTE = {
   '🤖': MATCH_MODE.AUTO,
   '👻': MATCH_MODE.RANDOM,
+  '🚫': MATCH_MODE.CANCEL,
 }
 
 const getMatchMode = async ({ message, playerIds }) => {
   return new Promise((resolve, reject) => {
     message.react('🤖')
     message.react('👻')
+    message.react('🚫')
 
     const modes = {
       [MATCH_MODE.AUTO]: 0,
       [MATCH_MODE.RANDOM]: 0,
+      [MATCH_MODE.CANCEL]: 0,
     }
 
     const filter = (reaction, user) => {
@@ -62,9 +66,11 @@ const getMatchMode = async ({ message, playerIds }) => {
 
     const twoMinutes = 1000 * 60 * 2
     message.awaitReactions(filter, { time: twoMinutes }).then(() => {
-      if (modes[MATCH_MODE.AUTO] >= modes[MATCH_MODE.RANDOM])
-        resolve(MATCH_MODE.AUTO)
-      resolve(MATCH_MODE.RANDOM)
+      const mostPopular = Object.keys(modes).reduce((pop, mode) => {
+        return modes[mode] > modes[pop] ? mode : pop
+      }, MATCH_MODE.RANDOM)
+
+      resolve(mostPopular)
     })
   })
 }
@@ -137,7 +143,13 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
         const message = await context.channel.send(
           messages.GET_MATCH_MODE({ playerIds, teamSize })
         )
+
         mode = await getMatchMode({ message, playerIds })
+
+        if (mode === MATCH_MODE.CANCEL) {
+          await context.channel.send(`${teamSizes}s match has been canceled.`)
+          return
+        }
       }
 
       const match = await createMatch({ leagueId, playerIds, mode, teamSize })
