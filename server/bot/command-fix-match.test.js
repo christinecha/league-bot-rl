@@ -52,7 +52,7 @@ test('@LeagueBot fix <matchId>', async (done) => {
   await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> fix ${matchKey}`,
-    reactions: [[{ _emoji: { name: '2️⃣' } }, adminUser]],
+    reactions: [[{ emoji: { name: '2️⃣' } }, adminUser]],
   })
   expect(send).toHaveBeenNthCalledWith(5, REACT_TO_OVERWRITE())
   expect(send).toHaveBeenNthCalledWith(6, expectMatchMessage(match2s))

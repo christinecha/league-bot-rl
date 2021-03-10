@@ -10,5 +10,5 @@ exports[`@LeagueBot help 1`] = `
 - \`@LeagueBot new | n <teamSize>\` - Start a new league for a specific team size.
 - \`@LeagueBot queue | q <teamSize>\` - Join the queue for a specific league.
 - \`@LeagueBot status | s <[teamSize]>\` - Show the current queue(s).
-- \`@LeagueBot win | won <matchId>\` - Report that you won this match."
+- \`@LeagueBot win | won | w <matchId>\` - Report that you won this match."
 `;

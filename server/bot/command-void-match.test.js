@@ -51,7 +51,7 @@ test('@LeagueBot void <matchId>', async (done) => {
   await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> void ${matchKey}`,
-    reactions: [[{ _emoji: { name: '✅' } }, adminUser]],
+    reactions: [[{ emoji: { name: '✅' } }, adminUser]],
   })
   expect(send).toHaveBeenNthCalledWith(4, REACT_TO_VOID(matchKey))
   expect(send).toHaveBeenNthCalledWith(5, MATCH_VOIDED(matchKey))

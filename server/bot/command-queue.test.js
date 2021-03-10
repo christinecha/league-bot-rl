@@ -53,6 +53,8 @@ beforeEach(async (done) => {
 
 afterEach(async (done) => {
   jest.clearAllMocks()
+  const channel = await discord.channels.fetch(channelId)
+  channel.setReactions([])
   await cleanDatabase()
   done()
 })
@@ -149,9 +151,14 @@ test('@LeagueBot queue 2s', async (done) => {
   for (let _ in playerIds) {
     const i = parseInt(_)
     const playerId = playerIds[i]
+
     const msg = await triggerMessage({
       userId: playerId,
       content: `<@!${BOT_ID}> queue 2s`,
+      reactions: [
+        [{ emoji: { name: '🤖' } }, goldUser],
+        [{ emoji: { name: '🤖' } }, platUser],
+      ],
     })
 
     // When a user queues, they should receive a message with the updated list
@@ -194,99 +201,104 @@ test('@LeagueBot queue 2s', async (done) => {
   done()
 })
 
-// test('@LeagueBot queue 3s', async (done) => {
-//   const playerIds = [
-//     bronzeUser.id,
-//     silverUser.id,
-//     goldUser.id,
-//     platUser.id,
-//     diamondUser.id,
-//     champUser.id,
-//   ]
-//   const matchId = `${league3s.id}-1`
+test('@LeagueBot queue 3s', async (done) => {
+  const playerIds = [
+    bronzeUser.id,
+    silverUser.id,
+    goldUser.id,
+    platUser.id,
+    diamondUser.id,
+    champUser.id,
+  ]
+  const matchId = `${league3s.id}-1`
 
-//   for (let _ in playerIds) {
-//     const i = parseInt(_)
-//     const playerId = playerIds[i]
-//     const msg = await triggerMessage({
-//       userId: playerId,
-//       content: `<@!${BOT_ID}> queue 3s`,
-//     })
+  for (let _ in playerIds) {
+    const i = parseInt(_)
+    const playerId = playerIds[i]
+    const msg = await triggerMessage({
+      userId: playerId,
+      content: `<@!${BOT_ID}> queue 3s`,
+      reactions: [
+        [{ emoji: { name: '🤖' } }, goldUser],
+        [{ emoji: { name: '🤖' } }, platUser],
+        [{ emoji: { name: '🤖' } }, diamondUser],
+      ],
+    })
 
-//     // When a user queues, they should receive a message with the updated list
-//     if (i !== playerIds.length - 1) {
-//       expect(msg.channel.send).toHaveBeenCalledWith(
-//         getQueueMessage(`<@!${playerId}>`)
-//       )
-//       continue
-//     }
+    // When a user queues, they should receive a message with the updated list
+    if (i !== playerIds.length - 1) {
+      expect(msg.channel.send).toHaveBeenCalledWith(
+        getQueueMessage(`<@!${playerId}>`)
+      )
+      continue
+    }
 
-//     // When enough users queue for a match:
-//     // Match mode voting message should be sent
-//     expect(msg.channel.send).toHaveBeenCalledWith(
-//       expectMatchVoteMessage({ playerIds, teamSize: 3 })
-//     )
+    // When enough users queue for a match:
+    // Match mode voting message should be sent
+    expect(msg.channel.send).toHaveBeenCalledWith(
+      expectMatchVoteMessage({ playerIds, teamSize: 3 })
+    )
 
-//     // Match should be created in the database, default "auto"
-//     const match = await matches.get(matchId)
-//     const autoTeams = await balanceTeams({
-//       leagueId: league3s.id,
-//       userIds: playerIds,
-//     })
-//     const teams = getTeams(match.players)
+    // Match should be created in the database, default "auto"
+    const match = await matches.get(matchId)
+    const autoTeams = await balanceTeams({
+      leagueId: league3s.id,
+      userIds: playerIds,
+    })
+    const teams = getTeams(match.players)
 
-//     // Match details should be correct
-//     expect(match.id).toBe(matchId)
-//     expect(match.teamSize).toBe(3)
-//     expect(match.league).toBe(league3s.id)
-//     expect(match.mode).toBe('auto')
-//     expect(Object.keys(match.players).length).toBe(6)
-//     expect(teams).toStrictEqual(autoTeams)
+    // Match details should be correct
+    expect(match.id).toBe(matchId)
+    expect(match.teamSize).toBe(3)
+    expect(match.league).toBe(league3s.id)
+    expect(match.mode).toBe('auto')
+    expect(Object.keys(match.players).length).toBe(6)
+    expect(teams).toStrictEqual(autoTeams)
 
-//     // Match details should be sent
-//     expect(msg.channel.send).toHaveBeenCalledWith(expectMatchMessage(match))
-//   }
+    // Match details should be sent
+    expect(msg.channel.send).toHaveBeenCalledWith(expectMatchMessage(match))
+  }
 
-//   done()
-// })
+  done()
+})
 
-// test('@LeagueBot queue 2s - then cancel', async (done) => {
-//   const playerIds = [goldUser.id, platUser.id, diamondUser.id, champUser.id]
-//   const matchId = `${league2s.id}-1`
+test('@LeagueBot queue 2s - then cancel', async (done) => {
+  const playerIds = [goldUser.id, platUser.id, diamondUser.id, champUser.id]
+  const matchId = `${league2s.id}-1`
 
-//   for (let _ in playerIds) {
-//     const i = parseInt(_)
-//     const playerId = playerIds[i]
-//     const msg = await triggerMessage({
-//       userId: playerId,
-//       content: `<@!${BOT_ID}> queue 2s`,
-//     })
+  for (let _ in playerIds) {
+    const i = parseInt(_)
+    const playerId = playerIds[i]
 
-//     // When a user queues, they should receive a message with the updated list
-//     if (i !== playerIds.length - 1) {
-//       continue
-//     }
+    const msg = await triggerMessage({
+      userId: playerId,
+      content: `<@!${BOT_ID}> queue 2s`,
+      reactions: [
+        [{ emoji: { name: '🚫' } }, goldUser],
+        [{ emoji: { name: '🚫' } }, platUser],
+      ],
+    })
 
-//     // When enough users queue for a match:
-//     // Match mode voting message should be sent
-//     expect(msg.channel.send).toHaveBeenCalledWith(
-//       expectMatchVoteMessage({ playerIds, teamSize: 2 })
-//     )
+    // When a user queues, they should receive a message with the updated list
+    if (i !== playerIds.length - 1) {
+      continue
+    }
 
-//     // Bot should react with the options first!
-//     expect(msg.react).toHaveBeenCalledTimes(3)
+    // When enough users queue for a match:
+    // Match mode voting message should be sent
+    expect(msg.channel.send).toHaveBeenCalledWith(
+      expectMatchVoteMessage({ playerIds, teamSize: 2 })
+    )
 
-//     msg.channel.setReactions([
-//       [{ _emoji: { name: '🚫' } }, goldUser.id],
-//       [{ _emoji: { name: '🚫' } }, platUser.id],
-//     ])
+    // Bot should react with the options first!
+    expect(msg.react).toHaveBeenCalledTimes(3)
 
-//     expect(msg.channel.send).toHaveBeenCalledWith(`2s match has been canceled.`)
+    expect(msg.channel.send).toHaveBeenCalledWith(`2s match has been canceled.`)
 
-//     // Match should not have been created
-//     const match = await matches.get(matchId)
-//     expect(match).toBe(null)
-//   }
+    // Match should not have been created
+    const match = await matches.get(matchId)
+    expect(match).toBe(undefined)
+  }
 
-//   done()
-// })
+  done()
+})
