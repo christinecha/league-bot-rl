@@ -204,7 +204,7 @@ ${getAdvancedMarkdown()}
               Twitch
             </StyledLink>
             <StyledLink
-              href="https://www.twitter.com/christinechanyc"
+              href="https://www.twitter.com/madebycha"
               target="_blank"
             >
               Twitter

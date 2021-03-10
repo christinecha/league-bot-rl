@@ -46,7 +46,7 @@ test('node server/jobs/cleanQueue.js', async (done) => {
   const { send } = channel
 
   // The people who do react don't get kicked.
-  channel.setReactions([[{ _emoji: { name: '🌞' } }, goldUser]])
+  channel.setReactions([[{ emoji: { name: '🌞' } }, goldUser]])
   await cleanQueue()
   expect(send).toHaveBeenCalledWith(
     REACT_TO_STAY_QUEUED({

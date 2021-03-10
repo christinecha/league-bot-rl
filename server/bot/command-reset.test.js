@@ -63,7 +63,7 @@ test('@LeagueBot reset <teamSize>', async (done) => {
   await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> reset 2`,
-    reactions: [[{ _emoji: { name: '✅' } }, adminUser]],
+    reactions: [[{ emoji: { name: '✅' } }, adminUser]],
   })
   expect(send).toHaveBeenCalledWith(REACT_TO_RESET(2))
   expect(send).toHaveBeenCalledWith(LEADERBOARD_RESET(2))

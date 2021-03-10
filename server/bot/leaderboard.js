@@ -35,7 +35,7 @@ const parseArgs = (teamStr, dateStr, requireTeam = true) => {
     throw ERRORS.DATE_MISSING
   }
 
-  const date = dateFns.parse(dateStr, 'yyyy-mm-dd', Date.now())
+  const date = dateFns.parse(dateStr, 'yyyy-MM-dd', new Date())
   date.setHours(0)
   date.setMinutes(0)
   date.setSeconds(0)

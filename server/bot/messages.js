@@ -52,7 +52,7 @@ const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
       name: `We've got a ${teamSize}s match!`,
       value: `${usersToString(playerIds)}
 
-Vote 🤖 for automatically balanced teams, or 👻 for completely random ones.
+Vote 🤖 for automatically balanced teams, or 👻 for completely random ones. Vote 🚫 to cancel.
 `,
     })
 }

@@ -16,6 +16,7 @@ const COMMAND_NAME = {
   ROAST: 'ROAST',
   BUBBLES: 'BUBBLES',
   MOD: 'MOD',
+  REPORT: 'REPORT',
   RESET: 'RESET',
   VOID_MATCH: 'VOID_MATCH',
   FIX_MATCH: 'FIX_MATCH',
@@ -77,7 +78,7 @@ const COMMANDS = {
   },
   [COMMAND_NAME.WIN]: {
     command: 'win',
-    aliases: ['won'],
+    aliases: ['won', 'w'],
     args: [VARIABLE_NAME.MATCH_ID],
     description: 'Report that you won this match.',
   },
@@ -159,6 +160,8 @@ const COMMANDS = {
     args: [VARIABLE_NAME.MATCH_ID],
     description: 'Overwrite the results of a specific match.',
   },
+
+  /* HIDDEN COMMANDS */
   [COMMAND_NAME.ROAST]: {
     isHidden: true,
     command: 'roast',
@@ -167,6 +170,11 @@ const COMMANDS = {
   [COMMAND_NAME.BUBBLES]: {
     isHidden: true,
     command: 'bubbles',
+    args: [],
+  },
+  [COMMAND_NAME.REPORT]: {
+    isHidden: true,
+    command: 'report',
     args: [],
   },
 }

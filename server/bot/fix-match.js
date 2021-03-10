@@ -26,7 +26,7 @@ const onFixMatch = async (context, matchKey) => {
       validate: (reaction, user) => {
         return (
           user.id === context.author.id &&
-          Object.values(TEAM_EMOTES).includes(reaction._emoji.name)
+          Object.values(TEAM_EMOTES).includes(reaction.emoji.name)
         )
       },
       channel: context.channel,
@@ -36,7 +36,7 @@ const onFixMatch = async (context, matchKey) => {
 
     const winner = Object.keys(TEAM_EMOTES).find((team) => {
       const emote = TEAM_EMOTES[team]
-      return reactions.find((r) => r.reaction._emoji.name === emote)
+      return reactions.find((r) => r.reaction.emoji.name === emote)
     })
 
     if (!winner) {

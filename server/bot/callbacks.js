@@ -43,6 +43,12 @@ const CALLBACKS = {
   [COMMAND_NAME.RESET]: onReset,
   [COMMAND_NAME.VOID_MATCH]: onVoidMatch,
   [COMMAND_NAME.FIX_MATCH]: onFixMatch,
+
+  [COMMAND_NAME.REPORT]: (context) => {
+    context.channel.send(
+      'No such command. Did you mean `!win <match-id>` or `!loss <match-id>`?'
+    )
+  },
 }
 
 module.exports = {
