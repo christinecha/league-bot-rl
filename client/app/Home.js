@@ -114,6 +114,18 @@ export const Home = () => {
           >
             Live Coding on Twitch →
           </a>
+          <br />
+          <a
+            target="_blank"
+            href="https://discord.gg/phpkY4NaY7"
+            className={css`
+              display: inline-block;
+              margin-top: 0.5rem;
+              font-size: 0.9rem;
+            `}
+          >
+            Discord Community →
+          </a>
         </div>
       </div>
       <div data-row="10"></div>
