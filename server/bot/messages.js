@@ -158,4 +158,16 @@ module.exports = {
       userIds
     )} ${verb} been removed from the ${teamSize}s queue.`
   },
+  LEAGUE_BOT_UPDATES: ({ updates }) =>
+    BotMessage().addFields(
+      {
+        name: '📣 League Bot Updates!',
+        value: updates.map((u) => `- ${u.update}`).join('\n'),
+      },
+      {
+        name: '--',
+        value:
+          'Questions? Feature requests? Join the Discord community, drop by the Twitch stream, or send me a Tweet. You can find these links and more info at https://leaguebotrl.com.',
+      }
+    ),
 }

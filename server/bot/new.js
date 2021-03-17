@@ -26,6 +26,7 @@ const onNew = async (context, leagueName) => {
     id,
     teamSize,
     name: `${teamSize}s`,
+    lastUpdate: Date.now(),
   })
 }
 
