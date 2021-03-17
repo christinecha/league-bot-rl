@@ -1,5 +1,9 @@
 [
   {
+    "timestamp": 1615938076106,
+    "update": "**Custom/default command prefix.** Now, use `!` as the default prefix, ex. `!queue` in any channel to use LeagueBot. You can also now set a custom prefix - ex. to use `?` instead, run `!prefix ?`. (This is an admin-only command.)"
+  },
+  {
     "timestamp": 1615938076105,
     "update": "**Cancel a match before it's fully made.** Try it out by voting 🚫 instead of for a random or auto balanced match."
   },
