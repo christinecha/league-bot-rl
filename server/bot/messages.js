@@ -46,15 +46,13 @@ const LEAVE_QUEUE = ({ userId, teamSize }) => {
 }
 
 const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
-  return BotMessage()
-    .setColor(COLOR_PRIMARY)
-    .addFields({
-      name: `We've got a ${teamSize}s match!`,
-      value: `${usersToString(playerIds)}
+  return BotMessage().addFields({
+    name: `We've got a ${teamSize}s match!`,
+    value: `${usersToString(playerIds)}
 
 Vote 🤖 for automatically balanced teams, or 👻 for completely random ones. Vote 🚫 to cancel.
 `,
-    })
+  })
 }
 
 const MATCH_DETAILS = (match) => {
@@ -63,7 +61,6 @@ const MATCH_DETAILS = (match) => {
   const { key } = parseMatchId(match.id)
 
   return BotMessage()
-    .setColor(COLOR_PRIMARY)
     .setTitle(`${teamSize}s Match`)
     .setDescription(`Match ID: ${key}`)
     .addFields(
@@ -83,14 +80,14 @@ const QUEUE = (league) => {
     ? queueToString(queue)
     : 'No one in the queue.'
 
-  return BotMessage()
-    .setColor(COLOR_PRIMARY)
-    .addFields({ name: `${teamSize}s League Queue`, value: queueList })
+  return BotMessage().addFields({
+    name: `${teamSize}s League Queue`,
+    value: queueList,
+  })
 }
 
 const STATUS_MULTIPLE = ({ leagues }) => {
-  const msg = BotMessage().setColor(COLOR_PRIMARY)
-
+  const msg = BotMessage()
   leagues.forEach((league) => {
     const { queue, teamSize } = league
     const queueList = Object.keys(queue).length
@@ -103,7 +100,7 @@ const STATUS_MULTIPLE = ({ leagues }) => {
 }
 
 const HELP = () => {
-  return BotMessage().setColor(COLOR_PRIMARY).addFields(
+  return BotMessage().addFields(
     {
       name: 'Variables',
       value: getVariablesMarkdown(),
@@ -170,4 +167,6 @@ module.exports = {
           'Questions? Feature requests? Join the Discord community, drop by the Twitch stream, or send me a Tweet. You can find these links and more info at https://leaguebotrl.com.',
       }
     ),
+  PREFIX_UPDATED: ({ prefix }) =>
+    `Prefix updated! Now you can use \`${prefix}\` before any League Bot command, ex. \`${prefix}queue\`.`,
 }

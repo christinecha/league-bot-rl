@@ -11,6 +11,7 @@ const { onNew } = require('./new')
 const { onReset } = require('./reset')
 const { onVoidMatch } = require('./void-match')
 const { onFixMatch } = require('./fix-match')
+const { onPrefix } = require('./prefix')
 const {
   onLeaderboardStart,
   onLeaderboardEnd,
@@ -43,11 +44,16 @@ const CALLBACKS = {
   [COMMAND_NAME.RESET]: onReset,
   [COMMAND_NAME.VOID_MATCH]: onVoidMatch,
   [COMMAND_NAME.FIX_MATCH]: onFixMatch,
+  [COMMAND_NAME.PREFIX]: onPrefix,
 
   [COMMAND_NAME.REPORT]: (context) => {
     context.channel.send(
       'No such command. Did you mean `!win <match-id>` or `!loss <match-id>`?'
     )
+  },
+
+  [COMMAND_NAME.TEST]: (context, ...args) => {
+    context.channel.send(`Testing! ${args.join(',')}`)
   },
 }
 

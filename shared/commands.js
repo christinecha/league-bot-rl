@@ -20,6 +20,8 @@ const COMMAND_NAME = {
   RESET: 'RESET',
   VOID_MATCH: 'VOID_MATCH',
   FIX_MATCH: 'FIX_MATCH',
+  PREFIX: 'PREFIX',
+  TEST: 'TEST',
 }
 
 const VARIABLE_NAME = {
@@ -27,6 +29,7 @@ const VARIABLE_NAME = {
   MATCH_ID: 'matchId',
   USER: '@user',
   DATE: 'date',
+  PREFIX: 'prefix',
 }
 
 const VARIABLES = {
@@ -46,6 +49,11 @@ const VARIABLES = {
   [VARIABLE_NAME.DATE]: {
     name: 'date',
     description: 'A date value formatted `yyyy-mm-dd`.',
+  },
+  [VARIABLE_NAME.PREFIX]: {
+    name: 'prefix',
+    description:
+      'A prefix to go in front of League Bot commands. The default is `!`, ex. `!queue`. No spaces allowed.',
   },
 }
 
@@ -135,6 +143,8 @@ const COMMANDS = {
     args: [VARIABLE_NAME.MATCH_ID],
     description: 'Cancel a match.',
   },
+
+  /* MOD-ONLY COMMANDS */
   [COMMAND_NAME.RESET]: {
     command: 'reset',
     modOnly: true,
@@ -160,6 +170,13 @@ const COMMANDS = {
     args: [VARIABLE_NAME.MATCH_ID],
     description: 'Overwrite the results of a specific match.',
   },
+  [COMMAND_NAME.PREFIX]: {
+    command: 'prefix',
+    modOnly: true,
+    args: [VARIABLE_NAME.PREFIX],
+    description:
+      'Change the command prefix for @LeagueBot to recognize. The default is `!`.',
+  },
 
   /* HIDDEN COMMANDS */
   [COMMAND_NAME.ROAST]: {
@@ -175,6 +192,11 @@ const COMMANDS = {
   [COMMAND_NAME.REPORT]: {
     isHidden: true,
     command: 'report',
+    args: [],
+  },
+  [COMMAND_NAME.TEST]: {
+    isHidden: true,
+    command: 'test',
     args: [],
   },
 }

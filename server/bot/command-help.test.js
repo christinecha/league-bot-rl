@@ -39,7 +39,6 @@ test('@LeagueBot help', async (done) => {
   // Commands
   expect(commandsMarkdown).toMatchSnapshot()
 
-  // Confirmations should be sent.
   expect(send).toHaveBeenCalledWith(
     expect.objectContaining({
       fields: expect.arrayContaining([

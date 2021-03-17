@@ -16,6 +16,7 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 
 - `date` - A date value formatted `yyyy-mm-dd`.
 - `matchId` - The unique match ID.
+- `prefix` - A prefix to go in front of League Bot commands. The default is `!`, ex. `!queue`. No spaces allowed.
 - `teamSize` - 1, 2, or 3.
 
 ### Commands
@@ -29,13 +30,14 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - `@LeagueBot new | n <teamSize>` - Start a new league for a specific team size.
 - `@LeagueBot queue | q <teamSize>` - Join the queue for a specific league.
 - `@LeagueBot status | s <[teamSize]>` - Show the current queue(s).
-- `@LeagueBot win | won <matchId>` - Report that you won this match.
+- `@LeagueBot win | won | w <matchId>` - Report that you won this match.
 
 ### Mod-Only Commands
 
 - `@LeagueBot end <teamSize> <date>` - Set the end date of the leaderboard.
 - `@LeagueBot end-all <date>` - Set the end date of the leaderboard.
 - `@LeagueBot fix <matchId>` - Overwrite the results of a specific match.
+- `@LeagueBot prefix <prefix>` - Change the command prefix for @LeagueBot to recognize. The default is `!`.
 - `@LeagueBot reset <teamSize>` - Reset the start of the leaderboard to _right now_.
 - `@LeagueBot start <teamSize> <date>` - Set the start date of the leaderboard.
 - `@LeagueBot start-all <date>` - Set the start date of the leaderboard.
@@ -52,12 +54,11 @@ Click [this link](https://discord.com/oauth2/authorize?client_id=775129640322203
 - ✨ **Requeue | Rematch.** Requeue everyone from a specific match.
 - ✨ **Insult/Compliment Contributions.** Add a place for people to submit bot insults & compliments.
 - ✨ **Recent matches.** A command that lists the most recent matches played in this server.
-- ✨ **Set-Channel.** Command to manually set a channel where the ! shortcut will work. Possibly mod-only?
 - 🐛 **Prune queues on match creation.** If you get a match for one league, it should remove all those players from the other leagues' queues.
 - 🐛 **Cleaning queue should only kick old queuers.** If you re-queue mid-clean, for instance it should no longer kick you.
 - ✨ **View leaderboard with custom range.** Add query parameters to leaderboard page?
 - 🐛 **Set timezone.** Timezone is US Eastern (-5) by default, but shouldn't have to be.
-- 🐛 **League Bot updates!** League Bot should post periodic update messages in league channels to announce new features & improvements.
+- 🐛 **Duplicate Votes.** Currently, there is a bug where if you vote for a match mode, un-react, then re-react, it will count your vote twice.
 
 ### Development
 

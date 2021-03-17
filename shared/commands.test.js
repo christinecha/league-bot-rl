@@ -12,6 +12,7 @@ test('Mod-only commands', () => {
       "mod",
       "void",
       "fix",
+      "prefix",
     ]
   `)
 })

@@ -1,5 +1,4 @@
 const { discord } = require('../data/util/discord')
-const leagues = require('../data/leagues')
 const guilds = require('../data/guilds')
 const ERRORS = require('../constants/ERRORS')
 const { COMMANDS, COMMAND_NAME } = require('../../shared/commands')
@@ -12,16 +11,16 @@ discord.once('ready', () => {
 })
 
 discord.on('message', async (message) => {
-  let shortcut = false
+  let prefixed = false
   const parts = message.content.split(/\s+/)
 
   if (!parts[0].match(BOT_ID)) {
-    parts.unshift(BOT_ID)
-    parts[1] = parts[1].split('!')[1]
-    shortcut = true
+    parts.unshift(parts[0][0]) // save prefix
+    parts[1] = parts[1].substr(1)
+    prefixed = true
   }
 
-  const [_, _command, ...args] = parts
+  const [prefix, _command, ...args] = parts
   const context = message
   const command = Object.keys(COMMAND_NAME).find((name) => {
     const config = COMMANDS[name]
@@ -33,11 +32,18 @@ discord.on('message', async (message) => {
   })
 
   if (!command) {
-    if (!shortcut) {
+    if (!prefixed) {
       message.channel.send(
         'Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.'
       )
     }
+    return
+  }
+
+  const guild = (await guilds.get(message.guild.id)) || {}
+  const guildPrefix = guild.prefix || '!'
+
+  if (prefixed && prefix !== guildPrefix) {
     return
   }
 
@@ -51,22 +57,22 @@ discord.on('message', async (message) => {
     }
   }
 
-  if (shortcut) {
-    const channelId = `${message.channel.id}`
-    const found = await leagues.search({
-      rules: [['channelId', '==', channelId]],
-    })
-    if (!found.length) return
-  }
-
   try {
     console.log('Command received!', command, args)
-    await guilds.create({
+
+    const guildUpdate = {
       id: message.guild.id,
       name: message.guild.name,
       ownerID: message.guild.ownerID,
       lastUpdate: Date.now(),
-    })
+    }
+
+    if (guild) {
+      await guilds.create(guildUpdate)
+    } else {
+      await guilds.update(guildUpdate)
+    }
+
     await CALLBACKS[command](context, ...args)
   } catch (err) {
     console.log(err)

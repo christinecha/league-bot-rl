@@ -186,5 +186,8 @@ test('@LeagueBot leave all', async (done) => {
     ERRORS.QUEUE_NOT_IN_ANY({ userId: users[0] })
   )
 
-  done()
+  // TODO: ... fix this
+  setTimeout(() => {
+    done()
+  }, 100)
 })
