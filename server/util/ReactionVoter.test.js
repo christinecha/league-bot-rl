@@ -13,4 +13,7 @@ test('ReactionVoter', () => {
   reactionVoter.recordVote({ userId: users[1], selection: options[0] })
   reactionVoter.recordVote({ userId: users[2], selection: options[1] })
   expect(reactionVoter.getWinner({ minVotes: 2 })).toBe(options[0])
+
+  reactionVoter.recordVote({ userId: users[1], selection: options[2] })
+  expect(reactionVoter.getWinner({ minVotes: 2 })).toBe(null)
 })

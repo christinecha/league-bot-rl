@@ -7,7 +7,7 @@ class ReactionVoter {
     const options = {}
 
     Object.values(this.votes).forEach((option) => {
-      options[option] = options[option] ?? 0
+      options[option] = options[option] || 0
       options[option] += 1
     })
 
