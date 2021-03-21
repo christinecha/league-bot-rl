@@ -5,6 +5,7 @@ const ERRORS = require('../constants/ERRORS')
 const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const { admin } = require('../data/util/firebase')
 const { getTeamSize } = require('../util')
+const { ReactionVoter } = require('../util/ReactionVoter')
 const FieldValue = admin.firestore.FieldValue
 
 const updateQueue = async (context, league, shouldQueue) => {
@@ -44,32 +45,24 @@ const getMatchMode = async ({ message, playerIds }) => {
     message.react('👻')
     message.react('🚫')
 
-    const modes = {
-      [MATCH_MODE.AUTO]: 0,
-      [MATCH_MODE.RANDOM]: 0,
-      [MATCH_MODE.CANCEL]: 0,
-    }
+    const reactionVoter = new ReactionVoter()
 
     const filter = (reaction, user) => {
       if (!playerIds.includes(user.id)) return
 
-      const selected = MODE_EMOTE[reaction.emoji.name]
-      if (selected) modes[selected] += 1
+      const selection = MODE_EMOTE[reaction.emoji.name]
+      if (selection) {
+        reactionVoter.recordVote({ userid: user.id, selection })
+      }
 
-      const official = Object.keys(modes).find(
-        (k) => modes[k] >= playerIds.length * 0.5
-      )
-      if (!official) return
-
-      resolve(official)
+      const winner = reactionVoter.getWinner({ minVotes: playerIds.length / 2 })
+      if (!winner) return
+      resolve(winner)
     }
 
     const twoMinutes = 1000 * 60 * 2
     message.awaitReactions(filter, { time: twoMinutes }).then(() => {
-      const mostPopular = Object.keys(modes).reduce((pop, mode) => {
-        return modes[mode] > modes[pop] ? mode : pop
-      }, MATCH_MODE.RANDOM)
-
+      const mostPopular = reactionVoter.getWinner() || MATCH_MODE.RANDOM
       resolve(mostPopular)
     })
   })
