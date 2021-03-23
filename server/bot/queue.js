@@ -52,7 +52,7 @@ const getMatchMode = async ({ message, playerIds }) => {
 
       const selection = MODE_EMOTE[reaction.emoji.name]
       if (selection) {
-        reactionVoter.recordVote({ userid: user.id, selection })
+        reactionVoter.recordVote({ userId: user.id, selection })
       }
 
       const winner = reactionVoter.getWinner({ minVotes: playerIds.length / 2 })
