@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { getGuildUser, getStats } from '../api'
 import { useTable, useSortBy } from 'react-table'
 import styled from '@emotion/styled'
@@ -118,11 +118,9 @@ const Table = ({ columns, data }) => {
   )
 }
 
-const getGuildUsers = ({ userIds, guildId }) =>
-  Promise.all(userIds.map((userId) => getGuildUser({ userId, guildId })))
-
 const League = ({ teamSize, guildId }) => {
   const [stats, setStats] = useState([])
+  const membersRef = useRef({})
   const [members, setMembers] = useState({})
   const [csv, setCSV] = useState()
   const [loading, setLoading] = useState(true)
@@ -141,21 +139,20 @@ const League = ({ teamSize, guildId }) => {
 
   useEffect(() => {
     setCSV(null)
-    getGuildUsers({ userIds: stats.map((s) => s.id), guildId }).then(
-      (responses) => {
-        const _members = responses.reduce(
-          (obj, res) => ({
-            ...obj,
-            [res.data.id]: res.data,
-          }),
-          {}
-        )
-        setMembers(_members)
+    const userIds = stats.map((s) => s.id)
 
-        const _csv = statsToCSV({ stats, users: _members })
-        setCSV(_csv)
-      }
-    )
+    Promise.all(
+      userIds.map((userId) => {
+        return getGuildUser({ userId, guildId }).then((res) => {
+          const user = res ? res.data : null
+          membersRef.current = { ...membersRef.current, [userId]: user }
+          setMembers(membersRef.current)
+        })
+      })
+    ).then(() => {
+      const _csv = statsToCSV({ stats, users: membersRef.current })
+      setCSV(_csv)
+    })
   }, [stats])
 
   const columns = React.useMemo(
