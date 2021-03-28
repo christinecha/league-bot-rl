@@ -5,6 +5,71 @@ Object {
   "jhan": Object {
     "id": "jhan",
     "loss": 3,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-5",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1580446800000,
+        "winner": 2,
+      },
+    ],
     "points": -3,
     "ratio": 0,
     "win": 0,
@@ -12,6 +77,71 @@ Object {
   "partial_cloud": Object {
     "id": "partial_cloud",
     "loss": 0,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-5",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1580446800000,
+        "winner": 2,
+      },
+    ],
     "points": 3,
     "ratio": 1,
     "win": 3,
@@ -19,6 +149,71 @@ Object {
   "pugslypuggleton": Object {
     "id": "pugslypuggleton",
     "loss": 0,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-5",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1580446800000,
+        "winner": 2,
+      },
+    ],
     "points": 3,
     "ratio": 1,
     "win": 3,
@@ -26,6 +221,71 @@ Object {
   "space": Object {
     "id": "space",
     "loss": 3,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-5",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1580446800000,
+        "winner": 2,
+      },
+    ],
     "points": -3,
     "ratio": 0,
     "win": 0,
@@ -38,6 +298,50 @@ Object {
   "jhan": Object {
     "id": "jhan",
     "loss": 2,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+    ],
     "points": -2,
     "ratio": 0,
     "win": 0,
@@ -45,6 +349,50 @@ Object {
   "partial_cloud": Object {
     "id": "partial_cloud",
     "loss": 0,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+    ],
     "points": 2,
     "ratio": 1,
     "win": 2,
@@ -52,6 +400,50 @@ Object {
   "pugslypuggleton": Object {
     "id": "pugslypuggleton",
     "loss": 0,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+    ],
     "points": 2,
     "ratio": 1,
     "win": 2,
@@ -59,6 +451,50 @@ Object {
   "space": Object {
     "id": "space",
     "loss": 2,
+    "matches": Array [
+      Object {
+        "id": "h000-2-3",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+      Object {
+        "id": "h000-2-4",
+        "league": "h000-2",
+        "players": Object {
+          "jhan": Object {
+            "team": 1,
+          },
+          "partial_cloud": Object {
+            "team": 2,
+          },
+          "pugslypuggleton": Object {
+            "team": 2,
+          },
+          "space": Object {
+            "team": 1,
+          },
+        },
+        "teamSize": 2,
+        "timestamp": 1579064400000,
+        "winner": 2,
+      },
+    ],
     "points": -2,
     "ratio": 0,
     "win": 0,

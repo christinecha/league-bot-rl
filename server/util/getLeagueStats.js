@@ -32,6 +32,7 @@ const getLeagueStats = async (leagueId) => {
       loss,
       points: win - loss,
       ratio: win / (win + loss),
+      matches,
     }
   })
 

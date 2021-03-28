@@ -19,6 +19,16 @@ export const getStats = ({ leagueId }) =>
     },
   })
 
+export const getGuildUserStats = ({ userId, guildId }) =>
+  axios({
+    method: 'POST',
+    url: '/api/guild-user-stats',
+    data: {
+      guildId,
+      userId,
+    },
+  })
+
 export const getGuildUser = ({ userId, guildId }) =>
   axios({
     method: 'POST',

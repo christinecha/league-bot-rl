@@ -49,6 +49,13 @@ const App = () => {
             }
           }
 
+          label {
+            display: block;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+          }
+
           button {
             border: none;
             color: inherit;
