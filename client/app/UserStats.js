@@ -19,10 +19,11 @@ export const UserStatsTable = ({ stats }) => {
         ),
       },
       {
-        Header: 'Stats',
+        Header: 'Match Stats',
         columns: [
           {
             Header: 'Wins',
+            id: 'win',
             accessor: 'win',
           },
           {
@@ -30,9 +31,15 @@ export const UserStatsTable = ({ stats }) => {
             accessor: 'loss',
           },
           {
+            Header: 'Total',
+            accessor: (row) => row.win + row.loss,
+          },
+          {
             Header: 'Win %',
-            id: 'ratio',
-            accessor: (row) => row.win / (row.win + row.loss) || 0,
+            id: 'win-ratio',
+            accessor: (row) => {
+              return row.win / (row.win + row.loss) || 0
+            },
             Cell: ({ value }) => `${(value * 100).toFixed(1)}%`,
           },
         ],
@@ -45,13 +52,17 @@ export const UserStatsTable = ({ stats }) => {
     <Table
       columns={columns}
       data={stats}
-      initialState={{ sortBy: [{ id: 'ratio', desc: true }] }}
+      initialState={{
+        sortBy: [
+          { id: 'win-ratio', desc: true },
+          { id: 'total', desc: true },
+        ],
+      }}
     />
   )
 }
 
 export const UserStats = ({ user, stats, onClose }) => {
-  console.log(stats)
   const overlayRef = useRef()
 
   if (!user) {
@@ -89,8 +100,6 @@ export const UserStats = ({ user, stats, onClose }) => {
       opponentStats[o][won ? 'win' : 'loss'] += 1
     })
   })
-
-  console.log(teammateStats)
 
   return (
     <div
