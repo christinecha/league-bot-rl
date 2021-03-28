@@ -63,9 +63,8 @@ export const UserStatsTable = ({ stats, avg }) => {
             },
             Cell: ({ value, row }) => {
               const rangeValue = value + 1 / 2
-              const baseColor = percentageToColor(rangeValue)
-              const confidence = Math.min(1, row.values.total / 10)
-              const color = Color(baseColor).alpha(confidence).hsl().string()
+              const color = percentageToColor(rangeValue)
+              const confidence = Math.min(0.7, row.values.total / 10) + 0.3
 
               return (
                 <label
@@ -76,7 +75,13 @@ export const UserStatsTable = ({ stats, avg }) => {
                     background: ${color};
                   `}
                 >
-                  {(value * 100).toFixed(1)}%
+                  <span
+                    className={css`
+                      opacity: ${confidence};
+                    `}
+                  >
+                    {(value * 100).toFixed(1)}%
+                  </span>
                 </label>
               )
             },
