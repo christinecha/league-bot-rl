@@ -47,7 +47,9 @@ export const UserStatsTable = ({ stats, avg }) => {
             accessor: (row) => {
               return row.win / (row.win + row.loss) || 0
             },
-            sortMethod: (a, b) => a - b,
+            sortType: (a, b) => {
+              return a.values['win-ratio'] > b.values['win-ratio'] ? 1 : -1
+            },
             Cell: ({ value }) => `${(value * 100).toFixed(1)}%`,
           },
           {
@@ -56,10 +58,14 @@ export const UserStatsTable = ({ stats, avg }) => {
             accessor: (row) => {
               return (row.win / (row.win + row.loss) || 0) - avg
             },
-            sortMethod: (a, b) => a - b,
-            Cell: ({ value }) => {
+            sortType: (a, b) => {
+              return a.values.deviation > b.values.deviation ? 1 : -1
+            },
+            Cell: ({ value, row }) => {
               const rangeValue = value + 1 / 2
-              const color = percentageToColor(rangeValue)
+              const baseColor = percentageToColor(rangeValue)
+              const confidence = Math.min(1, row.values.total / 10)
+              const color = Color(baseColor).alpha(confidence).hsl().string()
 
               return (
                 <label
