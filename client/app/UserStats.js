@@ -1,4 +1,5 @@
 import { css } from '@emotion/css'
+import Color from 'color'
 import React, { useEffect, useRef, useState } from 'react'
 import COLORS from '../../shared/COLORS'
 import { getGuildUserStats } from '../api'
@@ -6,7 +7,12 @@ import { DiscordUser } from './DiscordUser'
 import { Table } from './Table'
 import { useGuildUsers } from './useGuildUsers'
 
-export const UserStatsTable = ({ stats }) => {
+function percentageToColor(percentage, maxHue = 90, minHue = 0) {
+  const hue = percentage * (maxHue - minHue) + minHue
+  return `hsl(${hue}, 100%, 40%)`
+}
+
+export const UserStatsTable = ({ stats, avg }) => {
   const { members } = useGuildUsers()
 
   const columns = React.useMemo(
@@ -32,6 +38,7 @@ export const UserStatsTable = ({ stats }) => {
           },
           {
             Header: 'Total',
+            id: 'total',
             accessor: (row) => row.win + row.loss,
           },
           {
@@ -40,7 +47,33 @@ export const UserStatsTable = ({ stats }) => {
             accessor: (row) => {
               return row.win / (row.win + row.loss) || 0
             },
+            sortMethod: (a, b) => a - b,
             Cell: ({ value }) => `${(value * 100).toFixed(1)}%`,
+          },
+          {
+            Header: '+/-',
+            id: 'deviation',
+            accessor: (row) => {
+              return (row.win / (row.win + row.loss) || 0) - avg
+            },
+            sortMethod: (a, b) => a - b,
+            Cell: ({ value }) => {
+              const rangeValue = value + 1 / 2
+              const color = percentageToColor(rangeValue)
+
+              return (
+                <label
+                  className={css`
+                    margin-bottom: 0 !important;
+                    padding: 2px;
+                    text-align: center;
+                    background: ${color};
+                  `}
+                >
+                  {(value * 100).toFixed(1)}%
+                </label>
+              )
+            },
           },
         ],
       },
@@ -53,10 +86,7 @@ export const UserStatsTable = ({ stats }) => {
       columns={columns}
       data={stats}
       initialState={{
-        sortBy: [
-          { id: 'win-ratio', desc: true },
-          { id: 'total', desc: true },
-        ],
+        sortBy: [{ id: 'total', desc: true }],
       }}
     />
   )
@@ -125,7 +155,7 @@ export const UserStats = ({ user, stats, onClose }) => {
           bottom: 0;
           margin: auto;
           width: 80%;
-          max-width: 600px;
+          max-width: 800px;
           max-height: 80vh;
           background: ${COLORS.BLACK};
           padding: 30px;
@@ -138,18 +168,26 @@ export const UserStats = ({ user, stats, onClose }) => {
       >
         <label>Head-to-Head User Stats</label>
         <DiscordUser userId={user.id} data={user} />
+        <label />
+        <label>{userStats.win} wins</label>
+        <label>{userStats.loss} losses</label>
+        <label>{`${(userStats.ratio * 100).toFixed(1)}% win ratio`}</label>
         <br />
-        <br />
-
         <div>
           <label>Stats Playing With:</label>
-          <UserStatsTable stats={Object.values(teammateStats)} />
+          <UserStatsTable
+            stats={Object.values(teammateStats)}
+            avg={userStats.ratio}
+          />
         </div>
         <br />
         <br />
         <div>
           <label>Stats Playing Against:</label>
-          <UserStatsTable stats={Object.values(opponentStats)} />
+          <UserStatsTable
+            stats={Object.values(opponentStats)}
+            avg={userStats.ratio}
+          />
         </div>
       </div>
     </div>
