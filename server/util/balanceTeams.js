@@ -2,10 +2,10 @@ const RL_RANKS = require('../constants/RL_RANKS')
 const { getGuildUser } = require('./getGuildUser')
 const { getLeagueStats } = require('./getLeagueStats')
 
-const scoreUser = (user) => {
-  const matchesPlayed = (user.win || 0) + (user.loss || 0)
-  const rankRatio = user.rank ? user.rank / RL_RANKS['SSL'] : 0.5
-  const winRatio = matchesPlayed > 6 ? user.ratio : 0.5
+const scoreUser = ({ win, loss, rank = RL_RANKS.Champ, ratio }) => {
+  const matchesPlayed = (win || 0) + (loss || 0)
+  const rankRatio = rank / RL_RANKS['SSL']
+  const winRatio = matchesPlayed > 6 ? ratio : 0.5
   /* 2:1 importance on rank:win */
   return rankRatio * 0.66 + winRatio * 0.34
 }
@@ -23,14 +23,20 @@ const balanceTeams = async ({ leagueId, userIds }) => {
     userIds.map((id) => getGuildUser({ userId: id, guildId }))
   )
 
-  const users = _users.map((u) => ({
-    id: u.id,
-    ratio: stats[u.id] ? stats[u.id].ratio : 0.5,
-    rank: u.rank,
-  }))
+  const users = _users.map((u) => {
+    const rawStats = stats[u.id] || { ratio: 0.5 }
+
+    return {
+      win: rawStats.win,
+      loss: rawStats.loss,
+      id: u.id,
+      ratio: rawStats.ratio,
+      rank: u.rank || RL_RANKS.Champ,
+    }
+  })
 
   // Order from highest to lowest score
-  const ordered = users.sort((a, b) => scoreUser(b) - scoreUser(a))
+  const ordered = users.sort((a, b) => scoreUser(a) - scoreUser(b))
   const teams = { 1: [], 2: [] }
   let left = ordered.slice()
 

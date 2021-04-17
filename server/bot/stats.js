@@ -26,7 +26,8 @@ const onStats = async (context, userStr, teamSize) => {
     points: rawStats.points,
     ratio: stats[userId] ? stats[userId].ratio : 0.5,
     rank: guildUser.rank || RL_RANKS.Champ,
-    rankName: Object.keys(RL_RANKS).find((k) => guildUser.rank === k) || null,
+    rankName:
+      Object.keys(RL_RANKS).find((k) => guildUser.rank === RL_RANKS[k]) || null,
   }
 
   const userStats = {

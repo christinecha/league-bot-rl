@@ -71,17 +71,37 @@ test('balanceTeams - by rank', async (done) => {
   expect(teams).toMatchInlineSnapshot(`
     Object {
       "1": Array [
+        "cha",
         "racoon",
         "rookie-bot",
-        "suhan",
       ],
       "2": Array [
         "allstar-bot",
-        "cha",
         "flips",
+        "suhan",
       ],
     }
   `)
+
+  teams = await balanceTeams({
+    leagueId: league3s.id,
+    userIds: [
+      diamondUser.id,
+      diamondUser.id,
+      diamondUser.id,
+      champUser.id,
+      champUser.id,
+      gcUser.id,
+    ],
+  })
+
+  expect(teams[1]).toStrictEqual(
+    expect.arrayContaining([gcUser.id, diamondUser.id, diamondUser.id])
+  )
+
+  expect(teams[2]).toStrictEqual(
+    expect.arrayContaining([champUser.id, champUser.id, diamondUser.id])
+  )
 
   teams = await balanceTeams({
     leagueId: league4s.id,
