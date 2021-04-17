@@ -12,7 +12,7 @@ const onStats = async (context, userStr, teamSize) => {
   const leagueId = `${guildId}-${teamSize}`
   const stats = await getLeagueStats(leagueId)
   const guildUser = await getGuildUser({ userId, guildId })
-  console.log(guildUser, stats)
+  console.log(guildUser)
 
   const rawStats = stats[userId]
   const matchesPlayed = (rawStats.win || 0) + (rawStats.loss || 0)
