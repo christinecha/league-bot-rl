@@ -11,6 +11,7 @@ const { onNew } = require('./new')
 const { onReset } = require('./reset')
 const { onVoidMatch } = require('./void-match')
 const { onFixMatch } = require('./fix-match')
+const { onStats } = require('./stats')
 const { onPrefix } = require('./prefix')
 const {
   onLeaderboardStart,
@@ -52,6 +53,7 @@ const CALLBACKS = {
     )
   },
 
+  [COMMAND_NAME.STATS]: onStats,
   [COMMAND_NAME.TEST]: (context, ...args) => {
     context.channel.send(`Testing! ${args.join(',')}`)
   },

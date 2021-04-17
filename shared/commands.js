@@ -21,6 +21,7 @@ const COMMAND_NAME = {
   VOID_MATCH: 'VOID_MATCH',
   FIX_MATCH: 'FIX_MATCH',
   PREFIX: 'PREFIX',
+  STATS: 'STATS',
   TEST: 'TEST',
 }
 
@@ -198,6 +199,11 @@ const COMMANDS = {
     isHidden: true,
     command: 'test',
     args: [],
+  },
+  [COMMAND_NAME.STATS]: {
+    isHidden: true,
+    command: 'stats',
+    args: [VARIABLE_NAME.USER],
   },
 }
 
