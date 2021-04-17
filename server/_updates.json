@@ -1,5 +1,9 @@
 [
   {
+    "timestamp": 1618689862431,
+    "update": "**Better balanced teams.** A couple bugs in the auto-balancer 🤖 have now been fixed, so your teams should be more even. (Reminder: to use this feature fully, users need to have Discord roles for their RL ranks, ex. Gold, Diamond, SSL, etc.)"
+  },
+  {
     "timestamp": 1615938076106,
     "update": "**Custom/default command prefix.** Now, use `!` as the default prefix, ex. `!queue` in any channel to use LeagueBot. You can also now set a custom prefix - ex. to use `?` instead, run `!prefix ?`. (This is an admin-only command.)"
   },
