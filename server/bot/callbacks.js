@@ -6,7 +6,7 @@ const { onBubbles } = require('./bubbles')
 const { onRoast } = require('./roast')
 const { onCancel } = require('./cancel')
 const { onStatus } = require('./status')
-const { onMod } = require('./mod')
+const { onMod, onUnmod } = require('./mod')
 const { onNew } = require('./new')
 const { onReset } = require('./reset')
 const { onVoidMatch } = require('./void-match')
@@ -42,6 +42,7 @@ const CALLBACKS = {
   [COMMAND_NAME.STATUS]: onStatus,
   [COMMAND_NAME.WIN]: onReportWin,
   [COMMAND_NAME.MOD]: onMod,
+  [COMMAND_NAME.UNMOD]: onUnmod,
   [COMMAND_NAME.RESET]: onReset,
   [COMMAND_NAME.VOID_MATCH]: onVoidMatch,
   [COMMAND_NAME.FIX_MATCH]: onFixMatch,
@@ -56,6 +57,9 @@ const CALLBACKS = {
   [COMMAND_NAME.STATS]: onStats,
   [COMMAND_NAME.TEST]: (context, ...args) => {
     context.channel.send(`Testing! ${args.join(',')}`)
+  },
+  [COMMAND_NAME.TEST_MOD]: async (context, ...args) => {
+    context.channel.send(`You're a mod! ${args.join(',')}`)
   },
 }
 

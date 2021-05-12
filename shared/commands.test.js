@@ -10,9 +10,11 @@ test('Mod-only commands', () => {
       "end-all",
       "reset",
       "mod",
+      "unmod",
       "void",
       "fix",
       "prefix",
+      "test-mod",
     ]
   `)
 })

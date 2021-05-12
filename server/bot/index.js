@@ -40,16 +40,20 @@ discord.on('message', async (message) => {
     return
   }
 
-  const guild = (await guilds.get(message.guild.id)) || {}
-  const guildPrefix = guild.prefix || '!'
+  const guild = await guilds.get(message.guild.id)
+  const guildPrefix = (guild && guild.prefix) || '!'
 
   if (prefixed && prefix !== guildPrefix) {
     return
   }
 
   if (COMMANDS[command].modOnly) {
-    const guildMember = await context.guild.members.fetch(message.author.id)
-    const isAdmin = guildMember.hasPermission(['ADMINISTRATOR'])
+    const mods = guild && guild.mods ? Object.keys(guild.mods) : []
+    const authorId = message.author.id
+    const guildMember = await context.guild.members.fetch(authorId)
+    const isAdmin =
+      guildMember.hasPermission(['ADMINISTRATOR']) ||
+      mods.indexOf(authorId) > -1
 
     if (!isAdmin) {
       message.channel.send(ERRORS.MOD_ONLY)
@@ -67,7 +71,7 @@ discord.on('message', async (message) => {
       lastUpdate: Date.now(),
     }
 
-    if (guild) {
+    if (!guild) {
       await guilds.create(guildUpdate)
     } else {
       await guilds.update(guildUpdate)

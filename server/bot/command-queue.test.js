@@ -130,7 +130,7 @@ test('@LeagueBot queue 1s', async (done) => {
   expect(teams).toMatchInlineSnapshot(`
     Object {
       "1": Array [
-        "cha",
+        "777",
       ],
       "2": Array [
         "suhan",

@@ -71,7 +71,7 @@ test('balanceTeams - by rank', async (done) => {
   expect(teams).toMatchInlineSnapshot(`
     Object {
       "1": Array [
-        "cha",
+        "777",
         "racoon",
         "rookie-bot",
       ],
@@ -120,7 +120,7 @@ test('balanceTeams - by rank', async (done) => {
   expect(teams).toMatchInlineSnapshot(`
     Object {
       "1": Array [
-        "cha",
+        "777",
         "leth",
         "racoon",
         "rookie-bot",
@@ -204,7 +204,7 @@ test('balanceTeams - by rank & ratio', async (done) => {
   expect(teams).toMatchInlineSnapshot(`
     Object {
       "1": Array [
-        "cha",
+        "777",
         "racoon",
       ],
       "2": Array [

@@ -1,5 +1,10 @@
 const adminUser = {
-  id: 'admin',
+  id: '999',
+  permissions: ['ADMINISTRATOR'],
+}
+
+const adminUser2 = {
+  id: '911',
   permissions: ['ADMINISTRATOR'],
 }
 
@@ -19,7 +24,7 @@ const silverUser = {
 }
 
 const goldUser = {
-  id: 'cha',
+  id: '777',
   roles: [{ name: 'Gold' }],
 }
 
@@ -50,6 +55,7 @@ const sslUser = {
 
 module.exports = {
   adminUser,
+  adminUser2,
   plebUser,
   bronzeUser,
   silverUser,

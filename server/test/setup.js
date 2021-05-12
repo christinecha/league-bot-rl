@@ -6,11 +6,11 @@ const users = require('./users')
 
 jest.mock('discord.js')
 
-Discord.Channel = ({ id }) => {
+Discord.Channel = (data) => {
   const react = jest.fn()
   const self = {
     reactions: [],
-    id,
+    ...data,
     send: jest.fn(() =>
       Promise.resolve({
         react,
@@ -53,7 +53,7 @@ Discord.DB = {
     },
   },
   channels: {
-    test: new Discord.Channel({ id: 'test' }),
+    test: new Discord.Channel({ id: 'test', guild: { id: 'h000' } }),
   },
 }
 

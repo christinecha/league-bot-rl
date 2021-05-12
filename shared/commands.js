@@ -16,6 +16,7 @@ const COMMAND_NAME = {
   ROAST: 'ROAST',
   BUBBLES: 'BUBBLES',
   MOD: 'MOD',
+  UNMOD: 'UNMOD',
   REPORT: 'REPORT',
   RESET: 'RESET',
   VOID_MATCH: 'VOID_MATCH',
@@ -23,6 +24,7 @@ const COMMAND_NAME = {
   PREFIX: 'PREFIX',
   STATS: 'STATS',
   TEST: 'TEST',
+  TEST_MOD: 'TEST_MOD',
 }
 
 const VARIABLE_NAME = {
@@ -154,10 +156,15 @@ const COMMANDS = {
   },
   [COMMAND_NAME.MOD]: {
     command: 'mod',
-    isHidden: true,
     modOnly: true,
     args: [VARIABLE_NAME.USER],
     description: 'Give a user mod access to LeagueBot.',
+  },
+  [COMMAND_NAME.UNMOD]: {
+    command: 'unmod',
+    modOnly: true,
+    args: [VARIABLE_NAME.USER],
+    description: "Remove a user's mod access to LeagueBot.",
   },
   [COMMAND_NAME.VOID_MATCH]: {
     command: 'void',
@@ -198,6 +205,12 @@ const COMMANDS = {
   [COMMAND_NAME.TEST]: {
     isHidden: true,
     command: 'test',
+    args: [],
+  },
+  [COMMAND_NAME.TEST_MOD]: {
+    isHidden: true,
+    modOnly: true,
+    command: 'test-mod',
     args: [],
   },
   [COMMAND_NAME.STATS]: {
