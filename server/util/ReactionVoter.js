@@ -18,6 +18,7 @@ class ReactionVoter {
     const sortedOptions = optionsArray.sort((a, b) => b.votes - a.votes)
     const mostPopular = sortedOptions[0]
 
+    if (!mostPopular) return null
     if (mostPopular.votes < props.minVotes) return null
     return mostPopular.option
   }
