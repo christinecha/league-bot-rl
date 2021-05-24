@@ -62,7 +62,7 @@ const getMatchMode = async ({ message, playerIds }) => {
 
     const twoMinutes = 1000 * 60 * 2
     message.awaitReactions(filter, { time: twoMinutes }).then(() => {
-      const mostPopular = reactionVoter.getWinner() || MATCH_MODE.RANDOM
+      const mostPopular = reactionVoter.getWinner() || MATCH_MODE.AUTO
       resolve(mostPopular)
     })
   })
