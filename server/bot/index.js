@@ -10,6 +10,14 @@ discord.once('ready', () => {
   console.log('[bot] listening')
 })
 
+discord.on('error', (error) => {
+  console.log('[bot] error:', error)
+})
+
+discord.on('warn', (info) => {
+  console.log('[bot] warning:', info)
+})
+
 discord.on('message', async (message) => {
   let prefixed = false
   const parts = message.content.split(/\s+/)

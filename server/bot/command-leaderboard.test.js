@@ -81,6 +81,7 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
+  jest.clearAllMocks()
   // League start should be updated if everything is valid!
   await triggerMessage({
     userId: adminUser.id,
