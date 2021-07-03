@@ -6,6 +6,8 @@ const { CALLBACKS } = require('./callbacks')
 
 const BOT_ID = process.env.BOT_ID
 
+const BLOCKLIST = ['810318689584545863']
+
 discord.once('ready', () => {
   console.log('[bot] listening')
 })
@@ -19,6 +21,12 @@ discord.on('warn', (info) => {
 })
 
 discord.on('message', async (message) => {
+  /* Sigh. */
+  if (BLOCKLIST.indexOf(message.guild.id) > -1) {
+    console.log(`Blocked server: [${message.guild.id}]`)
+    return
+  }
+
   try {
     let prefixed = false
     const parts = message.content.split(/\s+/)
