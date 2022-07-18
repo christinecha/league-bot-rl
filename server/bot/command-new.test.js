@@ -9,15 +9,13 @@ const BOT_ID = process.env.BOT_ID
 
 let send, msg
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
-
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -25,24 +23,22 @@ beforeEach(async (done) => {
     guild,
     channel: { send, id: 'test' },
   })
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
-  done()
 })
 
-test('@LeagueBot new <teamSize>', async (done) => {
+test('@LeagueBot new <teamSize>', async () => {
   const user1 = 'average-joe'
   const teamSizes = [1, 2, 3]
 
   // Leagues' statuses should be sent.
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new 1s`))
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new 2s`))
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new 3s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> new 1s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> new 2s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> new 3s`))
 
   const league1 = await leagues.get(`${guild.id}-1`)
   const league2 = await leagues.get(`${guild.id}-2`)
@@ -52,7 +48,10 @@ test('@LeagueBot new <teamSize>', async (done) => {
     const teamSize = teamSizes[i]
     expect(send).toHaveBeenNthCalledWith(
       parseInt(i) + 1,
-      `Creating a new league with team size ${teamSize}.`
+      expect.objectContaining({
+        content:
+          `Creating a new league with team size ${teamSize}.`
+      })
     )
   }
 
@@ -84,18 +83,16 @@ test('@LeagueBot new <teamSize>', async (done) => {
   )
 
   // Cannot duplicate a league.
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new 1s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> new 1s`))
   expect(send).toHaveBeenNthCalledWith(
     teamSizes.length + 1,
-    `A league with team size 1 already exists in this server.`
+    expect.objectContaining({ content: `A league with team size 1 already exists in this server.` })
   )
 
   // No team size? No league!
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> new`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> new`))
   expect(send).toHaveBeenNthCalledWith(
     teamSizes.length + 2,
-    ERRORS.INVALID_TEAM_SIZE
+    expect.objectContaining({ content: ERRORS.INVALID_TEAM_SIZE })
   )
-
-  done()
 })

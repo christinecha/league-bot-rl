@@ -20,7 +20,7 @@ const onReset = async (context, str) => {
     })
 
     if (!reactions.length) {
-      await context.channel.send(LEADERBOARD_NOT_RESET(teamSize))
+      await context.channel.send({ content: LEADERBOARD_NOT_RESET(teamSize) })
       return
     }
 
@@ -29,9 +29,9 @@ const onReset = async (context, str) => {
       rangeStart: Date.now(),
     })
 
-    await context.channel.send(LEADERBOARD_RESET(teamSize))
+    await context.channel.send({ content: LEADERBOARD_RESET(teamSize) })
   } catch (err) {
-    context.channel.send(err)
+    context.channel.send({ content: err })
   }
 }
 

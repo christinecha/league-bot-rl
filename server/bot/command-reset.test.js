@@ -15,27 +15,24 @@ const {
 } = require('./messages')
 const BOT_ID = process.env.BOT_ID
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   await leagues.create(league2s)
   await matches.create({ ...match2s, id: `${league2s.id}-1`, winner: 2 })
   await matches.create({ ...match2s, id: `${league2s.id}-2`, winner: 2 })
   await matches.create({ ...match2s, id: `${league2s.id}-3`, winner: 2 })
   await matches.create({ ...match2s, id: `${league2s.id}-4`, winner: 2 })
   await matches.create({ ...match2s, id: `${league2s.id}-5`, winner: 2 })
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('@LeagueBot reset <teamSize>', async (done) => {
+test('@LeagueBot reset <teamSize>', async () => {
   const originalStats = await getLeagueStats(league2s.id)
   let stats
 
@@ -45,7 +42,7 @@ test('@LeagueBot reset <teamSize>', async (done) => {
     content: `<@!${BOT_ID}> reset 2`,
   })
   const { send } = msg.channel
-  expect(send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.MOD_ONLY }))
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
@@ -54,8 +51,8 @@ test('@LeagueBot reset <teamSize>', async (done) => {
     userId: adminUser.id,
     content: `<@!${BOT_ID}> reset 2`,
   })
-  expect(send).toHaveBeenCalledWith(REACT_TO_RESET(2))
-  expect(send).toHaveBeenCalledWith(LEADERBOARD_NOT_RESET(2))
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: REACT_TO_RESET(2) }))
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: LEADERBOARD_NOT_RESET(2) }))
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
@@ -65,11 +62,9 @@ test('@LeagueBot reset <teamSize>', async (done) => {
     content: `<@!${BOT_ID}> reset 2`,
     reactions: [[{ emoji: { name: '✅' } }, adminUser]],
   })
-  expect(send).toHaveBeenCalledWith(REACT_TO_RESET(2))
-  expect(send).toHaveBeenCalledWith(LEADERBOARD_RESET(2))
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: REACT_TO_RESET(2) }))
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: LEADERBOARD_RESET(2) }))
 
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual({})
-
-  done()
 })

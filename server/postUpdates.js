@@ -2,6 +2,7 @@ const allUpdates = require('./_updates.json')
 const leagues = require('./data/leagues')
 const { discord } = require('./data/util/discord')
 const { LEAGUE_BOT_UPDATES } = require('./bot/messages')
+const { sendChannelMessage } = require('./util')
 
 const postAllUpdates = async () => {
   const channels = []
@@ -28,7 +29,8 @@ const postAllUpdates = async () => {
       const channel = await discord.channels.fetch(league.channelId)
       if (!channel) throw 'No such channel found.'
 
-      await channel.send(
+      await sendChannelMessage(
+        channel,
         LEAGUE_BOT_UPDATES({
           updates,
         })

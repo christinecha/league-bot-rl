@@ -14,22 +14,19 @@ const {
 } = require('./messages')
 const BOT_ID = process.env.BOT_ID
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   await matches.create(match2s)
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('@LeagueBot void <matchId>', async (done) => {
+test('@LeagueBot void <matchId>', async () => {
   const matchKey = parseMatchId(match2s.id).key
 
   const msg = await triggerMessage({
@@ -37,15 +34,21 @@ test('@LeagueBot void <matchId>', async (done) => {
     content: `<@!${BOT_ID}> void ${matchKey}`,
   })
   const { send } = msg.channel
-  expect(send).toHaveBeenNthCalledWith(1, ERRORS.MOD_ONLY)
+  expect(send).toHaveBeenNthCalledWith(1, expect.objectContaining({
+    content: ERRORS.MOD_ONLY
+  }))
 
   // Match should not be voided if there's no confirmation.
   await triggerMessage({
     userId: adminUser.id,
     content: `<@!${BOT_ID}> void ${matchKey}`,
   })
-  expect(send).toHaveBeenNthCalledWith(2, REACT_TO_VOID(matchKey))
-  expect(send).toHaveBeenNthCalledWith(3, MATCH_NOT_VOIDED(matchKey))
+  expect(send).toHaveBeenNthCalledWith(2, expect.objectContaining({
+    content: REACT_TO_VOID(matchKey)
+  }))
+  expect(send).toHaveBeenNthCalledWith(3, expect.objectContaining({
+    content: MATCH_NOT_VOIDED(matchKey)
+  }))
 
   // Admins can void a match if confirmed.
   await triggerMessage({
@@ -53,11 +56,13 @@ test('@LeagueBot void <matchId>', async (done) => {
     content: `<@!${BOT_ID}> void ${matchKey}`,
     reactions: [[{ emoji: { name: '✅' } }, adminUser]],
   })
-  expect(send).toHaveBeenNthCalledWith(4, REACT_TO_VOID(matchKey))
-  expect(send).toHaveBeenNthCalledWith(5, MATCH_VOIDED(matchKey))
+  expect(send).toHaveBeenNthCalledWith(4, expect.objectContaining({
+    content: REACT_TO_VOID(matchKey)
+  }))
+  expect(send).toHaveBeenNthCalledWith(5, expect.objectContaining({
+    content: MATCH_VOIDED(matchKey)
+  }))
 
   const match = await matches.get(match2s.id)
   expect(match).toBeFalsy()
-
-  done()
 })

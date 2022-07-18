@@ -35,7 +35,7 @@ const onStats = async (context, userStr, teamSize) => {
     score: scoreUser(user),
   }
 
-  context.channel.send(JSON.stringify(userStats, null, 2))
+  context.channel.send({ content: JSON.stringify(userStats, null, 2) })
 }
 
 module.exports = { onStats }

@@ -17,12 +17,11 @@ const { discord } = require('../data/util/discord')
 const BOT_ID = process.env.BOT_ID
 const channelId = 'test'
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   await leagues.create({
     ...league2s,
     channelId,
@@ -32,15 +31,13 @@ beforeEach(async (done) => {
       [diamondUser.id]: Date.now(),
     },
   })
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('node server/jobs/cleanQueue.js', async (done) => {
+test('node server/jobs/cleanQueue.js', async () => {
   let league
   const channel = await discord.channels.fetch(channelId)
   const { send } = channel
@@ -48,14 +45,18 @@ test('node server/jobs/cleanQueue.js', async (done) => {
   // The people who do react don't get kicked.
   channel.setReactions([[{ emoji: { name: '🌞' } }, goldUser]])
   await cleanQueue()
-  expect(send).toHaveBeenCalledWith(
-    REACT_TO_STAY_QUEUED({
-      teamSize: league2s.teamSize,
-      userIds: [goldUser.id, platUser.id],
-    })
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      REACT_TO_STAY_QUEUED({
+        teamSize: league2s.teamSize,
+        userIds: [goldUser.id, platUser.id],
+      })
+  })
   )
-  expect(send).toHaveBeenCalledWith(
-    REMOVED_FROM_QUEUE({ teamSize: league2s.teamSize, userIds: [platUser.id] })
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      REMOVED_FROM_QUEUE({ teamSize: league2s.teamSize, userIds: [platUser.id] })
+  })
   )
   league = await leagues.get(league2s.id)
   expect(Object.keys(league.queue)).toStrictEqual(
@@ -65,23 +66,25 @@ test('node server/jobs/cleanQueue.js', async (done) => {
   // If no one reacts, all stale players get kicked.
   channel.setReactions([])
   await cleanQueue()
-  expect(send).toHaveBeenCalledWith(
-    REACT_TO_STAY_QUEUED({
-      teamSize: league2s.teamSize,
-      userIds: [goldUser.id],
-    })
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      REACT_TO_STAY_QUEUED({
+        teamSize: league2s.teamSize,
+        userIds: [goldUser.id],
+      })
+  })
   )
-  expect(send).toHaveBeenCalledWith(
-    REMOVED_FROM_QUEUE({ teamSize: league2s.teamSize, userIds: [goldUser.id] })
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      REMOVED_FROM_QUEUE({ teamSize: league2s.teamSize, userIds: [goldUser.id] })
+  })
   )
   league = await leagues.get(league2s.id)
   expect(Object.keys(league.queue)).toStrictEqual([diamondUser.id])
-
-  done()
 })
 
 // TODO: Flaky test
-// test('node server/jobs/cleanQueue.js - interrupted by leave', async (done) => {
+// test('node server/jobs/cleanQueue.js - interrupted by leave', async () => {
 //   let league
 //   const channel = await discord.channels.fetch(channelId)
 //   const { send } = channel
@@ -111,6 +114,4 @@ test('node server/jobs/cleanQueue.js', async (done) => {
 //   expect(Object.keys(league.queue)).toStrictEqual(
 //     expect.arrayContaining([diamondUser.id])
 //   )
-
-//   done()
 // })

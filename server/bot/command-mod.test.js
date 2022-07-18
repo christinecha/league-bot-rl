@@ -10,28 +10,25 @@ const CHANNEL_ID = 'test'
 
 let channel
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
   channel = await discord.channels.fetch(CHANNEL_ID)
-  done()
 })
-beforeEach(async (done) => {
+beforeEach(async () => {
   jest.clearAllMocks()
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('Only admins are mods by default', async (done) => {
+test('Only admins are mods by default', async () => {
   await triggerMessage({
     userId: adminUser.id,
     content: `!test-mod arg1 arg2`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(`You're a mod! arg1,arg2`)
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: `You're a mod! arg1,arg2` }))
   jest.clearAllMocks()
 
   await triggerMessage({
@@ -39,21 +36,20 @@ test('Only admins are mods by default', async (done) => {
     content: `!test-mod arg1 arg2`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
-
-  done()
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.MOD_ONLY }))
 })
 
-test('Mods can add & remove other mods', async (done) => {
+test('Mods can add & remove other mods', async () => {
   /* ADD A MOD */
   await triggerMessage({
     userId: adminUser.id,
     content: `!mod <@!${goldUser.id}>`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(
-    `<@!${goldUser.id}> can now use League Bot mod commands in this server.`
-  )
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      `<@!${goldUser.id}> can now use League Bot mod commands in this server.`
+  }))
 
   let guild = await guilds.get(channel.guild.id)
   expect(guild.mods).toStrictEqual(
@@ -69,7 +65,7 @@ test('Mods can add & remove other mods', async (done) => {
     content: `!test-mod arg1 arg2`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(`You're a mod! arg1,arg2`)
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: `You're a mod! arg1,arg2` }))
 
   /* REMOVE THE MOD */
   jest.clearAllMocks()
@@ -78,9 +74,10 @@ test('Mods can add & remove other mods', async (done) => {
     content: `!unmod <@!${goldUser.id}>`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(
-    `<@!${goldUser.id}> can no longer use League Bot mod commands in this server.`
-  )
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      `<@!${goldUser.id}> can no longer use League Bot mod commands in this server.`
+  }))
 
   guild = await guilds.get(channel.guild.id)
   expect(guild.mods).toStrictEqual({})
@@ -92,39 +89,37 @@ test('Mods can add & remove other mods', async (done) => {
     content: `!test-mod arg1 arg2`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
-
-  done()
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.MOD_ONLY }))
 })
 
-test('Admins cannot be modded', async (done) => {
+test('Admins cannot be modded', async () => {
   await triggerMessage({
     userId: adminUser.id,
     content: `!mod <@!${adminUser2.id}>`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(
-    'Server admins have mod access to LeagueBot by default.'
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      'Server admins have mod access to LeagueBot by default.'
+  })
   )
 
   const guild = await guilds.get(channel.guild.id)
   expect(guild.mods).toBe(undefined)
-
-  done()
 })
 
-test('Admins cannot be unmodded', async (done) => {
+test('Admins cannot be unmodded', async () => {
   await triggerMessage({
     userId: adminUser.id,
     content: `!unmod <@!${adminUser2.id}>`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(
-    'Server admins have mod access to LeagueBot by default.'
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      'Server admins have mod access to LeagueBot by default.'
+  })
   )
 
   const guild = await guilds.get(channel.guild.id)
   expect(guild.mods).toBe(undefined)
-
-  done()
 })

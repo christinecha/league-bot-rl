@@ -7,15 +7,13 @@ const BOT_ID = process.env.BOT_ID
 
 let send, msg
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
-
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -23,33 +21,27 @@ beforeEach(async (done) => {
     guild,
     channel: { send, id: 'test' },
   })
-
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
-  done()
 })
 
-test('@LeagueBot <invalid-command>', async (done) => {
+test('@LeagueBot <invalid-command>', async () => {
   await discord.trigger(
-    'message',
+    'messageCreate',
     msg('cha', `<@!${BOT_ID}> fadfljadf adflkjadklfj`)
   )
 
-  expect(send).toHaveBeenCalledWith(
-    'Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.'
-  )
-
-  done()
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      'Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.'
+  }))
 })
 
-test('<unrelated-message>', async (done) => {
-  await discord.trigger('message', msg('cha', `adfadf fadfljadf adflkjadklfj`))
+test('<unrelated-message>', async () => {
+  await discord.trigger('messageCreate', msg('cha', `adfadf fadfljadf adflkjadklfj`))
   expect(send).not.toHaveBeenCalled()
-
-  done()
 })

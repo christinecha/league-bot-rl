@@ -19,13 +19,13 @@ const onLeaderboard = async (context, str) => {
 
   try {
     teamSize = getTeamSize(str)
-  } catch (e) {}
+  } catch (e) { }
 
-  await context.channel.send(
-    `${BASE_URL}/?guildId=${context.guild.id}${
-      teamSize ? `&teamSize=${teamSize}` : ''
-    }`
-  )
+  await context.channel.send({
+    content:
+      `${BASE_URL}/?guildId=${context.guild.id}${teamSize ? `&teamSize=${teamSize}` : ''
+      }`
+  })
 }
 
 const parseArgs = (teamStr, dateStr, requireTeam = true) => {
@@ -63,13 +63,13 @@ const onLeaderboardStart = async (context, str1, str2) => {
       ...(clearEnd ? { rangeEnd: null } : {}),
     })
 
-    await context.channel.send(LEADERBOARD_START({ teamSize, date }))
+    await context.channel.send({ content: LEADERBOARD_START({ teamSize, date }) })
 
     if (clearEnd) {
-      await context.channel.send(WARNING_UPDATE_END())
+      await context.channel.send({ content: WARNING_UPDATE_END() })
     }
   } catch (err) {
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
   }
 }
 
@@ -88,9 +88,9 @@ const onLeaderboardEnd = async (context, str1, str2) => {
       rangeEnd: timestamp,
     })
 
-    await context.channel.send(LEADERBOARD_END({ teamSize, date }))
+    await context.channel.send({ content: LEADERBOARD_END({ teamSize, date }) })
   } catch (err) {
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
   }
 }
 
@@ -100,7 +100,7 @@ const onLeaderboardStartAll = async (context, dateStr) => {
       await onLeaderboardStart(context, teamSize, dateStr)
     }
   } catch (err) {
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
   }
 }
 
@@ -110,7 +110,7 @@ const onLeaderboardEndAll = async (context, dateStr) => {
       await onLeaderboardEnd(context, teamSize, dateStr)
     }
   } catch (err) {
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
   }
 }
 

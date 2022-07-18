@@ -19,9 +19,10 @@ const onFixMatch = async (context, matchKey) => {
       throw ERRORS.MATCH_INVALID
     }
 
-    await context.channel.send(
-      'To overwrite the results of this match, react below with the correct team that won.'
-    )
+    await context.channel.send({
+      content:
+        'To overwrite the results of this match, react below with the correct team that won.'
+    })
     const reactions = await getEmoteReactions({
       validate: (reaction, user) => {
         return (
@@ -44,9 +45,9 @@ const onFixMatch = async (context, matchKey) => {
     }
 
     await matches.update({ id: matchId, winner: parseInt(winner) })
-    await context.channel.send(`Team ${winner} won Match #${matchKey}!`)
+    await context.channel.send({ content: `Team ${winner} won Match #${matchKey}!` })
   } catch (err) {
-    context.channel.send(err)
+    context.channel.send({ content: err })
   }
 }
 

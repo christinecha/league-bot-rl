@@ -4,7 +4,7 @@ let client
 
 const getClient = () => {
   if (!client) {
-    client = new Discord.Client()
+    client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] })
     client.login(process.env.BOT_TOKEN)
   }
   return client

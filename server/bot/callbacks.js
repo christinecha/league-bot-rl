@@ -20,13 +20,14 @@ const {
   onLeaderboardEndAll,
   onLeaderboard,
 } = require('./leaderboard')
+const { sendChannelMessage } = require('../util')
 
 const CALLBACKS = {
   [COMMAND_NAME.BUBBLES]: onBubbles,
   [COMMAND_NAME.CANCEL]: onCancel,
   [COMMAND_NAME.CLEAR]: onClear,
   [COMMAND_NAME.HELP]: (context) => {
-    context.channel.send(messages.HELP())
+    sendChannelMessage(context.channel, messages.HELP())
   },
   [COMMAND_NAME.LEADERBOARD]: onLeaderboard,
   [COMMAND_NAME.LEADERBOARD_START]: onLeaderboardStart,
@@ -49,17 +50,17 @@ const CALLBACKS = {
   [COMMAND_NAME.PREFIX]: onPrefix,
 
   [COMMAND_NAME.REPORT]: (context) => {
-    context.channel.send(
+    sendChannelMessage(context.channel,
       'No such command. Did you mean `!win <match-id>` or `!loss <match-id>`?'
     )
   },
 
   [COMMAND_NAME.STATS]: onStats,
   [COMMAND_NAME.TEST]: (context, ...args) => {
-    context.channel.send(`Testing! ${args.join(',')}`)
+    sendChannelMessage(context.channel, `Testing! ${args.join(',')}`)
   },
   [COMMAND_NAME.TEST_MOD]: async (context, ...args) => {
-    context.channel.send(`You're a mod! ${args.join(',')}`)
+    sendChannelMessage(context.channel, `You're a mod! ${args.join(',')}`)
   },
 }
 

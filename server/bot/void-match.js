@@ -21,14 +21,14 @@ const onVoidMatch = async (context, matchKey) => {
     })
 
     if (!reactions.length) {
-      await context.channel.send(MATCH_NOT_VOIDED(matchKey))
+      await context.channel.send({ content: MATCH_NOT_VOIDED(matchKey) })
       return
     }
 
     await matches.delete(matchId)
-    await context.channel.send(MATCH_VOIDED(matchKey))
+    await context.channel.send({ content: MATCH_VOIDED(matchKey) })
   } catch (err) {
-    context.channel.send(err)
+    context.channel.send({ content: err })
   }
 }
 

@@ -45,7 +45,7 @@ const report = async ({ matchKey, userId, guildId, didWin }) => {
 
 const onReport = async (context, matchKey, didWin) => {
   if (!matchKey) {
-    context.channel.send(ERRORS.MATCH_INVALID)
+    context.channel.send({ content: ERRORS.MATCH_INVALID })
     return
   }
 
@@ -61,12 +61,13 @@ const onReport = async (context, matchKey, didWin) => {
     })
     const comment = getCommentary(match)
 
-    context.channel.send(
-      `Team ${match.winner} won Match #${matchKey}! ${comment}`
-    )
+    context.channel.send({
+      content:
+        `Team ${match.winner} won Match #${matchKey}! ${comment}`
+    })
   } catch (err) {
     console.log(err)
-    if (err) context.channel.send(err)
+    if (err) context.channel.send({ content: err })
     return
   }
 }

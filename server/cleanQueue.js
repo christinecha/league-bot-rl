@@ -1,6 +1,6 @@
 const { discord } = require('./data/util/discord')
 const { admin } = require('./data/util/firebase')
-const { usersToString } = require('./util')
+const { usersToString, sendChannelMessage } = require('./util')
 const leagues = require('./data/leagues')
 const { REACT_TO_STAY_QUEUED, REMOVED_FROM_QUEUE } = require('./bot/messages')
 const FieldValue = admin.firestore.FieldValue
@@ -25,7 +25,7 @@ const getDeadPlayers = (message, stalePlayers) => {
     }
 
     const tenMinutes = 1000 * 60 * 10
-    message.awaitReactions(filter, { time: tenMinutes }).then(() => {
+    message.awaitReactions({ filter, time: tenMinutes }).then(() => {
       resolve(dead)
     })
   })
@@ -59,7 +59,8 @@ const cleanQueue = async () => {
 
       const clean = async () => {
         const channel = await discord.channels.fetch(league.channelId)
-        const message = await channel.send(
+        const message = await sendChannelMessage(
+          channel,
           REACT_TO_STAY_QUEUED({
             teamSize: league.teamSize,
             userIds: stalePlayers,
@@ -83,12 +84,15 @@ const cleanQueue = async () => {
         })
 
         await leagues.update({ id: league.id, ...updates })
-        await channel.send(
+        await sendChannelMessage(
+          channel,
           REMOVED_FROM_QUEUE({ teamSize: league.teamSize, userIds: dead })
         )
       }
 
-      return clean()
+      return clean().catch((e) => {
+        console.log('Error cleaning queue:', e)
+      })
     })
   )
 }
