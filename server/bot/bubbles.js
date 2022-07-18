@@ -1,5 +1,6 @@
 const { onQueue } = require('./queue')
 const leagues = require('../data/leagues')
+const { sendChannelMessage } = require('../util')
 
 const BUBBLES_ID = '362052637400498187'
 
@@ -8,11 +9,11 @@ const onBubbles = async (context) => {
   const userId = context.author.id
 
   if (userId !== BUBBLES_ID) {
-    context.channel.send("You don't look like Bubbles.")
+    await sendChannelMessage(context.channel, "You don't look like Bubbles.")
     return
   }
 
-  context.channel.send('Hello, Bubbles 👋')
+  await sendChannelMessage(context.channel, 'Hello, Bubbles 👋')
 
   // queue to all leagues
   await onQueue(context)

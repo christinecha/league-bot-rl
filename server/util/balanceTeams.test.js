@@ -18,24 +18,21 @@ const RL_RANKS = require('../constants/RL_RANKS')
 jest.mock('../util/getLeagueStats')
 getLeagueStats.mockResolvedValue({})
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   await leagues.create(league2s)
   await leagues.create(league3s)
   await leagues.create(league4s)
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('balanceTeams - by rank', async (done) => {
+test('balanceTeams - by rank', async () => {
   let teams
 
   teams = await balanceTeams({
@@ -133,8 +130,6 @@ test('balanceTeams - by rank', async (done) => {
       ],
     }
   `)
-
-  done()
 })
 
 test('scoreUser', () => {
@@ -187,7 +182,7 @@ test('scoreUser', () => {
   `)
 })
 
-test('balanceTeams - by rank & ratio', async (done) => {
+test('balanceTeams - by rank & ratio', async () => {
   let teams
   getLeagueStats.mockResolvedValue({
     [goldUser.id]: { ratio: 0.5 },
@@ -213,5 +208,4 @@ test('balanceTeams - by rank & ratio', async (done) => {
       ],
     }
   `)
-  done()
 })

@@ -34,10 +34,19 @@ const getTeams = (players) => {
   return { 1: team1, 2: team2 }
 }
 
+const sendChannelMessage = async (channel, msg) => {
+  if (typeof msg === 'string') {
+    return await channel.send({ content: msg })
+  }
+
+  return await channel.send({ embeds: [msg] })
+}
+
 module.exports = {
   getTeamSize,
   getLeagueId,
   usersToString,
   queueToString,
   getTeams,
+  sendChannelMessage
 }

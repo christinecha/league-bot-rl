@@ -15,8 +15,21 @@ const triggerMessage = async (data) => {
     guild,
   })
 
-  await discord.trigger('message', message)
+  await discord.trigger('messageCreate', message)
   return message
 }
 
-module.exports = { cleanDatabase, triggerMessage }
+const expectedMessage = (msg) => {
+  if (typeof msg === 'string') {
+    return expect.objectContaining({ content: msg })
+  }
+
+  return expect.objectContaining({
+    embeds: expect.arrayContaining([expect.objectContaining({
+      fields: msg.fields
+    })])
+  })
+
+}
+
+module.exports = { cleanDatabase, triggerMessage, expectedMessage }

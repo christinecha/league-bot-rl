@@ -48,10 +48,7 @@ const LEAVE_QUEUE = ({ userId, teamSize }) => {
 const GET_MATCH_MODE = ({ playerIds, teamSize }) => {
   return BotMessage().addFields({
     name: `We've got a ${teamSize}s match!`,
-    value: `${usersToString(playerIds)}
-
-Vote 🤖 for automatically balanced teams, or 👻 for completely random ones. Vote 🚫 to cancel.
-`,
+    value: `${usersToString(playerIds)}\n\nVote 🤖 for automatically balanced teams, or 👻 for completely random ones. Vote 🚫 to cancel.`,
   })
 }
 

@@ -7,6 +7,7 @@ const { discord } = require('../data/util/discord')
 const { league1s, league2s, league3s } = require('../test/league')
 const { guild } = require('../test/guild')
 const { queueToString } = require('../util')
+const { expectedMessage } = require('../test/util')
 const BOT_ID = process.env.BOT_ID
 
 let send, msg
@@ -25,22 +26,24 @@ const queue3 = {}
 
 const expectQueueMessage = (msg) =>
   expect.objectContaining({
-    fields: [
+    embeds: expect.arrayContaining([
       expect.objectContaining({
-        value: msg,
-      }),
-    ],
+        fields: expect.arrayContaining([
+          expect.objectContaining({
+            value: msg,
+          }),
+        ]),
+      })
+    ])
   })
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
-
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   send = jest.fn()
   msg = (userId, content) => ({
     content,
@@ -52,22 +55,20 @@ beforeEach(async (done) => {
   await leagues.create({ ...league1s, queue: queue1 })
   await leagues.create({ ...league2s, queue: queue2 })
   await leagues.create({ ...league3s, queue: queue3 })
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await firebase.clearFirestoreData({
     projectId: process.env.GCLOUD_PROJECT,
   })
-  done()
 })
 
-test('@LeagueBot status <teamSize>', async (done) => {
+test('@LeagueBot status <teamSize>', async () => {
   const user1 = 'average-joe'
 
   // Leagues' statuses should be sent.
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> status 1s`))
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> status 2s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> status 1s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> status 2s`))
   expect(send).toHaveBeenNthCalledWith(
     1,
     expectQueueMessage(queueToString(queue1))
@@ -78,20 +79,18 @@ test('@LeagueBot status <teamSize>', async (done) => {
   )
 
   // When the queue is empty, it should say that instead.
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> status 3s`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> status 3s`))
   expect(send).toHaveBeenNthCalledWith(
     3,
     expectQueueMessage('No one in the queue.')
   )
-
-  done()
 })
 
-test('@LeagueBot status', async (done) => {
+test('@LeagueBot status', async () => {
   const user1 = 'average-joe'
 
   // All leagues' statuses should be sent.
-  await discord.trigger('message', msg(user1, `<@!${BOT_ID}> status`))
+  await discord.trigger('messageCreate', msg(user1, `<@!${BOT_ID}> status`))
   const league1 = await leagues.get(league1s.id)
   const league2 = await leagues.get(league2s.id)
   const league3 = await leagues.get(league3s.id)
@@ -99,8 +98,5 @@ test('@LeagueBot status', async (done) => {
   const statusMsg = messages.STATUS_MULTIPLE({
     leagues: [league1, league2, league3],
   })
-  expect(send).toHaveBeenCalledWith(
-    expect.objectContaining({ fields: statusMsg.fields })
-  )
-  done()
+  expect(send).toHaveBeenCalledWith(expectedMessage(statusMsg))
 })

@@ -7,7 +7,7 @@ const onNew = async (context, leagueName) => {
   try {
     teamSize = getTeamSize(leagueName)
   } catch (err) {
-    context.channel.send(err)
+    context.channel.send({ content: err })
     return
   }
 
@@ -15,13 +15,14 @@ const onNew = async (context, leagueName) => {
   const existing = await leagues.get(id)
 
   if (existing) {
-    context.channel.send(
-      `A league with team size ${teamSize} already exists in this server.`
-    )
+    context.channel.send({
+      content:
+        `A league with team size ${teamSize} already exists in this server.`
+    })
     return
   }
 
-  context.channel.send(`Creating a new league with team size ${teamSize}.`)
+  context.channel.send({ content: `Creating a new league with team size ${teamSize}.` })
   await leagues.create({
     id,
     teamSize,

@@ -1,3 +1,5 @@
+const { sendChannelMessage } = require(".")
+
 const getEmoteReactions = ({
   validate,
   channel,
@@ -8,7 +10,7 @@ const getEmoteReactions = ({
 }) => {
   return new Promise(async (resolve, reject) => {
     const reactions = []
-    const _message = await channel.send(message)
+    const _message = await sendChannelMessage(channel, message)
 
     for (let emote of initialEmotes) {
       _message.react(emote)
@@ -23,7 +25,7 @@ const getEmoteReactions = ({
       }
     }
 
-    _message.awaitReactions(filter, { time: maxTime }).then(() => {
+    _message.awaitReactions({ filter, time: maxTime }).then(() => {
       resolve(reactions)
     })
   })

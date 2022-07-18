@@ -14,7 +14,7 @@ Discord.Channel = (data) => {
     send: jest.fn(() =>
       Promise.resolve({
         react,
-        awaitReactions: (filter) => {
+        awaitReactions: ({ filter }) => {
           return new Promise((resolve) => {
             setTimeout(() => {
               self.reactions.forEach((r) => {
@@ -42,7 +42,7 @@ Discord.DB = {
     h000: {
       id: 'h000',
       name: 'Hooo Crew',
-      ownerID: '12355',
+      ownerId: '12355',
       _members: {
         ...Object.keys(users).reduce((obj, key) => {
           const user = users[key]
@@ -92,8 +92,8 @@ Discord.Guild = jest.fn((data) => ({
           }),
         roles: data._members[id]
           ? {
-              cache: data._members[id].roles,
-            }
+            cache: data._members[id].roles,
+          }
           : {},
       })
     },
@@ -112,7 +112,7 @@ Discord.Client = jest.fn(() => {
       return Promise.all(promises)
     },
 
-    login: () => {},
+    login: () => { },
     guilds: {
       fetch: (guildId) => {
         const guild = new Discord.Guild(Discord.DB.guilds[guildId])

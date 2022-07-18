@@ -31,13 +31,12 @@ jest.mock('../_updates.json', () => {
   ]
 })
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
   channel = await discord.channels.fetch(channelId)
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   await leagues.create({
     ...league2s,
     channelId,
@@ -46,27 +45,28 @@ beforeEach(async (done) => {
     ...league3s,
     channelId,
   })
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('node server/jobs/postUpdates.js', async (done) => {
+test('node server/jobs/postUpdates.js', async () => {
   await postUpdates()
 
   expect(channel.send).toHaveBeenCalledTimes(1)
   expect(channel.send).toHaveBeenCalledWith(
     expect.objectContaining({
-      fields: expect.arrayContaining([
-        expect.objectContaining({
-          value: `- Test 1
+      embeds: [expect.objectContaining({
+        fields: expect.arrayContaining([
+          expect.objectContaining({
+            value: `- Test 1
 - Test 2
 - Test 3`,
-        }),
-      ]),
+          }),
+        ]),
+      })
+      ]
     })
   )
 
@@ -74,6 +74,4 @@ test('node server/jobs/postUpdates.js', async (done) => {
   const league3 = await leagues.get(league2s.id)
   expect(league2.lastUpdate).toBe(updates[updates.length - 1].timestamp)
   expect(league3.lastUpdate).toBe(updates[updates.length - 1].timestamp)
-
-  done()
 })

@@ -20,7 +20,7 @@ discord.on('warn', (info) => {
   console.log('[bot] warning:', info)
 })
 
-discord.on('message', async (message) => {
+discord.on('messageCreate', async (message) => {
   /* Sigh. */
   if (BLOCKLIST.indexOf(message.guild.id) > -1) {
     console.log(`Blocked server: [${message.guild.id}]`)
@@ -50,9 +50,10 @@ discord.on('message', async (message) => {
 
     if (!command) {
       if (!prefixed) {
-        message.channel.send(
-          'Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.'
-        )
+        message.channel.send({
+          content:
+            'Sorry, I didn\'t understand that command. Try "@LeagueBot help" for more info.'
+        })
       }
       return
     }
@@ -73,7 +74,7 @@ discord.on('message', async (message) => {
         mods.indexOf(authorId) > -1
 
       if (!isAdmin) {
-        message.channel.send(ERRORS.MOD_ONLY)
+        message.channel.send({ content: ERRORS.MOD_ONLY })
         return
       }
     }
@@ -83,7 +84,7 @@ discord.on('message', async (message) => {
     const guildUpdate = {
       id: message.guild.id,
       name: message.guild.name,
-      ownerID: message.guild.ownerID,
+      ownerId: message.guild.ownerId,
       lastUpdate: Date.now(),
     }
 

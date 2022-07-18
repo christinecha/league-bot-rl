@@ -4,7 +4,7 @@ const messages = require('./messages')
 const ERRORS = require('../constants/ERRORS')
 const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const { admin } = require('../data/util/firebase')
-const { getTeamSize } = require('../util')
+const { getTeamSize, sendChannelMessage } = require('../util')
 const { ReactionVoter } = require('../util/ReactionVoter')
 const FieldValue = admin.firestore.FieldValue
 
@@ -61,7 +61,7 @@ const getMatchMode = async ({ message, playerIds }) => {
     }
 
     const twoMinutes = 1000 * 60 * 2
-    message.awaitReactions(filter, { time: twoMinutes }).then(() => {
+    message.awaitReactions({ filter, time: twoMinutes }).then(() => {
       const mostPopular = reactionVoter.getWinner() || MATCH_MODE.AUTO
       resolve(mostPopular)
     })
@@ -101,7 +101,7 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
   }
 
   if (!teamSizes.length) {
-    await context.channel.send(ERRORS.INVALID_TEAM_SIZE)
+    await context.channel.send({ content: ERRORS.INVALID_TEAM_SIZE })
     return
   }
 
@@ -133,24 +133,25 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
       let mode = MATCH_MODE.RANDOM
 
       if (teamSize > 1) {
-        const message = await context.channel.send(
+        const message = await sendChannelMessage(
+          context.channel,
           messages.GET_MATCH_MODE({ playerIds, teamSize })
         )
 
         mode = await getMatchMode({ message, playerIds })
 
         if (mode === MATCH_MODE.CANCEL) {
-          await context.channel.send(`${teamSizes}s match has been canceled.`)
+          await context.channel.send({ content: `${teamSizes}s match has been canceled.` })
           return
         }
       }
 
       const match = await createMatch({ leagueId, playerIds, mode, teamSize })
-      await context.channel.send(messages.MATCH_DETAILS(match))
+      await sendChannelMessage(context.channel, messages.MATCH_DETAILS(match))
     } catch (err) {
       if (!ignoreErrors) {
         console.log('[LOGGED ERROR]', err)
-        await context.channel.send(err)
+        await context.channel.send({ content: err })
       } else {
         console.log('[SILENT ERROR]', err)
       }
@@ -158,13 +159,13 @@ const onUpdateQueue = async (context, leagueStrs, shouldQueue) => {
   }
 
   if (leaguesAffected.length) {
-    await context.channel.send(
+    await sendChannelMessage(context.channel,
       messages.STATUS_MULTIPLE({ leagues: leaguesAffected })
     )
   }
 
   if (count < 1 && ignoreErrors && !shouldQueue) {
-    await context.channel.send(ERRORS.QUEUE_NOT_IN_ANY({ userId }))
+    await context.channel.send({ content: ERRORS.QUEUE_NOT_IN_ANY({ userId }) })
   }
 }
 
@@ -181,10 +182,10 @@ const onClear = async (context, leagueName) => {
     const teamSize = getTeamSize(leagueName)
     const leagueId = `${context.guild.id}-${teamSize}`
     await leagues.update({ id: leagueId, queue: {} })
-    await context.channel.send(`${teamSize}s queue has been cleared.`)
+    await context.channel.send({ content: `${teamSize}s queue has been cleared.` })
   } catch (err) {
     console.log('[ERROR]', err)
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
     return
   }
 }

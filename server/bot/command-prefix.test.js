@@ -14,41 +14,38 @@ const BOT_ID = process.env.BOT_ID
 
 let channel
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
   channel = await discord.channels.fetch('test')
-  done()
 })
-beforeEach(async (done) => {
+beforeEach(async () => {
   jest.clearAllMocks()
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('Default prefix is !', async (done) => {
+test('Default prefix is !', async () => {
   await triggerMessage({
     userId: adminUser.id,
     content: `!test arg1 arg2`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(`Testing! arg1,arg2`)
-
-  done()
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: `Testing! arg1,arg2` }))
 })
 
-test('Setting an invalid custom prefix', async (done) => {
+test('Setting an invalid custom prefix', async () => {
   await triggerMessage({
     userId: adminUser.id,
     content: `!prefix argblarg`,
   })
 
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(
-    'Prefix must be exactly one character.'
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      'Prefix must be exactly one character.'
+  })
   )
 
   jest.clearAllMocks()
@@ -59,21 +56,21 @@ test('Setting an invalid custom prefix', async (done) => {
   })
 
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(
-    'Prefix must be exactly one character.'
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      'Prefix must be exactly one character.'
+  })
   )
-
-  done()
 })
 
-test('Setting a valid custom prefix', async (done) => {
+test('Setting a valid custom prefix', async () => {
   await triggerMessage({
     userId: adminUser.id,
     content: `!prefix ?`,
   })
 
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(PREFIX_UPDATED({ prefix: '?' }))
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: PREFIX_UPDATED({ prefix: '?' }) }))
 
   jest.clearAllMocks()
 
@@ -86,7 +83,5 @@ test('Setting a valid custom prefix', async (done) => {
     content: `?test arg1 arg2`,
   })
   expect(channel.send).toHaveBeenCalledTimes(1)
-  expect(channel.send).toHaveBeenCalledWith(`Testing! arg1,arg2`)
-
-  done()
+  expect(channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: `Testing! arg1,arg2` }))
 })

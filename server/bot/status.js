@@ -1,7 +1,7 @@
 const leagues = require('../data/leagues')
 const TEAM_SIZES = require('../constants/TEAM_SIZES')
 const messages = require('./messages')
-const { getTeamSize, getLeagueId } = require('../util')
+const { getTeamSize, getLeagueId, sendChannelMessage } = require('../util')
 
 const onStatus = async (context, leagueName) => {
   if (!leagueName) {
@@ -13,7 +13,7 @@ const onStatus = async (context, leagueName) => {
       if (league) leaguesArr.push(league)
     }
 
-    await context.channel.send(
+    await sendChannelMessage(context.channel,
       messages.STATUS_MULTIPLE({ leagues: leaguesArr })
     )
     return
@@ -24,13 +24,13 @@ const onStatus = async (context, leagueName) => {
   try {
     teamSize = getTeamSize(leagueName)
   } catch (err) {
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
     return
   }
 
   const id = getLeagueId(teamSize, context)
   const league = await leagues.get(id)
-  await context.channel.send(messages.QUEUE(league))
+  await sendChannelMessage(context.channel, messages.QUEUE(league))
 }
 
 module.exports = { onStatus }

@@ -20,12 +20,11 @@ const DATES = {
   JAN_31: '2020-01-31',
 }
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   const _now = Date.now.bind(global.Date)
   await leagues.create(league2s)
 
@@ -41,15 +40,13 @@ beforeEach(async (done) => {
   await matches.create({ ...match2s, id: `${league2s.id}-5`, winner: 2 })
 
   global.Date.now = _now
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   await cleanDatabase()
-  done()
 })
 
-test('@LeagueBot start <teamSize> <date>', async (done) => {
+test('@LeagueBot start <teamSize> <date>', async () => {
   const originalStats = await getLeagueStats(league2s.id)
   let stats
 
@@ -59,7 +56,7 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
     content: `<@!${BOT_ID}> start 2s ${DATES.JAN_1}`,
   })
   const { send } = msg.channel
-  expect(send).toHaveBeenCalledWith(ERRORS.MOD_ONLY)
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.MOD_ONLY }))
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
@@ -68,7 +65,7 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
     userId: adminUser.id,
     content: `<@!${BOT_ID}> start 2s blahblah`,
   })
-  expect(send).toHaveBeenCalledWith(ERRORS.DATE_INVALID)
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.DATE_INVALID }))
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
@@ -77,7 +74,7 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
     userId: adminUser.id,
     content: `<@!${BOT_ID}> start 44 blahblah`,
   })
-  expect(send).toHaveBeenCalledWith(ERRORS.INVALID_TEAM_SIZE)
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.INVALID_TEAM_SIZE }))
   stats = await getLeagueStats(league2s.id)
   expect(stats).toStrictEqual(originalStats)
 
@@ -88,12 +85,13 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
     content: `<@!${BOT_ID}> start 2s ${DATES.JAN_15}`,
   })
 
-  expect(send).toHaveBeenCalledWith(
-    LEADERBOARD_START({
-      teamSize: 2,
-      date: 'Jan 15, 2020, 12:00 AM GMT-5',
-    })
-  )
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      LEADERBOARD_START({
+        teamSize: 2,
+        date: 'Jan 15, 2020, 12:00 AM GMT-5',
+      })
+  }))
   const newStats = await getLeagueStats(league2s.id)
   expect(newStats).not.toStrictEqual(originalStats)
   expect(newStats).toMatchSnapshot()
@@ -104,7 +102,7 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
     content: `<@!${BOT_ID}> end 2s ${DATES.JAN_1}`,
   })
   stats = await getLeagueStats(league2s.id)
-  expect(send).toHaveBeenCalledWith(ERRORS.END_MUST_BE_AFTER_START)
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({ content: ERRORS.END_MUST_BE_AFTER_START }))
   expect(stats).toStrictEqual(newStats)
 
   // League end should be updated!
@@ -113,11 +111,13 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
     content: `<@!${BOT_ID}> end 2s ${DATES.JAN_16}`,
   })
 
-  expect(send).toHaveBeenCalledWith(
-    LEADERBOARD_END({
-      teamSize: 2,
-      date: 'Jan 16, 2020, 12:00 AM GMT-5',
-    })
+  expect(send).toHaveBeenCalledWith(expect.objectContaining({
+    content:
+      LEADERBOARD_END({
+        teamSize: 2,
+        date: 'Jan 16, 2020, 12:00 AM GMT-5',
+      })
+  })
   )
   stats = await getLeagueStats(league2s.id)
   expect(stats).not.toStrictEqual(newStats)
@@ -127,6 +127,4 @@ test('@LeagueBot start <teamSize> <date>', async (done) => {
   const league = await leagues.get(league2s.id)
   expect(league.rangeStart).toBe(1579064400000)
   expect(league.rangeEnd).toBe(1579150800000)
-
-  done()
 })

@@ -21,7 +21,7 @@ const {
   diamondUser,
   champUser,
 } = require('../test/users')
-const { triggerMessage, cleanDatabase } = require('../test/util')
+const { triggerMessage, cleanDatabase, expectedMessage } = require('../test/util')
 const { balanceTeams } = require('../util/balanceTeams')
 const BOT_ID = process.env.BOT_ID
 const channelId = 'test'
@@ -31,35 +31,35 @@ getLeagueStats.mockResolvedValue({})
 
 const getQueueMessage = (regex) => {
   return expect.objectContaining({
-    fields: [
-      expect.objectContaining({
-        value: expect.stringMatching(regex),
-      }),
-    ],
+    embeds: [expect.objectContaining({
+      fields: ([
+        expect.objectContaining({
+          value: expect.stringMatching(regex),
+        }),
+      ]),
+    })]
+
   })
 }
 
-beforeAll(async (done) => {
+beforeAll(async () => {
   await cleanDatabase()
-  done()
 })
 
-beforeEach(async (done) => {
+beforeEach(async () => {
   await leagues.create(league1s)
   await leagues.create(league2s)
   await leagues.create(league3s)
-  done()
 })
 
-afterEach(async (done) => {
+afterEach(async () => {
   jest.clearAllMocks()
   const channel = await discord.channels.fetch(channelId)
   channel.setReactions([])
   await cleanDatabase()
-  done()
 })
 
-test('@LeagueBot queue <league>', async (done) => {
+test('@LeagueBot queue <league>', async () => {
   const channel = await discord.channels.fetch(channelId)
   const { send } = channel
 
@@ -79,9 +79,9 @@ test('@LeagueBot queue <league>', async (done) => {
     expect(league.queue[goldUser.id]).toBeGreaterThanOrEqual(before)
 
     const statusMsg = messages.STATUS_MULTIPLE({ leagues: [league] })
-    expect(send).toHaveBeenCalledWith(
-      expect.objectContaining({ fields: statusMsg.fields })
-    )
+    expect(send).toHaveBeenCalledWith(expectedMessage(
+      statusMsg
+    ))
 
     // The same user may not queue again.
     await triggerMessage({
@@ -90,17 +90,18 @@ test('@LeagueBot queue <league>', async (done) => {
     })
 
     expect(send).toHaveBeenCalledWith(
-      ERRORS.QUEUE_DUPLICATE_USER({
-        userId: goldUser.id,
-        teamSize: league.teamSize,
+      expect.objectContaining({
+        content:
+          ERRORS.QUEUE_DUPLICATE_USER({
+            userId: goldUser.id,
+            teamSize: league.teamSize,
+          })
       })
     )
   }
-
-  done()
 })
 
-test('@LeagueBot queue 1s', async (done) => {
+test('@LeagueBot queue 1s', async () => {
   const matchId = `${league1s.id}-1`
 
   const msg = await triggerMessage({
@@ -140,11 +141,9 @@ test('@LeagueBot queue 1s', async (done) => {
 
   // Match details should be sent
   expect(send).toHaveBeenCalledWith(expectMatchMessage(match))
-
-  done()
 })
 
-test('@LeagueBot queue 2s', async (done) => {
+test('@LeagueBot queue 2s', async () => {
   const playerIds = [goldUser.id, platUser.id, diamondUser.id, champUser.id]
   const matchId = `${league2s.id}-1`
 
@@ -163,17 +162,13 @@ test('@LeagueBot queue 2s', async (done) => {
 
     // When a user queues, they should receive a message with the updated list
     if (i !== playerIds.length - 1) {
-      expect(msg.channel.send).toHaveBeenCalledWith(
-        getQueueMessage(`<@!${playerId}>`)
-      )
+      expect(msg.channel.send).toHaveBeenCalledWith(getQueueMessage(`<@!${playerId}>`))
       continue
     }
 
     // When enough users queue for a match:
     // Match mode voting message should be sent
-    expect(msg.channel.send).toHaveBeenCalledWith(
-      expectMatchVoteMessage({ playerIds, teamSize: 2 })
-    )
+    expect(msg.channel.send).toHaveBeenNthCalledWith(4, expectMatchVoteMessage({ playerIds, teamSize: 2 }))
 
     // Bot should react with the options first!
     expect(msg.react).toHaveBeenCalledTimes(3)
@@ -195,13 +190,11 @@ test('@LeagueBot queue 2s', async (done) => {
     expect(teams).toStrictEqual(autoTeams)
 
     // Match details should be sent
-    expect(msg.channel.send).toHaveBeenCalledWith(expectMatchMessage(match))
+    expect(msg.channel.send).toHaveBeenNthCalledWith(5, expectMatchMessage(match))
   }
-
-  done()
 })
 
-test('@LeagueBot queue 3s', async (done) => {
+test('@LeagueBot queue 3s', async () => {
   const playerIds = [
     bronzeUser.id,
     silverUser.id,
@@ -227,17 +220,13 @@ test('@LeagueBot queue 3s', async (done) => {
 
     // When a user queues, they should receive a message with the updated list
     if (i !== playerIds.length - 1) {
-      expect(msg.channel.send).toHaveBeenCalledWith(
-        getQueueMessage(`<@!${playerId}>`)
-      )
+      expect(msg.channel.send).toHaveBeenCalledWith(getQueueMessage(`<@!${playerId}>`))
       continue
     }
 
     // When enough users queue for a match:
     // Match mode voting message should be sent
-    expect(msg.channel.send).toHaveBeenCalledWith(
-      expectMatchVoteMessage({ playerIds, teamSize: 3 })
-    )
+    expect(msg.channel.send).toHaveBeenCalledWith(expectMatchVoteMessage({ playerIds, teamSize: 3 }))
 
     // Match should be created in the database, default "auto"
     const match = await matches.get(matchId)
@@ -258,11 +247,9 @@ test('@LeagueBot queue 3s', async (done) => {
     // Match details should be sent
     expect(msg.channel.send).toHaveBeenCalledWith(expectMatchMessage(match))
   }
-
-  done()
 })
 
-test('@LeagueBot queue 2s - then cancel', async (done) => {
+test('@LeagueBot queue 2s - then cancel', async () => {
   const playerIds = [goldUser.id, platUser.id, diamondUser.id, champUser.id]
   const matchId = `${league2s.id}-1`
 
@@ -286,19 +273,15 @@ test('@LeagueBot queue 2s - then cancel', async (done) => {
 
     // When enough users queue for a match:
     // Match mode voting message should be sent
-    expect(msg.channel.send).toHaveBeenCalledWith(
-      expectMatchVoteMessage({ playerIds, teamSize: 2 })
-    )
+    expect(msg.channel.send).toHaveBeenCalledWith(expectMatchVoteMessage({ playerIds, teamSize: 2 }))
 
     // Bot should react with the options first!
     expect(msg.react).toHaveBeenCalledTimes(3)
 
-    expect(msg.channel.send).toHaveBeenCalledWith(`2s match has been canceled.`)
+    expect(msg.channel.send).toHaveBeenCalledWith(expect.objectContaining({ content: `2s match has been canceled.` }))
 
     // Match should not have been created
     const match = await matches.get(matchId)
     expect(match).toBe(undefined)
   }
-
-  done()
 })

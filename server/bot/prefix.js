@@ -5,7 +5,7 @@ const onPrefix = async (context, str = '') => {
   const prefix = str.trim()
 
   if (prefix.length !== 1) {
-    context.channel.send('Prefix must be exactly one character.')
+    context.channel.send({ content: 'Prefix must be exactly one character.' })
     return
   }
 
@@ -14,7 +14,7 @@ const onPrefix = async (context, str = '') => {
     prefix,
   })
 
-  context.channel.send(PREFIX_UPDATED({ prefix }))
+  context.channel.send({ content: PREFIX_UPDATED({ prefix }) })
 
   console.log(prefix)
 }

@@ -4,7 +4,7 @@ const ERRORS = require('../constants/ERRORS')
 
 const onCancel = async (context, matchKey) => {
   if (!matchKey) {
-    await context.channel.send(ERRORS.MATCH_INVALID)
+    await context.channel.send({ content: ERRORS.MATCH_INVALID })
     return
   }
 
@@ -12,20 +12,20 @@ const onCancel = async (context, matchKey) => {
   const match = await matches.get(matchId)
 
   if (!match) {
-    await context.channel.send(ERRORS.MATCH_INVALID)
+    await context.channel.send({ content: ERRORS.MATCH_INVALID })
     return
   }
 
   if (match.winner) {
-    await context.channel.send(ERRORS.MATCH_UNCANCELABLE)
+    await context.channel.send({ content: ERRORS.MATCH_UNCANCELABLE })
     return
   }
 
   try {
     await matches.delete(matchId)
-    await context.channel.send(`Match #${matchKey} was canceled.`)
+    await context.channel.send({ content: `Match #${matchKey} was canceled.` })
   } catch (err) {
-    await context.channel.send(err)
+    await context.channel.send({ content: err })
   }
 }
 
